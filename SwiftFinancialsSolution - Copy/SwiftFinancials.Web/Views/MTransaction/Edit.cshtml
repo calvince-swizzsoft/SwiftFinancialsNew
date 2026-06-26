@@ -1,0 +1,40 @@
+﻿// Views/MTransaction/Edit.cshtml
+@model SwiftFinancials.Web.Models.MTransaction
+
+@{
+    ViewBag.Title = "Edit Transaction";
+}
+
+<div class="container">
+    <h2 class="text-warning">Edit Transaction</h2>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.ID)
+
+        <div class="form-horizontal">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ClientCode)
+                @Html.TextBoxFor(model => model.ClientCode, new { @class = "form-control" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.AccountNo)
+                @Html.TextBoxFor(model => model.AccountNo, new { @class = "form-control" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Amount)
+                @Html.TextBoxFor(model => model.Amount, new { @class = "form-control" })
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-success" />
+                @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-link" })
+            </div>
+        </div>
+    }
+</div>

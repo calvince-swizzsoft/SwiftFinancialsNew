@@ -1,0 +1,364 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="SwiftFinancials - Enterprise-grade Loan Calculator" />
+    <meta name="author" content="SwiftFinancials" />
+    <title>SwiftFinancials | Premium Loan Calculator</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" type="image/png">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #eaf1f8;
+            color: #222;
+        }
+
+        header {
+            background: linear-gradient(to right, #002244, #005599);
+            color: #fff;
+            padding: 30px 0;
+            text-align: center;
+            font-size: 30px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .background-math {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1608457883169-7d57eb1c8210') no-repeat center center fixed;
+            background-size: cover;
+            opacity: 0.03;
+            z-index: -1;
+        }
+
+        .loan-calculator {
+            background: #fff;
+            padding: 50px;
+            border-radius: 20px;
+            width: 95%;
+            max-width: 960px;
+            margin: 60px auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .calculator-inputs label {
+            margin-top: 20px;
+            display: block;
+            font-weight: 600;
+            color: #003366;
+            font-size: 16px;
+        }
+
+        .calculator-inputs input,
+        .calculator-inputs select {
+            width: 100%;
+            padding: 16px;
+            margin-top: 8px;
+            border: 1px solid #ccc;
+            border-radius: 12px;
+            font-size: 16px;
+            background: #fefefe;
+        }
+
+        .btn {
+            margin-top: 25px;
+            background: #005599;
+            color: #fff;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 100%;
+        }
+
+            .btn:hover {
+                background: #003366;
+            }
+
+        .scrollable-table {
+            margin-top: 40px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 14px;
+            text-align: right;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #005599;
+            color: white;
+            font-weight: 700;
+            text-align: center;
+        }
+
+            td:first-child,
+            th:first-child {
+                text-align: center;
+            }
+
+        tr:nth-child(even) td {
+            background-color: #f2f6fa;
+        }
+
+        footer {
+            background: #002244;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+            font-size: 14px;
+            position: relative;
+            margin-top: 60px;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+            .action-buttons button {
+                flex: 1;
+            }
+
+        @media (max-width: 600px) {
+            .loan-calculator {
+                padding: 25px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>SwiftFinancials | Loan Calculator</header>
+    <div class="background-math"></div>
+
+    <div class="loan-calculator">
+        <div class="calculator-inputs">
+            <label for="loanAmount">Loan Amount</label>
+            <input type="number" id="loanAmount" placeholder="e.g. 1,000,000" />
+
+            <label for="interestRate">Annual Interest Rate (%)</label>
+            <input type="number" id="interestRate" placeholder="e.g. 12" />
+
+            <label for="loanTerm">Loan Term (Years)</label>
+            <input type="number" id="loanTerm" placeholder="e.g. 5" />
+
+            <label for="paymentFrequency">Payments per Year</label>
+            <select id="paymentFrequency">
+                <option value="12">Monthly</option>
+                <option value="4">Quarterly</option>
+                <option value="1">Annually</option>
+            </select>
+
+            <label for="interestMode">Interest Calculation Mode</label>
+            <select id="interestMode">
+                <option value="reducing">Reducing Balance (Amortized)</option>
+                <option value="simple">Simple Interest</option>
+                <option value="compound">Compound Interest</option>
+                <option value="flat">Flat Rate Interest</option>
+                <option value="daily">Daily Interest</option>
+                <option value="bullet">Bullet Repayment</option>
+            </select>
+
+            <button class="btn" onclick="calculateLoan()"><i class="fas fa-calculator"></i> Calculate</button>
+        </div>
+
+        <div id="schedule" class="scrollable-table">
+            <h3 style="text-align:center">Repayment Schedule</h3>
+            <div class="action-buttons">
+                <button class="btn" onclick="downloadScheduleCSV()"><i class="fas fa-file-csv"></i> Download CSV</button>
+                <button class="btn" onclick="printSchedule()"><i class="fas fa-print"></i> Print Schedule</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Payment #</th>
+                        <th>Date</th>
+                        <th>Beginning Balance</th>
+                        <th>Payment</th>
+                        <th>Principal</th>
+                        <th>Interest</th>
+                        <th>Ending Balance</th>
+                    </tr>
+                </thead>
+                <tbody id="repaymentSchedule"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2024 SwiftFinancials SACCO Division. Enterprise Loan Tools. All rights reserved.
+    </footer>
+
+    <script>
+        function calculateLoan() {
+            const loanAmount = parseFloat(document.getElementById('loanAmount').value);
+            const annualRate = parseFloat(document.getElementById('interestRate').value) / 100;
+            const loanTerm = parseFloat(document.getElementById('loanTerm').value);
+            const frequency = parseInt(document.getElementById('paymentFrequency').value);
+            const interestMode = document.getElementById('interestMode').value;
+
+            const numPayments = loanTerm * frequency;
+            const ratePerPeriod = annualRate / frequency;
+
+            let schedule = [];
+            let remaining = loanAmount;
+            let paymentDate = new Date();
+            let payment;
+
+            if (loanTerm <= 0 || frequency <= 0) {
+                alert("Loan term and payment frequency must be greater than zero.");
+                return;
+            }
+
+            switch (interestMode) {
+                case 'reducing':
+                    payment = loanAmount * (ratePerPeriod * Math.pow(1 + ratePerPeriod, numPayments)) / (Math.pow(1 + ratePerPeriod, numPayments) - 1);
+                    break;
+                case 'simple':
+                case 'flat':
+                    payment = (loanAmount + (loanAmount * annualRate * loanTerm)) / numPayments;
+                    break;
+                case 'compound':
+                    const compounded = loanAmount * Math.pow((1 + ratePerPeriod), numPayments);
+                    payment = compounded / numPayments;
+                    break;
+                case 'daily':
+                    const totalInterest = loanAmount * (annualRate / 365) * loanTerm * 365;
+                    payment = (loanAmount + totalInterest) / numPayments;
+                    break;
+                case 'bullet':
+                    payment = loanAmount * ratePerPeriod;
+                    break;
+                default:
+                    return;
+            }
+
+            for (let i = 1; i <= numPayments; i++) {
+                let interest, principal;
+                switch (interestMode) {
+                    case 'reducing':
+                    case 'compound':
+                        interest = remaining * ratePerPeriod;
+                        principal = payment - interest;
+                        break;
+                    case 'simple':
+                    case 'flat':
+                        interest = (loanAmount * annualRate) / frequency;
+                        principal = payment - interest;
+                        break;
+                    case 'daily':
+                        interest = remaining * (annualRate / 365) * (365 / frequency);
+                        principal = payment - interest;
+                        break;
+                    case 'bullet':
+                        interest = loanAmount * ratePerPeriod;
+                        principal = 0;
+                        if (i === numPayments) {
+                            principal = loanAmount;
+                            payment = principal + interest;
+                        }
+                        break;
+                }
+
+                let endBalance = remaining - principal;
+                if (endBalance < 0) endBalance = 0;
+
+                schedule.push({
+                    paymentNumber: i,
+                    date: new Date(paymentDate.setMonth(paymentDate.getMonth() + (12 / frequency))).toLocaleDateString(),
+                    beginningBalance: remaining.toFixed(2),
+                    payment: payment.toFixed(2),
+                    principal: principal.toFixed(2),
+                    interest: interest.toFixed(2),
+                    endingBalance: endBalance.toFixed(2)
+                });
+
+                remaining = endBalance;
+                if (remaining <= 0) break;
+            }
+
+            displaySchedule(schedule);
+        }
+
+        function displaySchedule(schedule) {
+            const tbody = document.getElementById('repaymentSchedule');
+            tbody.innerHTML = '';
+            schedule.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                        <td>${row.paymentNumber}</td>
+                        <td>${row.date}</td>
+                        <td>${row.beginningBalance}</td>
+                        <td>${row.payment}</td>
+                        <td>${row.principal}</td>
+                        <td>${row.interest}</td>
+                        <td>${row.endingBalance}</td>
+                    `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function downloadScheduleCSV() {
+            const rows = document.querySelectorAll('#repaymentSchedule tr');
+            let csv = 'Payment #,Date,Beginning Balance,Payment,Principal,Interest,Ending Balance\n';
+            rows.forEach(row => {
+                const cols = row.querySelectorAll('td');
+                const line = Array.from(cols).map(col => col.textContent).join(',');
+                csv += line + '\n';
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.setAttribute("href", URL.createObjectURL(blob));
+            link.setAttribute("download", "repayment_schedule.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function printSchedule() {
+            const original = document.body.innerHTML;
+            const schedule = document.getElementById('schedule').innerHTML;
+            document.body.innerHTML = '<h2 style="text-align:center">Repayment Schedule</h2>' + schedule;
+            window.print();
+            document.body.innerHTML = original;
+            window.location.reload();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+﻿
+@{
+    ViewBag.Title = "Report Setting | Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: linear-gradient(145deg, #f7f7f7, #ffffff);
+        font-family: Arial, sans-serif;
+        margin: 0;
+    }
+
+    .login-container {
+        background: linear-gradient(145deg, #ffffff, #e6e6e6);
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.3), inset 0px 0px 10px rgba(255, 255, 255, 0.2);
+        text-align: center;
+        width: 300px;
+    }
+
+        .login-container h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        margin-bottom: 15px;
+        border-radius: 30px;
+        border: 1px solid #ccc;
+        box-shadow: inset 4px 4px 10px rgba(0, 0, 0, 0.1), inset -4px -4px 10px rgba(255, 255, 255, 0.9);
+        transition: all 0.3s ease;
+        font-size: 16px;
+        color: #555;
+    }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0px 0px 15px rgba(0, 123, 255, 0.5), inset 4px 4px 10px rgba(0, 0, 0, 0.1), inset -4px -4px 10px rgba(255, 255, 255, 0.9);
+            background: linear-gradient(145deg, #ffffff, #f1f1f1);
+        }
+
+    .btn {
+        width: 100%;
+        padding: 12px 15px;
+        margin-top: 20px;
+        border-radius: 30px;
+        background-color: #007bff;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+        box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.2);
+    }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0px 8px 35px rgba(0, 123, 255, 0.4);
+        }
+
+    .error-message {
+        color: red;
+        font-size: 14px;
+        margin-top: 10px;
+    }
+</style>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h1>Administration</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" })
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "", new { Area = "Admin" })
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<body>
+    <div class="login-container">
+        <h2>Login</h2>
+        @using (Html.BeginForm("Login", "SSRSReportSettingLogin", FormMethod.Post))
+        {
+            <input type="email" name="email" placeholder="example@gmail.com" class="form-control" required />
+
+            <input type="password" name="password" placeholder="Enter Password" class="form-control" required />
+
+            <button type="submit" class="btn">Login</button>
+
+            if (ViewBag.ErrorMessage != null)
+            {
+                <div class="error-message">
+                    @ViewBag.ErrorMessage
+                </div>
+            }
+        }
+    </div>
+</body>

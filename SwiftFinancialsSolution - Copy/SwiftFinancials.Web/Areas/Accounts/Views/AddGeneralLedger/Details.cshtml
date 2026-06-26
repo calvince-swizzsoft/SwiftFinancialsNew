@@ -1,0 +1,323 @@
+﻿@model  Application.MainBoundedContext.DTO.AccountsModule.GeneralLedgerDTO
+
+@{
+    ViewBag.Title = "General Ledger Batch Details";
+
+}
+<style>
+    .custom-container {
+        border: 2px solid gray;
+        padding:20px;
+        border-radius: 5px;
+
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        text-align: center;
+        margin-top: 30px;
+        font-weight: bold;
+        background-color: #00e0ff;
+    }
+
+    .combined-container {
+        padding: 20px;
+        border-radius: 5px;
+        margin: 20px 0;
+        font-size: 15px;
+        display: flex;
+        flex-direction: column;
+        font-weight: bold;
+        border: 2px solid #00ffff;
+    }
+
+    @* Batch Entries table Styling*@ #ChargeSplits {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+    }
+
+    #ChargeSplits thead {
+        background-color: white;
+        color: #333;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #ChargeSplits th, #ChargeSplits td {
+        padding: 12px;
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+
+    #ChargeSplits th {
+        font-weight: bold;
+    }
+
+    #ChargeSplits tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    #ChargeSplits tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .row {
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-control {
+        margin-top: 5px;
+    }
+
+    .control-label {
+        font-size: 18px; /* Increased label font size */
+        color: #333; /* Set a different color for the labels */
+    }
+    .form-control {
+        color: #007bff; /* Replace with your desired color */
+    }
+    .style1 {
+        color: #007bff; /* Replace with your desired color */
+    }
+    .form-value {
+        font-size: 16px;
+        color: #007bff; /* Set a different color for the field values */
+    }
+
+    #policies {
+        color: black;
+    }
+
+    .checkbox-label {
+        font-size: 18px; /* Increased label font size */
+        color: #333; /* Set a different color for the checkbox labels */
+    }
+
+    .checkbox-field {
+        font-size: 16px;
+        color: #007bff; /* Set a different color for the checkbox fields */
+    }
+
+    .main1 {
+        border: 1px solid black;
+        border-radius:12px;
+        padding: 10px;
+        background-color: #f1f1f1;
+    }
+</style>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h1>Accounts</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "AddGeneralLedger", new { Area = "Accounts" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Details</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-white text-info">
+                    <div class="form-horizontal">
+
+                        <div class="main1">
+                            <div class="combined-container">
+                                <div class="row">
+                                    <div class="col-lg-3">
+
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.BranchId)
+                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "", @readonly = "readonly" } })
+                                            @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.PostingPeriodId)
+                                            @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "", @readonly = "readonly" } })
+                                            @Html.ValidationMessageFor(model => model.PostingPeriodDescription, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
+                                            @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                        </div>
+
+                                    </div>
+                                    <div class="col-lg-3">
+
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Ksh..", @readonly = "readonly" } })
+                                            @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-3">
+
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CreatedBy, htmlAttributes: new { @class = "control-label" })
+
+                                            @Html.EditorFor(model => model.CreatedBy, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "", @readonly = "readonly" } })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "control-label" })
+
+                                            @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "", @readonly = "readonly" } })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.AuditedBy, htmlAttributes: new { @class = "control-label" })
+
+                                            @Html.EditorFor(model => model.AuditedDate, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "", @readonly = "readonly" } })
+                                        </div>
+
+                                    </div>
+                                    <div class="col-lg-3">
+
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.AuditedDate, htmlAttributes: new { @class = "control-label" })
+
+                                            @Html.EditorFor(model => model.AuditedDate, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "", @readonly = "readonly" } })
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.AuditRemarks, htmlAttributes: new { @class = "control-label" })
+
+                                            @Html.EditorFor(model => model.AuditRemarks, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "", @readonly = "readonly" } })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.AuthorizedBy, htmlAttributes: new { @class = "control-label" })
+
+                                            @Html.EditorFor(model => model.AuthorizedBy, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "", @readonly = "readonly" } })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.AuthorizedDate, htmlAttributes: new { @class = "control-label" })
+
+                                            @Html.EditorFor(model => model.AuthorizedDate, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "", @readonly = "readonly" } })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.AuthorizationRemarks, htmlAttributes: new { @class = "control-label" })
+
+                                            @Html.EditorFor(model => model.AuthorizationRemarks, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "", @readonly = "readonly" } })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                    
+                            </div>
+
+
+                            <div style="border: 1px solid gray; padding: 20px; margin: 20px; position: relative; border-radius:12px;">
+                                <h2 style="position: absolute; top: -20px; left: 20px; background: white; padding: 0 10px; color: #333;font-weight:bold;">Credit Batch Entries</h2>
+
+                                <row>
+                                    <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%; margin-bottom: 50px;">
+                                        <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                            <tr>
+                                                <th style="width: 5%;">Credit Chart of Account</th>
+                                                <th style="width: 5%;">Credit Customer Name </th>
+                                                <th style="width: 5%;">Credit Account Number</th>
+                                                <th style="width: 5%;">Debit Chart of Account</th>
+                                                <th style="width: 5%;">Debit Customer Name </th>
+                                                <th style="width: 5%;">Debit Account Number</th>
+                                                <th style="width: 5%;">Amount</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (ViewBag.GeneralLedgerEntries != null)
+                                            {
+                                                foreach (var LedgerEntries in ViewBag.GeneralLedgerEntries)
+                                                {
+                                                    <tr data-id="@LedgerEntries.Id">
+                                                        <td>@LedgerEntries.ChartOfAccountAccountName</td>
+                                                        <td>@LedgerEntries.CustomerAccountCustomerFullName</td>
+                                                        <td>@LedgerEntries.CustomerAccountFullAccountNumber</td>
+                                                        <td>@LedgerEntries.ContraChartOfAccountAccountName</td>
+                                                        <td>@LedgerEntries.ContraCustomerAccountCustomerFullName</td>
+                                                        <td>@LedgerEntries.ContraCustomerAccountFullAccountNumber</td>
+                                                        <td>@LedgerEntries.Amount</td>
+
+
+
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+
+                                        
+                                    </table>
+                                </row>
+                            </div>
+                            
+
+
+                            <div class="custom-container">
+
+                                <div class="col-lg-12">
+                                    <div class="row">
+                                        @Html.ActionLink("Back To List", "Index", "AddGeneralLedger", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+

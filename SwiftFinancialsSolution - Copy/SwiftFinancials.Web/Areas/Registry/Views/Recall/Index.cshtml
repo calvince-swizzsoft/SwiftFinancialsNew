@@ -1,0 +1,312 @@
+﻿@model Application.MainBoundedContext.DTO.RegistryModule.FileMovementHistoryDTO
+@{
+    ViewBag.Title = "Recall File";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4 class="card-title">Recall Dispatched File</h4>
+                    </div>
+                    <div class="col-md-6 text-right">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-secondary" id="refreshBtn">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                            <button type="button" class="btn btn-danger" id="recallBtn" disabled>
+                                <i class="fas fa-undo"></i> Recall
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <!-- Search and Filter Section -->
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <div class="form-inline">
+                            <div class="form-group mr-3">
+                                <label class="mr-2">File Status</label>
+                                @Html.DropDownList("recordStatus", ViewBag.recordStatus as SelectList, "Select", new { @class = "form-control form-control-sm" })
+                            </div>
+                            <div class="form-group mr-3">
+                                <label class="mr-2">Customer Type</label>
+                                @Html.DropDownList("CustomerTypeSelectList", ViewBag.CustomerTypeSelectList as SelectList, "Select", new { @class = "form-control form-control-sm" })
+                            </div>
+                            <div class="form-group mr-3">
+                                <label class="mr-2">Account Number</label>
+                                <input type="text" id="accountNumberSearch" class="form-control form-control-sm" placeholder="Enter Text..." />
+                            </div>
+                            <button type="button" class="btn btn-sm btn-secondary" id="searchBtn">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- File Listing Table -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered table-hover" id="filesTable">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th width="30px"><input type="checkbox" id="selectAll" /></th>
+                                        <th>Serial Number</th>
+                                        <th>Full Account Number</th>
+                                        <th>Membership Number</th>
+                                        <th>Personal File Number</th>
+                                        <th>Customer Name</th>
+                                        <th>Gender</th>
+                                        <th>Marital Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (ViewBag.customers != null)
+                                    {
+                                        foreach (var customer in ViewBag.customers)
+                                        {
+                                            <tr data-id="@customer.Id">
+                                                <td><input type="checkbox" class="file-checkbox" data-id="@customer.Id" /></td>
+                                                <td>@customer.SerialNumber</td>
+                                                <td>@customer.AccountNumber</td>
+                                                <td>@customer.MembershipNumber</td>
+                                                <td>@customer.PersonalFileNumber</td>
+                                                <td>@customer.IndividualFirstName @customer.IndividualLastName</td>
+                                                <td>@customer.Gender</td>
+                                                <td>@customer.MaritalStatus</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Pagination -->
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <div class="form-inline">
+                                    <label class="mr-2">Items per page:</label>
+                                    <select class="form-control form-control-sm" id="pageSize">
+                                        <option>15</option>
+                                        <option>30</option>
+                                        <option>50</option>
+                                        <option>100</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination pagination-sm justify-content-end" id="pagination">
+                                        <li class="page-item disabled">
+                                            <a class="page-link" href="#" tabindex="-1">Previous</a>
+                                        </li>
+                                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                        <li class="page-item">
+                                            <a class="page-link" href="#">Next</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recall Reason Modal -->
+                <div class="modal fade" id="recallModal" tabindex="-1" role="dialog" aria-labelledby="recallModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="recallModalLabel">Confirm File Recall</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="recallForm">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" id="selectedFileId" name="fileMovementId" />
+                                    <div class="form-group">
+                                        <label for="recallReason">Recall Reason</label>
+                                        <textarea class="form-control" id="recallReason" name="recallReason" rows="3" required></textarea>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                <button type="button" class="btn btn-danger" id="confirmRecall">Submit Recall</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- File Movement History Section -->
+                @if (Model != null && Model.FileRegisterId != Guid.Empty)
+                {
+                    <hr />
+                    <h5 class="mb-3">File Movement History</h5>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Source</th>
+                                    <th>Destination</th>
+                                    <th>Remarks</th>
+                                    <th>Carrier</th>
+                                    <th>Sender</th>
+                                    <th>Dispatch Date</th>
+                                    <th>Recipient</th>
+                                    <th>Receive Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>@Model.SourceDepartmentDescription</td>
+                                    <td>@Model.DestinationDepartmentDescription</td>
+                                    <td>@Model.Remarks</td>
+                                    <td></td>
+                                    <td>A</td>
+                                    <td>@DateTime.Now.AddDays(-3).ToString("dd/MM/yyyy")</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            // Select all checkbox
+            $('#selectAll').change(function () {
+                $('.file-checkbox').prop('checked', $(this).prop('checked'));
+                toggleRecallButton();
+            });
+
+            // Individual checkbox change
+            $(document).on('change', '.file-checkbox', function() {
+                toggleRecallButton();
+                if ($(this).is(':checked')) {
+                    $('#selectedFileId').val($(this).data('id'));
+                }
+            });
+
+            // Refresh button
+            $('#refreshBtn').click(function () {
+                location.reload();
+            });
+
+            // Recall button click
+            $('#recallBtn').click(function() {
+                if ($('.file-checkbox:checked').length === 1) {
+                    $('#recallModal').modal('show');
+                }
+            });
+
+            // Confirm recall
+            $('#confirmRecall').click(function() {
+                if ($('#recallForm')[0].checkValidity()) {
+                    submitRecall();
+                } else {
+                    $('#recallForm')[0].reportValidity();
+                }
+            });
+
+            // Search button
+            $('#searchBtn').click(function() {
+                performSearch();
+            });
+
+            // Function to toggle recall button state
+            function toggleRecallButton() {
+                var anyChecked = $('.file-checkbox:checked').length > 0;
+                $('#recallBtn').prop('disabled', !anyChecked);
+            }
+
+            // Function to perform search
+            function performSearch() {
+                var accountNumber = $('#accountNumberSearch').val();
+                var fileStatus = $('#recordStatus').val();
+                var customerType = $('#CustomerTypeSelectList').val();
+
+                // AJAX call to search endpoint
+                $.get('@Url.Action("SearchFiles", "Receive")', {
+                    accountNumber: accountNumber,
+                    fileStatus: fileStatus,
+                    customerType: customerType
+                }, function(data) {
+                    // Update table with search results
+                    updateFileTable(data);
+                });
+            }
+
+            // Function to submit recall
+            function submitRecall() {
+                var formData = $('#recallForm').serialize();
+
+                $.post('@Url.Action("RecallFile", "Receive")', formData, function(response) {
+                    if (response.success) {
+                        $('#recallModal').modal('hide');
+                        showAlert('success', 'Recall request submitted successfully!');
+                        // Refresh the table or update specific row
+                        performSearch();
+                    } else {
+                        showAlert('danger', response.message || 'Failed to submit recall request.');
+                    }
+                }).fail(function() {
+                    showAlert('danger', 'An error occurred while processing your request.');
+                });
+            }
+
+            // Helper function to show alerts
+            function showAlert(type, message) {
+                var alertHtml = '<div class="alert alert-' + type + ' alert-dismissible fade show" role="alert">' +
+                    message +
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                    '<span aria-hidden="true">&times;</span>' +
+                    '</button></div>';
+
+                $('.card-body').prepend(alertHtml);
+                setTimeout(function() {
+                    $('.alert').alert('close');
+                }, 5000);
+            }
+
+            // Function to update file table with search results
+            function updateFileTable(data) {
+                var tbody = $('#filesTable tbody');
+                tbody.empty();
+
+                if (data && data.length > 0) {
+                    $.each(data, function(index, customer) {
+                        var row = '<tr data-id="' + customer.Id + '">' +
+                            '<td><input type="checkbox" class="file-checkbox" data-id="' + customer.Id + '" /></td>' +
+                            '<td>' + customer.SerialNumber + '</td>' +
+                            '<td>' + customer.AccountNumber + '</td>' +
+                            '<td>' + customer.MembershipNumber + '</td>' +
+                            '<td>' + customer.PersonalFileNumber + '</td>' +
+                            '<td>' + customer.IndividualFirstName + ' ' + customer.IndividualLastName + '</td>' +
+                            '<td>' + customer.Gender + '</td>' +
+                            '<td>' + customer.MaritalStatus + '</td>' +
+                            '</tr>';
+
+                        tbody.append(row);
+                    });
+                } else {
+                    tbody.append('<tr><td colspan="8" class="text-center">No files found</td></tr>');
+                }
+            }
+        });
+    </script>
+}

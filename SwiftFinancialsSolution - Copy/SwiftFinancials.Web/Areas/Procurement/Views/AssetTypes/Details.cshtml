@@ -1,0 +1,93 @@
+﻿@model Application.MainBoundedContext.DTO.AssetTypeDTO
+
+
+@{
+    ViewBag.Title = "View Asset Type";
+}
+
+<div class="content-header">
+    <h1>View Asset Type</h1>
+</div>
+
+<div class="content">
+    <div class="box">
+        <div class="box-body">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(model => model.Id)
+                @Html.HiddenFor(model => model.CreatedDate)
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Name)
+                    @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Name)
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.DepreciationMethod)
+                    @Html.TextBoxFor(model => model.DepreciationMethod, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.DepreciationMethod)
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.UsefulLife)
+                    @Html.TextBoxFor(model => model.UsefulLife, new { @class = "form-control", type = "number" })
+                    @Html.ValidationMessageFor(model => model.UsefulLife)
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.IsTangible)
+                    <div class="checkbox">
+                        <label>
+                            @Html.CheckBoxFor(model => model.IsTangible) Yes
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group text-right mt-4 border-top pt-3">
+                    <a href="@Url.Action("Edit", "AssetTypes", new { area = "Procurement", id = Model.Id })" class="btn btn-primary">
+                        <i class="fas fa-edit mr-1"></i> Edit
+                    </a>
+                    <a href="@Url.Action("Index", "AssetTypes", new { area = "Procurement" })" class="btn btn-secondary ml-2">
+                        <i class="fas fa-times mr-1"></i> Cancel
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('input[type="text"]').forEach(textbox => {
+            textbox.disabled = true;
+        });
+    });
+    //// Disable dropdowns (select elements)
+    //document.querySelectorAll('select').forEach(dropdown => {
+    //    dropdown.disabled = true;
+    //});
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('input[type="number"]').forEach(textbox => {
+            textbox.disabled = true;
+        });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.disabled = true;
+        });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.disabled = true;
+        });
+    });
+</script>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

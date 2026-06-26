@@ -1,0 +1,287 @@
+﻿@model Application.MainBoundedContext.DTO.RegistryModule.DirectorDTO
+
+
+@{
+
+
+    ViewBag.Title = "Edit Director";
+}
+
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h2>Director</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "Director", new { Area = "Registry" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Edit</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger fade in">
+        <button class="close" data-dismiss="alert">
+            ×
+        </button>
+        <i class="fa-fw fa fa-times"></i>
+        <strong>Error!</strong> @TempData["Error"]
+    </div>
+}
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-white text-info">
+                    @using (Html.BeginForm("Edit", "Director", new { Area = "Registry" }, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-horizontal">
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                            <div class="row">
+                                <!-- Left Side -->
+                                <div class="col-lg-6">
+                                    <div class="col-md-13 form-group">
+                                        @Html.LabelFor(model => model.CustomerId, new { @class = "control-label" })
+                                        <div class="input-group" data-autoclose="true">
+                                            @Html.HiddenFor(model => model.CustomerId)
+                                            @Html.TextBoxFor(model => model.CustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                            <span class="input-group-addon">
+                                                <a data-toggle="modal" data-target="#customerLookup"><span class="fa fa-search"></span></a>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group form-group-sm">
+                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = " ", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                    </div>
+
+                                </div>
+
+                                <!-- Right Side -->
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-sm">
+                                        @Html.LabelFor(model => model.DivisionDescription, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.DivisionId)
+
+                                        @Html.EditorFor(model => model.DivisionDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = " ", @required = "readonly" } })
+                                        @Html.ValidationMessageFor(model => model.DivisionDescription, "", new { @class = "text-danger" })
+                                    </div>
+
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                        @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group form-group-sm">
+                                <div class="col-md-offset-2 col-md-10">
+                                    <input type="submit" value="Edit" class="btn btn-primary" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="customerLookup" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">
+                    Customers Lookup
+                    <button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button>
+                </h3>
+            </div>
+            <div class="modal-body">
+                <table id="CustomersGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Customer FullName</th>
+                            <th>Nationality</th>
+                            <th>Identity CardNumber</th>
+                            <th>Gender</th>
+                            <th>Marital Status</th>
+                            <th>Created Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="dataTables_empty">Loading data from server</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+
+
+
+    <script>
+    $(document).ready(function () {
+        $('#CustomersGrid').DataTable({
+            "sPaginationType": "full_numbers",
+            "bProcessing": true,
+            "bServerSide": true,
+            "sAjaxSource": "@Url.Action("Index", "Customer", new { Area = "Registry" })",
+            "sServerMethod": "POST",
+            "fnServerData": function (sSource, aoData, fnCallback) {
+                $.ajax({
+                    dataType: 'json',
+                    type: 'POST',
+                    url: sSource,
+                    data: aoData,
+                    success: function (response) {
+                        fnCallback(response);
+                    },
+                    error: function () {
+                        alert('Error retrieving data from the server.');
+                    }
+                });
+            },
+            "aoColumns": [
+                { "mDataProp": "FullName", "sTitle": "Customer FullName", "sWidth": "15%" },
+                { "mDataProp": "IndividualNationalityDescription", "sTitle": "Nationality", "sWidth": "15%" },
+                { "mDataProp": "IndividualIdentityCardNumber", "sTitle": "Identity CardNumber", "sWidth": "15%" },
+                { "mDataProp": "IndividualGenderDescription", "sTitle": "Gender", "sWidth": "15%" },
+                { "mDataProp": "IndividualMaritalStatusDescription", "sTitle": "Marital Status", "sWidth": "15%" },
+                {
+                    "mDataProp": "CreatedDate",
+                    "sTitle": "Created Date",
+                    "sWidth": "15%",
+                    "mRender": function (data) {
+                        var createdDate = new Date(parseInt(data.replace("/Date(", "").replace(")/", ""), 10));
+                        var h = ("0" + createdDate.getHours()).slice(-2);
+                        var m = ("0" + createdDate.getMinutes()).slice(-2);
+                        var s = ("0" + createdDate.getSeconds()).slice(-2);
+                        return $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    }
+                },
+                {
+                    "mDataProp": null,
+                    "sTitle": "Action",
+                    "sWidth": "15%",
+                    "bSortable": false,
+                    "mRender": function (data, type, row) {
+                        return '<a href="#" class="btn btn-outline-info select-customer" data-id="' + row.Id + '">Select</a>';
+                    }
+                }
+            ],
+            "aaSorting": [[0, "desc"]]
+        });
+
+        $('#CustomersGrid tbody').on('click', '.select-customer', function () {
+            var customerId = $(this).data('id');
+
+            $.ajax({
+                url: '@Url.Action("GetCustomerDetails", "Director", new { Area = "Registry" })',
+                type: 'GET',
+                data: { customerId: customerId },
+                success: function (response) {
+                    console.log(response);
+
+                    if (response.success) {
+                        $('#CustomerId').val(response.data.CustomerId);
+                        $('#CustomerFullName').val(response.data.CustomerFullName);
+                        $('#CustomerIndividualIdentityCardNumber').val(response.data.CustomerIndividualIdentityCardNumber);
+                        $('#CustomerSerialNumber').val(response.data.CustomerSerialNumber);
+                        $('#DivisionDescription').val(response.data.DivisionDescription);
+                        $('#DivisionId').val(response.data.DivisionId);
+
+
+                        $('#customerLookup').modal('hide');
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while fetching the customer details.');
+                }
+            });
+        });
+    });
+    </script>
+
+
+
+}

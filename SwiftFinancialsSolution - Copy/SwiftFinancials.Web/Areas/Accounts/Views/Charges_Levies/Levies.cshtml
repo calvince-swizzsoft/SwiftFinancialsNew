@@ -1,0 +1,139 @@
+﻿@model  Application.MainBoundedContext.DTO.AccountsModule.CommissionLevyDTO
+
+@{
+    ViewBag.Title = "Charge Levies Details";
+}
+
+
+<style>
+    #ChargeLevies {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+    }
+
+        #ChargeLevies thead {
+            background-color: white;
+            color: #333;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        #ChargeLevies th, #ChargeLevies td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        #ChargeLevies th {
+            font-weight: bold;
+        }
+
+        #ChargeLevies tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        #ChargeLevies tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+</style>
+
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h1>Accounts</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "Charges", new { Area = "Accounts" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Details</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h2>Charges Levy Details</h2>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-white text-info">
+                    <h2>Charge</h2>
+                    <fieldset>
+                        @*<div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.MaximumCharge, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.MaximumCharge, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                    @Html.ValidationMessageFor(model => model.MaximumCharge, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>*@
+
+                        <div class="row">
+                            <div class="col-lg-3">
+
+                            </div>
+                        </div>
+
+                        <br />
+
+                        <center><h2>Charge Splitting Details</h2></center>
+                        <div class="row">
+                            <table id="ChargeLevies" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap:normal; color: black; width: 100%;">
+                                <thead style="font-style:italic; color: cornflowerblue; text-align: center; ">
+                                    <tr>
+                                        <th style="width: 20%;">Applicable Levies</th>
+                                        <th style="width: 20%;">Percentage</th>
+                                        <th style="width: 5%;">Is Locked?</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (ViewBag.chargeLevies != null)
+                                    {
+                                        foreach (var ChargeLevies in ViewBag.chargeLevies)
+                                        {
+                                            <tr>
+                                                <td>@ChargeLevies.Description</td>
+                                                <td style="text-align: right;">@ChargeLevies.ChargePercentage</td>
+                                                <td>@ChargeLevies.IsLocked</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4">
+                                @Html.ActionLink("Back To List", "Index", "Charges_Levies", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
+                            </div>
+                            <div class="col-lg-4">
+                                @Html.ActionLink("Edit", "Edit", "Charges_Levies", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

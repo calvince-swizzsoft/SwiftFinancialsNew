@@ -1,0 +1,915 @@
+﻿@model  Application.MainBoundedContext.DTO.AccountsModule.CreditTypeDTO
+
+@{
+    /**/
+
+    ViewBag.Title = "Create Credit Type";
+    var transactionOwnerships = ViewBag.TransactionOwnershipSelectList as List<SelectListItem>;
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h1>Accounts</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "CreditType", new { Area = "Accounts" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<style>
+    .tab {
+        overflow: hidden;
+        background-color: whitesmoke;
+        border-radius: 8px;
+        margin: 20px;
+    }
+
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            color: black;
+            font-size: 16px;
+            border-radius: 8px 8px 0 0;
+            margin-right: 2px;
+        }
+
+            .tab button:hover {
+                background-color: lightgray;
+            }
+
+            .tab button.active {
+                background-color: lightgray;
+            }
+
+
+    .tabcontent {
+        display: none;
+        padding: 16px;
+        border: 1px solid #ccc;
+        border-top: none;
+        border-radius: 0 8px 8px 8px;
+        background-color: white;
+        margin: 0 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        height: auto;
+    }
+
+        .tabcontent h3 {
+            margin-top: 0;
+        }
+
+
+
+    .compact-table {
+        border-collapse: collapse;
+    }
+
+        .compact-table td,
+        .compact-table th {
+            padding: 5px;
+            margin: 0;
+        }
+
+        .compact-table tbody tr {
+            line-height: 1;
+        }
+
+            .compact-table tbody tr:hover {
+                background-color: #f5f5f5;
+            }
+
+        .compact-table th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+
+
+
+
+    .tabcontent {
+        max-height: 500px;
+        overflow-y: auto;
+        padding: 10px;
+        box-sizing: border-box;
+        border: 1px solid #ddd;
+        background-color: #f9f9f9;
+    }
+</style>
+
+
+
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h2>Create Credit Type</h2>
+
+                    @if (TempData["ErrorMessageResult"] != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: '@TempData["ErrorMessageResult"]',
+                                    confirmButtonColor: '#FF0000',
+                                });
+                            });
+                        </script>
+                    }
+
+                    @if (TempData["Fail"] != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: '@TempData["Fail"]',
+                                    confirmButtonColor: '#FF0000',
+                                });
+                            });
+                        </script>
+                    }
+
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-white">
+                    @using (Html.BeginForm("Create", "CreditType", new { Area = "Accounts" }, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-horizontal">
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                            <fieldset>
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-sm">
+                                            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4 form-group">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.ChartOfAccountId, new { @class = "control-label" })
+                                            <div class="input-group" data-autoclose="true">
+                                                @Html.HiddenFor(model => model.ChartOfAccountId, new { @id = "ChartOfAccountId" })
+                                                @Html.TextBoxFor(model => model.ChartOfAccountAccountName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @required = "required", @placeholder = "", @id = "ChartOfAccountAccountName" })
+                                                <span class="input-group-addon">
+                                                    <a data-toggle="modal" data-target="#chartofAccountLookupModal"><span class="fa fa-search"></span></a>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.TransactionOwnershipDescription, new { @class = "control-label" })
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                @Html.DropDownListFor(model => model.TransactionOwnershipDescription, transactionOwnerships, new { @class = "form-control input-md" })
+                                                @Html.ValidationMessageFor(model => model.TransactionOwnershipDescription)
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-1" style="margin-top: 35px;">
+                                        <div class="form-group form-group-lg">
+                                            @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
+                                            @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                            @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="tab">
+                                    <button class="tablinks active" onclick="openTab(event, 'MainTab1')"><i class="fa fa-table" aria-hidden="true"></i> Applicable Charges</button>
+                                    <button class="tablinks" onclick="openTab(event, 'MainTab2')"><i class="fa fa-table" aria-hidden="true"></i> Applicable Direct Debits</button>
+                                    <button class="tablinks" onclick="openTab(event, 'MainTab3')"><i class="fa fa-table" aria-hidden="true"></i> Attached Loan Products</button>
+                                    <button class="tablinks" onclick="openTab(event, 'MainTab4')"><i class="fa fa-table" aria-hidden="true"></i> Concession-Exempt Loan Products</button>
+                                    <button class="tablinks" onclick="openTab(event, 'MainTab5')"><i class="fa fa-table" aria-hidden="true"></i> Attached Investments Products</button>
+                                    <button class="tablinks" onclick="openTab(event, 'MainTab6')"><i class="fa fa-table" aria-hidden="true"></i> Attached Savings Products</button>
+                                </div>
+
+                                <!--Applicable Charges-->
+                                <div id="MainTab1" class="tabcontent" style="display: block;">
+                                    <input type="hidden" id="SelectedApplicableChargesIds" name="SelectedApplicableChargesIds" value="" />
+                                    <div class="tab-content">
+                                        <div style="text-align: left; margin-left: 15px;">
+                                            <input type="checkbox" id="ApplicableChargesheaderCheckbox" style="transform: scale(1); color: blue;">
+                                            <label for="ApplicableChargesheaderCheckbox" style="font-weight: bold;">Select All</label>
+                                        </div>
+
+                                        <div class="list-responsive">
+                                            <ul id="ApplicableChargesList" class="list-group">
+                                                <li class="list-group-item">Loading data from server...</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Applicable Direct Debits-->
+                                <div id="MainTab2" class="tabcontent">
+                                    <input type="hidden" id="SelectedApplicableDirectDebitsIds" name="SelectedApplicableDirectDebitsIds" value="" />
+                                    <div class="tab-content">
+                                        <div style="text-align: left; margin-left: 15px;">
+                                            <input type="checkbox" id="ApplicableDirectDebitsheaderCheckbox" style="transform: scale(1); color: blue;">
+                                            <label for="ApplicableDirectDebitsheaderCheckbox" style="font-weight: bold;">Select All</label>
+                                        </div>
+
+                                        <div class="list-responsive">
+                                            <ul id="ApplicableDirectDebitsList" class="list-group">
+                                                <li class="list-group-item">Loading data from server...</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Attached Loan Products-->
+                                <div id="MainTab3" class="tabcontent">
+                                    <input type="hidden" id="SelectedAttachedLoanProductsIds" name="SelectedAttachedLoanProductsIds" value="" />
+                                    <div class="tab-content">
+                                        <div style="text-align: left; margin-left: 15px;">
+                                            <input type="checkbox" id="AttachedLoanProductsheaderCheckbox" style="transform: scale(1); color: blue;">
+                                            <label for="AttachedLoanProductsheaderCheckbox" style="font-weight: bold;">Select All</label>
+                                        </div>
+
+                                        <div class="list-responsive">
+                                            <ul id="AttachedLoanProductsList" class="list-group">
+                                                <li class="list-group-item">Loading data from server...</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Concession_Exempt Loan Products-->
+                                <div id="MainTab4" class="tabcontent">
+                                    <input type="hidden" id="SelectedCELoanProductsIds" name="SelectedCELoanProductsIds" value="" />
+                                    <div class="tab-content">
+                                        <div style="text-align: left; margin-left: 15px;">
+                                            <input type="checkbox" id="CELoanProductsheaderCheckbox" style="transform: scale(1); color: blue;">
+                                            <label for="CELoanProductsheaderCheckbox" style="font-weight: bold;">Select All</label>
+                                        </div>
+
+                                        <div class="list-responsive">
+                                            <ul id="CELoanProductsList" class="list-group">
+                                                <li class="list-group-item">Loading data from server...</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Attached Investments Products-->
+                                <div id="MainTab5" class="tabcontent">
+                                    <input type="hidden" id="SelectedAttachedInvestmentsProductsIds" name="SelectedAttachedInvestmentsProductsIds" value="" />
+                                    <div class="tab-content">
+                                        <div style="text-align: left; margin-left: 15px;">
+                                            <input type="checkbox" id="AttachedInvestmentsProductsheaderCheckbox" style="transform: scale(1); color: blue;">
+                                            <label for="AttachedInvestmentsProductsheaderCheckbox" style="font-weight: bold;">Select All</label>
+                                        </div>
+
+                                        <div class="list-responsive">
+                                            <ul id="AttachedInvestmentsProductsList" class="list-group">
+                                                <li class="list-group-item">Loading data from server...</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Attached Savings Products-->
+                                <div id="MainTab6" class="tabcontent">
+                                    <input type="hidden" id="SelectedAttachedSavingsProductsIds" name="SelectedAttachedSavingsProductsIds" value="" />
+                                    <div class="tab-content">
+                                        <div style="text-align: left; margin-left: 15px;">
+                                            <input type="checkbox" id="AttachedSavingsProductsheaderCheckbox" style="transform: scale(1); color: blue;">
+                                            <label for="AttachedSavingsProductsheaderCheckbox" style="font-weight: bold;">Select All</label>
+                                        </div>
+
+                                        <div class="list-responsive">
+                                            <ul id="AttachedSavingsProductsList" class="list-group">
+                                                <li class="list-group-item">Loading data from server...</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-5">
+                                    <div class="col-lg-3">
+                                        <button type="submit" id="submit-btn" class="btn btn-primary" value="Create" style="width: 150px;">Create</button>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal  fade" id="chartofAccountLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">G/L Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+
+            <br />
+            <style>
+                #chartsofAccountGrid thead {
+                    background-color: #007bff;
+                    color: white;
+                }
+            </style>
+            <table id="chartsofAccountGrid" class="table table-hover" style="width:100%">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+    <script>
+        $('#chartsofAccountGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("ChartOfAccountsIndex", "CreditType", new { Area = "Accounts"}))",
+                "sServerMethod": "POST",
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<button class="btn btn-outline-info" onclick="selectCoA(\'' + aData.Id + '\')">Select</button>';
+
+                    $('td:eq(3)', nRow).html(dt_Created);
+                    $('td:eq(4)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+                "aoColumns": [
+                    { "mDataProp": "AccountName", "sTitle": "G/L Account Name", "sWidth": "10%" },
+                    { "mDataProp": "CostCenterDescription", "sTitle": "Cost Center", "sWidth": "10%" },
+                    { "mDataProp": "AccountCode", "sTitle": "Code", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],
+                "aaSorting": [[0, "desc"]]
+            });
+
+         function selectCoA(id) {
+            console.log("Selected ID:", id);
+            $.ajax({
+                url: '/Accounts/CreditType/ChartOfAccountLookUp',
+                type: 'POST',
+                data: { Id: id },
+                success: function (response) {
+                    if (response.success) {
+                        console.log(response);
+                        $('#ChartOfAccountId').val(response.data.ChartOfAccountId);
+                        $('#ChartOfAccountAccountName').val(response.data.ChartOfAccountAccountName);
+
+                        $('#chartofAccountLookupModal').modal('hide');
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while processing your request.');
+                }
+            });
+        }
+    </script>
+
+
+
+
+    <script>
+    $(document).ready(function () {
+        function saveCheckboxState(key, state) {
+            localStorage.setItem(key, state);
+        }
+
+        function loadCheckboxState(key) {
+            return localStorage.getItem(key) === 'true';
+        }
+
+        $('#ApplicableChargesheaderCheckbox').on('change', function () {
+            $('.ApplicableChargesrowCheckbox').prop('checked', $(this).prop('checked')).each(function () {
+                var checkboxKey = $(this).attr('id');
+                saveCheckboxState(checkboxKey, $(this).prop('checked'));
+            });
+            saveCheckboxState('ApplicableChargesheaderCheckbox', $(this).prop('checked'));
+        });
+
+        $('#ApplicableChargesList').on('change', '.ApplicableChargesrowCheckbox', function () {
+            var checkboxKey = $(this).attr('id');
+            saveCheckboxState(checkboxKey, $(this).prop('checked'));
+
+            if (!$(this).prop('checked')) {
+                $('#ApplicableChargesheaderCheckbox').prop('checked', false);
+                saveCheckboxState('ApplicableChargesheaderCheckbox', false);
+            } else {
+                var allChecked = $('.ApplicableChargesrowCheckbox:checked').length === $('.ApplicableChargesrowCheckbox').length;
+                $('#ApplicableChargesheaderCheckbox').prop('checked', allChecked);
+                saveCheckboxState('ApplicableChargesheaderCheckbox', allChecked);
+            }
+        });
+
+        $.ajax({
+            url: "@Url.Action("GetApplicableCharges", "CreditType", new { Area = "Accounts" })",
+            method: "POST",
+            success: function (data) {
+                var list = $('#ApplicableChargesList');
+                list.empty();
+                data.forEach(function (item) {
+                    var listItem = `
+                    <li class="list-group-item">
+                        <input type="checkbox" class="ApplicableChargesrowCheckbox" data-id="${item.Id}">
+                        <span>${item.Description}</span>
+                    </li>`;
+                    list.append(listItem);
+                });
+
+                $('#ApplicableChargesheaderCheckbox').prop('checked', false);
+            },
+            error: function () {
+                $('#ApplicableChargesList').html('<li class="list-group-item text-danger">Failed to load data</li>');
+            }
+        });
+
+        $('#submit-btn').on('click', function (e) {
+            var selectedIds = [];
+            $('.ApplicableChargesrowCheckbox:checked').each(function () {
+                selectedIds.push($(this).data('id'));
+            });
+            $('#SelectedApplicableChargesIds').val(selectedIds.join(','));
+        });
+    });
+    </script>
+
+    <script>
+    $(document).ready(function () {
+        function saveCheckboxState2(key, state) {
+            localStorage.setItem(key, state);
+        }
+
+        function loadCheckboxState2(key) {
+            return localStorage.getItem(key) === 'true';
+        }
+
+        $('#ApplicableDirectDebitsheaderCheckbox').on('change', function () {
+            $('.ApplicableDirectDebitsrowCheckbox').prop('checked', $(this).prop('checked')).each(function () {
+                var checkboxKey = $(this).attr('id');
+                saveCheckboxState2(checkboxKey, $(this).prop('checked'));
+            });
+            saveCheckboxState2('ApplicableDirectDebitsheaderCheckbox', $(this).prop('checked'));
+        });
+
+        $('#ApplicableDirectDebitsList').on('change', '.ApplicableDirectDebitsrowCheckbox', function () {
+            var checkboxKey = $(this).attr('id');
+            saveCheckboxState2(checkboxKey, $(this).prop('checked'));
+
+            if (!$(this).prop('checked')) {
+                $('#ApplicableDirectDebitsheaderCheckbox').prop('checked', false);
+                saveCheckboxState2('ApplicableDirectDebitsheaderCheckbox', false);
+            } else {
+                var allChecked = $('.ApplicableDirectDebitsrowCheckbox:checked').length === $('.ApplicableDirectDebitsrowCheckbox').length;
+                $('#ApplicableDirectDebitsheaderCheckbox').prop('checked', allChecked);
+                saveCheckboxState2('ApplicableDirectDebitsheaderCheckbox', allChecked);
+            }
+        });
+
+        $.ajax({
+            url: "@Url.Action("GetApplicableDirectDebits", "CreditType", new { Area = "Accounts" })",
+            method: "POST",
+            success: function (data) {
+                var list = $('#ApplicableDirectDebitsList');
+                list.empty();
+                data.forEach(function (item) {
+                    var listItem = `
+                    <li class="list-group-item">
+                        <input type="checkbox" class="ApplicableDirectDebitsrowCheckbox" data-id="${item.Id}">
+                        <span>${item.Description}</span>
+                    </li>`;
+                    list.append(listItem);
+                });
+
+                $('#ApplicableDirectDebitsheaderCheckbox').prop('checked', false);
+            },
+            error: function () {
+                $('#ApplicableDirectDebitsList').html('<li class="list-group-item text-danger">Failed to load data</li>');
+            }
+        });
+
+        $('#submit-btn').on('click', function (e) {
+            var selectedIds = [];
+            $('.ApplicableDirectDebitsrowCheckbox:checked').each(function () {
+                selectedIds.push($(this).data('id'));
+            });
+            $('#SelectedApplicableDirectDebitsIds').val(selectedIds.join(','));
+        });
+    });
+    </script>
+
+    <script>
+    $(document).ready(function () {
+        function saveCheckboxState3(key, state) {
+            localStorage.setItem(key, state);
+        }
+
+        function loadCheckboxState3(key) {
+            return localStorage.getItem(key) === 'true';
+        }
+
+        $('#AttachedLoanProductsheaderCheckbox').on('change', function () {
+            var isChecked = $(this).prop('checked');
+            $('.AttachedLoanProductsrowCheckbox').prop('checked', isChecked).each(function () {
+                var checkboxKey = $(this).attr('id');
+                saveCheckboxState3(checkboxKey, isChecked);
+            });
+            saveCheckboxState3('AttachedLoanProductsheaderCheckbox', isChecked);
+        });
+
+        $('#AttachedLoanProductsList').on('change', '.AttachedLoanProductsrowCheckbox', function () {
+            var checkboxKey = $(this).attr('id');
+            saveCheckboxState3(checkboxKey, $(this).prop('checked'));
+
+            if (!$(this).prop('checked')) {
+                $('#AttachedLoanProductsheaderCheckbox').prop('checked', false);
+                saveCheckboxState3('AttachedLoanProductsheaderCheckbox', false);
+            } else {
+                var allChecked = $('.AttachedLoanProductsrowCheckbox:checked').length === $('.AttachedLoanProductsrowCheckbox').length;
+                $('#AttachedLoanProductsheaderCheckbox').prop('checked', allChecked);
+                saveCheckboxState3('AttachedLoanProductsheaderCheckbox', allChecked);
+            }
+        });
+
+        $.ajax({
+            url: "@Url.Action("GetAttachedLoanProducts", "CreditType", new { Area = "Accounts" })",
+            method: "POST",
+            success: function (data) {
+                var list = $('#AttachedLoanProductsList');
+                list.empty();
+                data.forEach(function (item) {
+                    var listItem = `
+                    <li class="list-group-item">
+                        <input type="checkbox" class="AttachedLoanProductsrowCheckbox" id="checkbox-${item.Id}" data-id="${item.Id}">
+                        <span>${item.Description}</span>
+                    </li>`;
+                    list.append(listItem);
+                });
+
+                $('#AttachedLoanProductsheaderCheckbox').prop('checked', false);
+            },
+            error: function () {
+                $('#AttachedLoanProductsList').html('<li class="list-group-item text-danger">Failed to load data</li>');
+            }
+        });
+
+        $('#submit-btn').on('click', function (e) {
+            var selectedIds = [];
+            $('.AttachedLoanProductsrowCheckbox:checked').each(function () {
+                selectedIds.push($(this).data('id'));
+            });
+            $('#SelectedAttachedLoanProductsIds').val(selectedIds.join(','));
+        });
+    });
+    </script>
+
+    <script>
+    $(document).ready(function () {
+        function saveCheckboxState4(key, state) {
+            localStorage.setItem(key, state);
+        }
+
+        function loadCheckboxState4(key) {
+            return localStorage.getItem(key) === 'true';
+        }
+
+        $('#CELoanProductsheaderCheckbox').on('change', function () {
+            var isChecked = $(this).prop('checked');
+            $('.CELoanProductsrowCheckbox').prop('checked', isChecked).each(function () {
+                var checkboxKey = $(this).attr('id');
+                saveCheckboxState4(checkboxKey, isChecked);
+            });
+            saveCheckboxState4('CELoanProductsheaderCheckbox', isChecked);
+        });
+
+        $('#CELoanProductsList').on('change', '.CELoanProductsrowCheckbox', function () {
+            var checkboxKey = $(this).attr('id');
+            saveCheckboxState4(checkboxKey, $(this).prop('checked'));
+
+            if (!$(this).prop('checked')) {
+                $('#CELoanProductsheaderCheckbox').prop('checked', false);
+                saveCheckboxState4('CELoanProductsheaderCheckbox', false);
+            } else {
+                var allChecked = $('.CELoanProductsrowCheckbox:checked').length === $('.CELoanProductsrowCheckbox').length;
+                $('#CELoanProductsheaderCheckbox').prop('checked', allChecked);
+                saveCheckboxState4('CELoanProductsheaderCheckbox', allChecked);
+            }
+        });
+
+        $.ajax({
+            url: "@Url.Action("GetConcessionExemptLoanProducts", "CreditType", new { Area = "Accounts" })",
+            method: "POST",
+            success: function (data) {
+                var list = $('#CELoanProductsList');
+                list.empty();
+                data.forEach(function (item) {
+                    var listItem = `
+                    <li class="list-group-item">
+                        <input type="checkbox" class="CELoanProductsrowCheckbox" id="checkbox-${item.Id}" data-id="${item.Id}">
+                        <span>${item.Description}</span>
+                    </li>`;
+                    list.append(listItem);
+                });
+
+                $('#CELoanProductsheaderCheckbox').prop('checked', false);
+            },
+            error: function () {
+                $('#CELoanProductsList').html('<li class="list-group-item text-danger">Failed to load data</li>');
+            }
+        });
+
+        $('#submit-btn').on('click', function (e) {
+            var selectedIds = [];
+            $('.CELoanProductsrowCheckbox:checked').each(function () {
+                selectedIds.push($(this).data('id'));
+            });
+            $('#SelectedCELoanProductsIds').val(selectedIds.join(','));
+        });
+    });
+    </script>
+
+    <script>
+    $(document).ready(function () {
+        function saveCheckboxState5(key, state) {
+            localStorage.setItem(key, state);
+        }
+
+        function loadCheckboxState5(key) {
+            return localStorage.getItem(key) === 'true';
+        }
+
+        $('#AttachedInvestmentsProductsheaderCheckbox').on('change', function () {
+            var isChecked = $(this).prop('checked');
+            $('.AttachedInvestmentsProductsrowCheckbox').prop('checked', isChecked).each(function () {
+                var checkboxKey = $(this).attr('id');
+                saveCheckboxState5(checkboxKey, isChecked);
+            });
+            saveCheckboxState5('AttachedInvestmentsProductsheaderCheckbox', isChecked);
+        });
+
+        $('#AttachedInvestmentsProductsList').on('change', '.AttachedInvestmentsProductsrowCheckbox', function () {
+            var checkboxKey = $(this).attr('id');
+            saveCheckboxState5(checkboxKey, $(this).prop('checked'));
+
+            if (!$(this).prop('checked')) {
+                $('#AttachedInvestmentsProductsheaderCheckbox').prop('checked', false);
+                saveCheckboxState5('AttachedInvestmentsProductsheaderCheckbox', false);
+            } else {
+                var allChecked = $('.AttachedInvestmentsProductsrowCheckbox:checked').length === $('.AttachedInvestmentsProductsrowCheckbox').length;
+                $('#AttachedInvestmentsProductsheaderCheckbox').prop('checked', allChecked);
+                saveCheckboxState5('AttachedInvestmentsProductsheaderCheckbox', allChecked);
+            }
+        });
+
+        $.ajax({
+            url: "@Url.Action("GetAttachedInvestmentsProducts", "CreditType", new { Area = "Accounts" })",
+            method: "POST",
+            success: function (data) {
+                var list = $('#AttachedInvestmentsProductsList');
+                list.empty();
+                data.forEach(function (item) {
+                    var listItem = `
+                    <li class="list-group-item">
+                        <input type="checkbox" class="AttachedInvestmentsProductsrowCheckbox" id="checkbox-${item.Id}" data-id="${item.Id}">
+                        <span>${item.Description}</span>
+                    </li>`;
+                    list.append(listItem);
+                });
+
+                $('#AttachedInvestmentsProductsheaderCheckbox').prop('checked', false);
+            },
+            error: function () {
+                $('#AttachedInvestmentsProductsList').html('<li class="list-group-item text-danger">Failed to load data</li>');
+            }
+        });
+
+        $('#submit-btn').on('click', function (e) {
+            var selectedIds = [];
+            $('.AttachedInvestmentsProductsrowCheckbox:checked').each(function () {
+                selectedIds.push($(this).data('id'));
+            });
+            $('#SelectedAttachedInvestmentsProductsIds').val(selectedIds.join(','));
+        });
+    });
+    </script>
+
+    <script>
+    $(document).ready(function () {
+        function saveCheckboxState6(key, state) {
+            localStorage.setItem(key, state);
+        }
+
+        function loadCheckboxState6(key) {
+            return localStorage.getItem(key) === 'true';
+        }
+
+        $('#AttachedSavingsProductsheaderCheckbox').on('change', function () {
+            var isChecked = $(this).prop('checked');
+            $('.AttachedSavingsProductsrowCheckbox').prop('checked', isChecked).each(function () {
+                var checkboxKey = $(this).attr('id');
+                saveCheckboxState6(checkboxKey, isChecked);
+            });
+            saveCheckboxState6('AttachedSavingsProductsheaderCheckbox', isChecked);
+        });
+
+        $('#AttachedSavingsProductsList').on('change', '.AttachedSavingsProductsrowCheckbox', function () {
+            var checkboxKey = $(this).attr('id');
+            saveCheckboxState6(checkboxKey, $(this).prop('checked'));
+
+            if (!$(this).prop('checked')) {
+                $('#AttachedSavingsProductsheaderCheckbox').prop('checked', false);
+                saveCheckboxState6('AttachedSavingsProductsheaderCheckbox', false);
+            } else {
+                var allChecked = $('.AttachedSavingsProductsrowCheckbox:checked').length === $('.AttachedSavingsProductsrowCheckbox').length;
+                $('#AttachedSavingsProductsheaderCheckbox').prop('checked', allChecked);
+                saveCheckboxState6('AttachedSavingsProductsheaderCheckbox', allChecked);
+            }
+        });
+
+        $.ajax({
+            url: "@Url.Action("GetAttachedSavingsProducts", "CreditType", new { Area = "Accounts" })",
+            method: "POST",
+            success: function (data) {
+                var list = $('#AttachedSavingsProductsList');
+                list.empty();
+                data.forEach(function (item) {
+                    var listItem = `
+                    <li class="list-group-item">
+                        <input type="checkbox" class="AttachedSavingsProductsrowCheckbox" id="checkbox-${item.Id}" data-id="${item.Id}">
+                        <span>${item.Description}</span>
+                    </li>`;
+                    list.append(listItem);
+                });
+
+                $('#AttachedSavingsProductsheaderCheckbox').prop('checked', false);
+            },
+            error: function () {
+                $('#AttachedSavingsProductsList').html('<li class="list-group-item text-danger">Failed to load data</li>');
+            }
+        });
+
+        $('#submit-btn').on('click', function (e) {
+            var selectedIds = [];
+            $('.AttachedSavingsProductsrowCheckbox:checked').each(function () {
+                selectedIds.push($(this).data('id'));
+            });
+            $('#SelectedAttachedSavingsProductsIds').val(selectedIds.join(','));
+        });
+    });
+    </script>
+
+
+
+    <script>
+        function openTab(evt, tabName) {
+            evt.preventDefault();
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        function openSubTab(evt, subTabName) {
+            evt.preventDefault();
+            var i, subtabcontent, subtablinks;
+            subtabcontent = document.getElementsByClassName("subtabcontent");
+            for (i = 0; i < subtabcontent.length; i++) {
+                subtabcontent[i].style.display = "none";
+            }
+            subtablinks = document.getElementsByClassName("subtablinks");
+            for (i = 0; i < subtablinks.length; i++) {
+                subtablinks[i].className = subtablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(subTabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        function openSubSubTab(evt, subSubTabName) {
+            evt.preventDefault();
+            var i, subsubtabcontent, subsubtablinks;
+            subsubtabcontent = document.getElementsByClassName("subsubtabcontent");
+            for (i = 0; i < subsubtabcontent.length; i++) {
+                subsubtabcontent[i].style.display = "none";
+            }
+            subsubtablinks = document.getElementsByClassName("subsubtablinks");
+            for (i = 0; i < subsubtablinks.length; i++) {
+                subsubtablinks[i].className = subsubtablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(subSubTabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        document.getElementById("MainTab1").style.display = "block";
+        document.getElementById("SubTab1-1").style.display = "block";
+        document.getElementById("SubSubTab1-1-1").style.display = "block";
+    </script>
+}

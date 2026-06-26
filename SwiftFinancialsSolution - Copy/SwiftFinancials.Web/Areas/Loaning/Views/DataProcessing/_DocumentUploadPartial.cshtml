@@ -1,0 +1,42 @@
+﻿@*@model  List<Application.MainBoundedContext.DTO.BackOfficeModule.DataAttachmentEntryDTO>
+
+
+
+<div class="upload-container">
+    @foreach (var document in Model)
+    {
+        <div class="upload-box">
+            <label for="passport">Passport</label>
+            @if (document.PassportPhoto != null)
+            {
+                <div id="passport" class="upload-area">
+                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(document.PassportPhoto)" alt="Passport Photo" class="img-thumbnail mb-2" style="width: 100%; height: auto;" />
+                </div>
+            }
+
+            <label for="signature">Signature</label>
+            @if (document.SignaturePhoto != null)
+            {
+                <div id="signature" class="upload-area">
+                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(document.SignaturePhoto)" alt="Signature Photo" class="img-thumbnail mb-2" style="width: 100%; height: auto;" />
+                </div>
+            }
+
+            <label for="id-front">Identity Card (Front)</label>
+            @if (document.IDCardFrontPhoto != null)
+            {
+                <div id="id-front" class="upload-area">
+                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(document.IDCardFrontPhoto)" alt="ID Card Front" class="img-thumbnail mb-2" style="width: 100%; height: auto;" />
+                </div>
+            }
+
+            <label for="id-back">Identity Card (Back)</label>
+            @if (document.IDCardBackPhoto != null)
+            {
+                <div id="id-back" class="upload-area">
+                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(document.IDCardBackPhoto)" alt="ID Card Back" class="img-thumbnail mb-2" style="width: 100%; height: auto;" />
+                </div>
+            }
+        </div>
+    }
+</div>*@

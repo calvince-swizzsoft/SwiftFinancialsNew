@@ -1,0 +1,29 @@
+﻿@model IEnumerable<Application.MainBoundedContext.DTO.HumanResourcesModule.PaySlipEntryDTO>
+
+<h2>Payslip Details</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Full Account Number</th>
+            <th>GL Account</th>
+            <th>Principal</th>
+            <th>Interest</th>
+            <th>Created By</th>
+            <th>Created Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var entry in Model)
+        {
+            <tr>
+                <td>@entry.CustomerAccountFullAccountNumber</td>
+                <td>@entry.ChartOfAccountName</td>
+                <td>@entry.Principal</td>
+                <td>@entry.Interest</td>
+                <td>@entry.CreatedBy</td>
+                <td>@entry.CreatedDate.ToString("yyyy-MM-dd")</td>
+            </tr>
+        }
+    </tbody>
+</table>

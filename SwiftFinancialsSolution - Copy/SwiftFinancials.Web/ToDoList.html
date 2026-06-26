@@ -1,0 +1,349 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swift Financials - To-Do List</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            background: linear-gradient(120deg, #e0e5ec, #f9f9f9);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: #2c3e50;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1400px;
+            display: flex;
+            flex-direction: row;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .todo-section, .task-categories {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15), 0 4px 6px rgba(255, 255, 255, 0.3) inset;
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            flex: 1;
+            transition: all 0.4s ease;
+        }
+
+            .todo-section:hover, .task-categories:hover {
+                transform: scale(1.02);
+                box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15), 0 6px 10px rgba(255, 255, 255, 0.3) inset;
+            }
+
+        h1, h2, h3 {
+            text-align: center;
+            color: #0056d2;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        input[type="text"],
+        textarea#taskInput {
+            width: 70%;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 12px;
+            background: #ffffff;
+            box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.05), inset -3px -3px 6px rgba(255, 255, 255, 0.8);
+            margin-bottom: 20px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #007bff, #0056d2);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+            button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+            }
+
+            button:active {
+                transform: scale(0.98);
+            }
+
+            button.delete {
+                background-color: #dc3545;
+                background-image: linear-gradient(135deg, #dc3545, #a71d2a);
+            }
+
+            button.clear-tasks {
+                background-color: #ffc107;
+                color: black;
+                font-weight: bold;
+            }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        li {
+            background: rgba(255,255,255,0.8);
+            border-radius: 15px;
+            margin-bottom: 15px;
+            padding: 18px 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            li:hover {
+                transform: translateY(-5px);
+                background-color: #f0f8ff;
+            }
+
+            li.completed {
+                text-decoration: line-through;
+                opacity: 0.5;
+            }
+
+        .datetime {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .task-count {
+            color: #2b6cb0;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .category ul::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .category ul::-webkit-scrollbar-thumb {
+            background-color: #007bff;
+            border-radius: 10px;
+        }
+
+        .category ul::-webkit-scrollbar-track {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="todo-section">
+            <h1>Swift Financials To-Do List</h1>
+            <div>
+                <input type="text" id="taskInput" placeholder="Add a new task">
+
+                <button class="add-task" onclick="addTask()">+</button>
+                <button class="clear-tasks" onclick="clearAllTasks()">Clear Tasks</button>
+
+            </div>
+            <ul id="taskList" style=" max-height: 700px; overflow-y: auto;"></ul>
+        </div>
+
+        <div class="task-categories">
+            <h2>Task Categories</h2>
+            <div class="category" style="margin-top: 15px;">
+                <h3>All Tasks (<span id="allCount" class="task-count">0</span>)</h3>
+                <ul id="allTasks"></ul>
+            </div>
+            <div class="category">
+                <h3>Pending Tasks (<span id="pendingCount" class="task-count">0</span>)</h3>
+                <ul id="pendingTasks"></ul>
+            </div>
+            <div class="category">
+                <h3>Completed Tasks (<span id="completedCount" class="task-count">0</span>)</h3>
+                <ul id="completedTasks"></ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function () {
+            loadTasks();
+            updateTaskCategories();
+        };
+
+        function addTask() {
+            let taskInput = document.getElementById("taskInput");
+            let taskText = taskInput.value.trim();
+            if (taskText === "") return;
+
+            let timestamp = new Date().toLocaleString();
+            let task = {
+                text: taskText,
+                completed: false,
+                datetime: timestamp
+            };
+
+            let taskList = document.getElementById("taskList");
+            let li = createTaskElement(task, true);
+            taskList.appendChild(li);
+
+            saveTaskToLocalStorage(task);
+            taskInput.value = "";
+
+            updateTaskCategories();
+        }
+
+        function createTaskElement(task, showButtons = false) {
+            let li = document.createElement("li");
+            li.innerHTML = `
+                                <span class="task">${task.text}</span>
+                                <span class="datetime">Created Date: ${task.datetime}</span>
+                                <div class="buttons">
+                                    <button onclick="toggleComplete(this)">✔</button>
+                                    <button onclick="editTask(this)">✏️</button>
+                                    <button class="delete" onclick="deleteTask(this)">✖</button>
+                                </div>
+                            `;
+            if (task.completed) {
+                li.classList.add("completed");
+            }
+            return li;
+        }
+
+        function toggleComplete(button) {
+            let li = button.closest("li");
+            li.classList.toggle("completed");
+
+            let taskText = li.querySelector(".task").textContent;
+            let tasks = getTasksFromLocalStorage();
+            let task = tasks.find((t) => t.text === taskText);
+            task.completed = !task.completed;
+            saveTasksToLocalStorage(tasks);
+
+            updateTaskCategories();
+        }
+
+        function editTask(button) {
+            let li = button.closest("li");
+            let taskText = li.querySelector(".task").textContent;
+            let newTaskText = prompt("Edit Task:", taskText);
+            if (newTaskText !== null) {
+                li.querySelector(".task").textContent = newTaskText;
+
+                let tasks = getTasksFromLocalStorage();
+                let task = tasks.find((t) => t.text === taskText);
+                task.text = newTaskText;
+                saveTasksToLocalStorage(tasks);
+            }
+        }
+
+        function deleteTask(button) {
+            let li = button.closest("li");
+            let taskText = li.querySelector(".task").textContent;
+
+            li.remove();
+
+            let tasks = getTasksFromLocalStorage();
+            tasks = tasks.filter((t) => t.text !== taskText);
+            saveTasksToLocalStorage(tasks);
+
+            updateTaskCategories();
+        }
+
+        function updateTaskCategories() {
+            let allTasksList = document.getElementById("allTasks");
+            let pendingTasksList = document.getElementById("pendingTasks");
+            let completedTasksList = document.getElementById("completedTasks");
+
+            allTasksList.innerHTML = "";
+            pendingTasksList.innerHTML = "";
+            completedTasksList.innerHTML = "";
+
+            let tasks = getTasksFromLocalStorage();
+            let allCount = tasks.length;
+            let pendingCount = 0;
+            let completedCount = 0;
+
+            tasks.forEach((task) => {
+                let li = createTaskElement(task, true);
+                allTasksList.appendChild(li);
+
+                if (task.completed) {
+                    completedTasksList.appendChild(createTaskElement(task, true));
+                    completedCount++;
+                } else {
+                    pendingTasksList.appendChild(createTaskElement(task, true));
+                    pendingCount++;
+                }
+            });
+
+            document.getElementById("allCount").textContent = allCount;
+            document.getElementById("pendingCount").textContent = pendingCount;
+            document.getElementById("completedCount").textContent = completedCount;
+        }
+
+        function saveTaskToLocalStorage(task) {
+            let tasks = getTasksFromLocalStorage();
+            tasks.push(task);
+            saveTasksToLocalStorage(tasks);
+        }
+
+        function getTasksFromLocalStorage() {
+            return JSON.parse(localStorage.getItem("tasks")) || [];
+        }
+
+        function saveTasksToLocalStorage(tasks) {
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+        }
+
+        function loadTasks() {
+            let tasks = getTasksFromLocalStorage();
+            let taskList = document.getElementById("taskList");
+
+            tasks.forEach((task) => {
+                let li = createTaskElement(task, true);
+                taskList.appendChild(li);
+            });
+        }
+
+
+        function clearAllTasks() {
+            let taskList = document.getElementById("taskList");
+            taskList.innerHTML = "";
+
+            let tasks = getTasksFromLocalStorage();
+            tasks = [];
+            saveTasksToLocalStorage(tasks);
+
+            updateTaskCategories();
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,663 @@
+﻿@model  Application.MainBoundedContext.DTO.AccountsModule.GraduatedScaleDTO
+
+@{
+    /**/
+
+    ViewBag.Title = "Create Charges";
+
+    var cType = ViewBag.chargeType as List<SelectListItem>;
+
+}
+
+
+
+<style>
+    #tabs-container {
+        background-color: none;
+        border-bottom: 1px solid #ddd;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
+        margin-bottom: 20px;
+        overflow-x: auto; /* Allow horizontal scrolling if necessary */
+        width: 50%;
+    }
+
+    .nav-tabs {
+        padding: 10px 0; /* Adjusted padding */
+        list-style: none;
+        margin: 0;
+        white-space: nowrap; /* Prevent line breaks */
+    }
+
+        .nav-tabs li {
+            display: inline-block;
+            margin-right: 20px;
+        }
+
+        .nav-tabs a {
+            text-decoration: none;
+            font-size: 14px;
+            color: #333;
+            font-weight: bold; /* Set font weight to bold */
+            padding: 10px 15px;
+            border-bottom: 2px solid transparent;
+            transition: border-bottom-color 0.3s ease-in-out;
+        }
+
+            .nav-tabs a:hover {
+                border-bottom-color: #007bff;
+                color: #007bff;
+            }
+
+            .nav-tabs a:active {
+                border-bottom-color: #007bff;
+                color: #007bff;
+            }
+</style>
+
+
+
+<style>
+    #tabs-container {
+        background-color: none;
+        border-bottom: 1px solid #ddd;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
+        margin-bottom: 20px;
+        overflow-x: auto; /* Allow horizontal scrolling if necessary */
+        width: 50%;
+    }
+
+    .nav-tabs {
+        padding: 10px 0; /* Adjusted padding */
+        list-style: none;
+        margin: 0;
+        white-space: nowrap; /* Prevent line breaks */
+    }
+
+        .nav-tabs li {
+            display: inline-block;
+            margin-right: 20px;
+        }
+
+        .nav-tabs a {
+            text-decoration: none;
+            font-size: 14px;
+            color: #333;
+            font-weight: bold; /* Set font weight to bold */
+            padding: 10px 15px;
+            border-bottom: 2px solid transparent;
+            transition: border-bottom-color 0.3s ease-in-out;
+        }
+
+            .nav-tabs a:hover {
+                border-bottom-color: #007bff;
+                color: #007bff;
+            }
+
+            .nav-tabs a:active {
+                border-bottom-color: #007bff;
+                color: #007bff;
+            }
+</style>
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // Initially activate the first tab
+        $('.nav-tabs li:first-child a').addClass('active');
+        $('#tab1').addClass('active');
+
+        // Handle tab click event
+        $('.tab-link').on('click', function (e) {
+            e.preventDefault();
+
+            // Deactivate all tabs
+            $('.tab-link').removeClass('active');
+            $('.tab-content').removeClass('active');
+
+            // Activate the clicked tab
+            $(this).addClass('active');
+            $($(this).attr('href')).addClass('active');
+        });
+    });
+</script>
+
+
+
+
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h1>Accounts</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "Tiers", new { Area = "Accounts" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h2>Add Tiers</h2>
+
+                    <br />
+
+                    <div id="tabs-container">
+                        <ul class="nav-tabs">
+                            <li>@Html.ActionLink("Charges", "Create", "Charges")</li>
+                            <li>@Html.ActionLink("Tiers", "Create", "Tiers")</li>
+                            <li>@Html.ActionLink("Levies", "Create", "Charges_Levies")</li>
+                        </ul>
+                    </div>
+
+
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Failed !</strong> @TempData["Error"]
+
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>
+                                    &times;
+                                </span>
+                            </button>
+                        </div>
+                    }
+
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-white">
+                    @using (Html.BeginForm("Add", "Tiers", new { Area = "Accounts" }, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div id="tiers" class="tab-content">
+                            <fieldset>
+                                <h2>Link Charge</h2>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="col-md-13 form-group">
+                                            @Html.LabelFor(model => model.CommissionId, new { @class = "control-label" })
+                                            <div class="input-group" data-autoclose="true">
+                                                @Html.HiddenFor(model => model.CommissionId)
+                                                @Html.TextBoxFor(model => model.CommissionDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Charge..." })
+                                                <span class="input-group-addon">
+                                                    <a data-toggle="modal" data-target="#chargeLookupModal"><span class="fa fa-search"></span></a>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.maximumCharge, htmlAttributes: new { @class = "" })
+                                            @Html.HiddenFor(model => model.Id)
+                                            @Html.EditorFor(model => model.maximumCharge, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                            @Html.ValidationMessageFor(model => model.maximumCharge, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr />
+
+                                <h2>Tier Details</h2>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.tierSplits[0].RangeLowerLimit, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.tierSplits[0].RangeLowerLimit, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00" } })
+                                            @Html.ValidationMessageFor(model => model.tierSplits[0].RangeLowerLimit, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.tierSplits[0].RangeUpperLimit, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.tierSplits[0].RangeUpperLimit, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00" } })
+                                            @Html.ValidationMessageFor(model => model.tierSplits[0].RangeUpperLimit, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.tierSplits[0].ChargeTypeDescription, new { @class = "control-label" })
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                @Html.HiddenFor(model => model.tierSplits[0].ChargeType)
+                                                @Html.DropDownListFor(model => model.tierSplits[0].ChargeTypeDescription, cType, new { @class = "form-control input-md", @id = "chargeTypeDropdown" })
+                                                @Html.ValidationMessageFor(model => model.tierSplits[0].ChargeTypeDescription)
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div id="percentageSection" class="col-lg-6" style="display:block; text-align: left;">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.tierSplits[0].ChargePercentage, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.tierSplits[0].ChargePercentage, new { htmlAttributes = new { @class = "form-control percentage-input", @placeholder = "00.0000%" } })
+                                            @Html.ValidationMessageFor(model => model.tierSplits[0].ChargePercentage, "", new { @class = "text-danger" })
+                                            <div class="invalid-feedback" style="display: none; color:red; "></div>
+                                        </div>
+                                    </div>
+
+
+                                    <div id="fixedAmountSection" class="col-lg-6" style="display:none; text-align: left;">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.tierSplits[0].ChargeFixedAmount, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.tierSplits[0].ChargeFixedAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00" } })
+                                            @Html.ValidationMessageFor(model => model.tierSplits[0].ChargeFixedAmount, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-sm">
+                                            <input type="submit" style="width: 150px;" value="Add" class="btn btn-primary" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <br />
+                                <br />
+
+                                <row>
+                                    <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap:normal; color: black; width: 100%;">
+                                        <thead style="font-style:italic; color: cadetblue; text-align: center; ">
+                                            <tr>
+                                                <th style="width: 15%;">Range (Lower Limit)</th>
+                                                <th style="width: 10%;">Range (Upper Limit)</th>
+                                                <th style="width: 5%;">Charge Type</th>
+                                                <th style="width: 2%;">Percentage</th>
+                                                <th style="width: 5%;">Fixed Amount</th>
+                                                <th style="width: 5%;">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (ViewBag.TiersDTOs != null)
+                                            {
+                                                foreach (var tiers in ViewBag.TiersDTOs)
+                                                {
+                                                    <tr data-id="@tiers.Id">
+                                                        <td>@tiers.RangeLowerLimit</td>
+                                                        <td>@tiers.RangeUpperLimit</td>
+                                                        <td style="text-align: right;">@tiers.ChargeType</td>
+                                                        <td>@tiers.ChargePercentage</td>
+                                                        <td>@tiers.ChargeFixedAmount</td>
+                                                        <td><button type="button" class="btn btn-danger remove-btn">Remove</button></td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </row>
+
+                            </fieldset>
+                        </div>
+                    }
+                </div>
+
+
+                <div class="ibox-content bg-white text-info">
+                    @using (Html.BeginForm("Create", "Tiers", new { Area = "Accounts" }, FormMethod.Post))
+                    {
+                        <div class="col-lg-3">
+                            <input type="submit" style="width: 150px;" value="Create" class="btn btn-primary" />
+                        </div>
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal  fade" id="chargeLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header  bg-primary">
+                <h3 class="font-bold">Charges Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="customersGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+    <script>
+
+        $(document).ready(function () {
+            $('#data_3 .input-group.date').datepicker({
+                startView: 2,
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+            });
+        });
+
+
+    $('#customersGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "commission", new { Area = "Accounts" }))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/Accounts/Tiers/Search/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(3)', nRow).html(dt_Created);
+                    $('td:eq(4)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%" },
+            { "mDataProp": "MaximumCharge", "sTitle": "Maximum Charge", "sWidth": "3%" },
+            { "mDataProp": "IsLocked", "sTitle": "Is Locked?", "sWidth": "2%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+    });
+
+    $("#s tbody").on("click", "tr", function () {
+        var data = customersGrid.row(this).data();
+
+        $('#CommissionSplit.ChartOfAccountId').val(data.Id);
+        $('input[name=CommissionSplit.ChartOfAccountId]').val(data.Id);
+        $('input[name=CommissionSplit.ChartOfAccountAccountName]').val(data.ChartOfAccountAccountName);
+
+        var CustomerId = "";
+        CustomerId = CustomersMap[item].Id;
+        $('#CommissionSplit.ChartOfAccountAccountName').val(CustomersMap[item].ChartOfAccountAccountName);
+    });
+
+
+
+            //Dropdown chage
+    document.addEventListener('DOMContentLoaded', function() {
+        var dropdown = document.getElementById('chargeTypeDropdown');
+        var percentageSection = document.getElementById('percentageSection');
+        var fixedAmountSection = document.getElementById('fixedAmountSection');
+
+        dropdown.addEventListener('change', function() {
+            if (dropdown.value === '0') {
+                percentageSection.style.display = 'block';
+                fixedAmountSection.style.display = 'none';
+            }else if (dropdown.value === '1') {
+                percentageSection.style.display = 'block';
+                fixedAmountSection.style.display = 'none';
+            } else if (dropdown.value === '2') {
+                percentageSection.style.display = 'none';
+                fixedAmountSection.style.display = 'block';
+            } else {
+                percentageSection.style.display = 'none';
+                fixedAmountSection.style.display = 'none';
+            }
+        });
+    });
+
+
+
+
+
+        // Find textbox percentage
+        var percentageInput = document.querySelector('.percentage-input');
+        var feedbackMessage = document.querySelector('.invalid-feedback');
+
+        percentageInput.addEventListener('input', function () {
+            var inputValue = parseFloat(percentageInput.value);
+            if (inputValue > 100) {
+                percentageInput.value = '';
+                feedbackMessage.textContent = "Percentage cannot be greater than 100%";
+                feedbackMessage.style.display = 'block';
+            }
+            else if (inputValue < 1) {
+                percentageInput.value = '';
+                feedbackMessage.textContent = "Percentage must be at least 1%";
+                feedbackMessage.style.display = 'block';
+            }
+            else {
+                feedbackMessage.style.display = 'none';
+                feedbackMessage2.style.display = 'none';
+            }
+        });
+    </script>
+
+
+
+
+
+
+    <style>
+        .table-container {
+            display: none;
+            overflow-x: auto; /* Enable horizontal scrolling */
+        }
+
+        table {
+            border-collapse: collapse;
+            white-space: nowrap; /* Prevent line breaks in table cells */
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        #Guarantors {
+            table-layout: fixed; /* Forces the table to use the fixed layout algorithm */
+        }
+
+            #Guarantors th, #Guarantors td {
+                white-space: nowrap; /* Prevents wrapping of text within cells */
+                overflow: hidden; /* Hides any content that exceeds the cell dimensions */
+                text-overflow: ellipsis; /* Displays an ellipsis (...) when content overflows */
+                padding: 8px; /* Adjust padding as needed */
+            }
+
+
+        /* Styling for the button */
+        .toggle-button {
+            cursor: pointer;
+            padding: 10px 20px;
+            background-color: darkgreen;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+        }
+        /* Styling for the section */
+        .section {
+            display: none;
+            margin-top: 20px;
+        }
+
+            .section.open {
+                display: block;
+            }
+    </style>
+
+
+    <script>
+        $(document).ready(function () {
+            $('#Guarantors').DataTable({
+                scrollX: true // Enable horizontal scrolling
+            });
+        });
+
+    </script>
+
+
+    <style>
+        .table-container {
+            display: none;
+            overflow-x: auto; /* Enable horizontal scrolling */
+        }
+
+        table {
+            border-collapse: collapse;
+            white-space: nowrap; /* Prevent line breaks in table cells */
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        #Guarantors {
+            table-layout: fixed; /* Forces the table to use the fixed layout algorithm */
+        }
+
+            #Guarantors th, #Guarantors td {
+                white-space: nowrap; /* Prevents wrapping of text within cells */
+                overflow: hidden; /* Hides any content that exceeds the cell dimensions */
+                text-overflow: ellipsis; /* Displays an ellipsis (...) when content overflows */
+                padding: 8px; /* Adjust padding as needed */
+            }
+
+
+        /* Styling for the button */
+        .toggle-button {
+            cursor: pointer;
+            padding: 10px 20px;
+            background-color: darkgreen;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+        }
+        /* Styling for the section */
+        .section {
+            display: none;
+            margin-top: 20px;
+        }
+
+            .section.open {
+                display: block;
+            }
+
+
+
+
+
+        .custom-button {
+            display: flex;
+            align-items: center;
+            background: linear-gradient(45deg, #4CAF50, #2E7D32);
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-family: 'Arial', sans-serif;
+            color: white;
+            cursor: not-allowed;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+            .custom-button:disabled {
+                background: linear-gradient(45deg, #9E9E9E, #616161);
+            }
+
+            .custom-button .button-icon {
+                width: 24px;
+                height: 24px;
+                margin-right: 10px;
+            }
+
+            .custom-button:hover:enabled {
+                background: linear-gradient(45deg, #66BB6A, #388E3C);
+                transform: translateY(-2px);
+            }
+    </style>
+
+}

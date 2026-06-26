@@ -1,0 +1,228 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web;
+using System.Web.Mvc;
+using System.Windows.Forms;
+using Application.MainBoundedContext.DTO;
+using Application.MainBoundedContext.DTO.HumanResourcesModule;
+using Microsoft.AspNet.Identity;
+using Newtonsoft.Json;
+using SwiftFinancials.Web.Controllers;
+using SwiftFinancials.Web.Helpers;
+
+namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
+{
+    public class DesignationController : MasterController
+    {
+
+        public async Task<ActionResult> Index()
+        {
+            await ServeNavigationMenus();
+
+            // Fetch the currently logged-in user
+            var user = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+            if (user == null)
+            {
+                return RedirectToAction("Error", "Home");
+            }
+
+            var designationDTO = new DesignationDTO
+            {
+                ActiveUser = user.UserName // Pass the username to the model
+            };
+
+            return View(designationDTO);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        {
+            int totalRecordCount = 0;
+
+            int searchRecordCount = 0;
+
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+
+            List<string> sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+            var pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+
+            var pageCollectionInfo = await _channelService.FindDesignationsByFilterInPageAsync(jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            {
+                totalRecordCount = pageCollectionInfo.ItemsCount;
+
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(bank => bank.CreatedDate).ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            }
+            else return this.DataTablesJson(items: new List<DesignationDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+        }
+
+
+
+        public async Task<ActionResult> Details(Guid id)
+        {
+            var designation = await _channelService.FindDesignationAsync(id);
+            if (designation == null)
+            {
+                return HttpNotFound();
+            }
+
+            var transactionThresholds = await _channelService.FindTransactionThresholdCollectionByDesignationIdAsync(id, GetServiceHeader());
+
+            var viewModel = new DesignationDTO
+            {
+                Id = designation.Id,
+                Description = designation.Description,
+                Remarks = designation.Remarks,
+                IsLocked = designation.IsLocked,
+                TransactionThresholds = transactionThresholds 
+            };
+
+            return View(viewModel);
+        }
+
+
+
+        public async Task<ActionResult> Create()
+        {
+            await ServeNavigationMenus();
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Create(DesignationDTO designationDTO)
+        {
+            designationDTO.ValidateAll();
+
+            if (!designationDTO.HasErrors)
+            {
+                await _channelService.AddDesignationAsync(designationDTO, GetServiceHeader());
+                TempData["Message"] = "Operation Success: Designation Created Successful!";
+                TempData["MessageType"] = "success";
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var errorMessages = designationDTO.ErrorMessages;
+
+
+                return View(designationDTO);
+            }
+        }
+
+        public async Task<ActionResult> Edit(Guid id)
+        {
+
+            ViewBag.TransactionTypeSelectList = GetSystemTransactionTypeList(string.Empty);
+            
+            await ServeNavigationMenus();
+
+            var designationDTO = await _channelService.FindDesignationAsync(id, GetServiceHeader());
+
+            var user = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+
+            designationDTO.ActiveUser = user.UserName;
+
+            return View(designationDTO);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Edit(Guid id, DesignationDTO designationBindingModel)
+        {
+            try
+            {
+                designationBindingModel.ValidateAll();
+                if (!designationBindingModel.HasErrors)
+                {
+                    if (designationBindingModel.TransactionThresholds != null)
+                    {
+                        var updateDesignationResult = await _channelService.UpdateDesignationAsync(designationBindingModel, GetServiceHeader());
+
+                        if (updateDesignationResult)
+                        {
+                            var updateThresholdResult = await _channelService.UpdateTransactionThresholdCollectionByDesignationIdAsync(
+                                designationBindingModel.Id,
+                                designationBindingModel.TransactionThresholds,
+                                GetServiceHeader()
+                            );
+
+                            if (updateThresholdResult)
+                            {
+                                TempData["Message"] = "Designation and transaction thresholds updated successfully!!";
+                                TempData["MessageType"] = "success";
+                               
+                                return RedirectToAction("Details");
+                            }
+                            else
+                            {
+                                TempData["Message"] = "Failed to update transaction thresholds!!";
+                                TempData["MessageType"] = "error";
+                                
+                            }
+                        }
+                        else
+                        {
+                            TempData["Message"] = "Failed to update designation!!";
+                            TempData["MessageType"] = "error";
+                           
+                        }
+                    }
+                    else
+                    {
+                        var updateDesignationResult = await _channelService.UpdateDesignationAsync(designationBindingModel, GetServiceHeader());
+
+                        if (updateDesignationResult)
+                        {
+                            TempData["Message"] = "Designation updated successfully without transaction thresholds.";
+                            TempData["MessageType"] = "success";
+                            
+                            return RedirectToAction("Details");
+                        }
+                        else
+                        {
+                            TempData["Message"] = "Failed to update without thresholds!!";
+                            TempData["MessageType"] = "Error";
+                            
+                        }
+                    }
+                }
+                else
+                {
+                    ViewBag.TransactionTypeSelectList = GetSystemTransactionTypeList(string.Empty);
+                    return View(designationBindingModel);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+
+                TempData["Message"] = "An unexpected error occurred!!";
+                TempData["MessageType"] = "Error";
+               
+                
+            }
+
+            ViewBag.TransactionTypeSelectList = GetSystemTransactionTypeList(string.Empty);
+            return View(designationBindingModel);
+        }
+
+
+        [HttpGet]
+        public async Task<JsonResult> GetDesignationsAsync()
+      {
+            var designationsDTOs = await _channelService.FindDesignationsAsync(GetServiceHeader());
+
+            return Json(designationsDTOs, JsonRequestBehavior.AllowGet);
+        }
+    }
+}

@@ -1,0 +1,1038 @@
+﻿@model SwiftFinancials.Presentation.Infrastructure.Models.TransactionModel
+
+@{
+    ViewBag.Title = "Back Office Transfers";
+
+
+    var apportionTo = ViewBag.GetApportionToSelectList as List<SelectListItem>;
+
+    var productCode = ViewBag.ProductCode as List<SelectListItem>;
+    //var recordStatus = ViewBag.RecordStatus as List<SelectListItem>;
+
+    var customerFilter = ViewBag.CustomerFilterSelectList as List<SelectListItem>;
+}
+
+<style>
+    .custom-modal-styles {
+        max-width: 850px; /* Fixed width for modal */
+        max-height: 850px; /* Fixed height */
+        margin: 50px auto; /* Center modal with space around it */
+    }
+
+    .modal-content {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        overflow: hidden; /* Ensure no scrolling for modal */
+    }
+
+    .modal-body {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .table-scroll {
+        flex-grow: 1; /* Allow table content to grow */
+        overflow-y: auto; /* Scrollable table data */
+        max-height: 300px; /* Set max height for table data */
+    }
+
+    .table thead th {
+        position: sticky; /* Keep headers fixed */
+        top: 0; /* Fix headers at top */
+        background-color: white; /* Ensure visibility */
+        z-index: 10; /* Layer above the table */
+    }
+
+    .modal-footer {
+        flex-shrink: 0; /* Fixed footer at the bottom */
+
+        text-align: right;
+        border-top: 1px solid #ddd;
+    }
+
+    /* Ensuring proper margin and width control */
+    .form-row {
+        margin-bottom: 15px; /* Add spacing between the form row and the element below */
+    }
+
+    .btn-primary {
+        margin-right: 0; /* Ensure no unnecessary right margin */
+    }
+
+    .main {
+        border: 1px solid gray;
+        border-radius: 10px;
+        background-color: #f1f1f1;
+    }
+    .row{
+        margin-top:5px;
+    }
+    h2{
+        color:#333;
+        font-weight:bold;
+
+
+    }
+
+    .bottom-button {
+        border: 2px solid gray; /* Border color set to gray */
+        padding: 10px; /* Padding inside the border */
+        border-radius: 5px; /* Rounded corners (optional) */
+
+        margin: 10px;
+        font-size: 18px;
+        font-weight: bold;
+
+        background-color: #00e0ff;
+    }
+    .content {
+        border: 4px solid #00ffff;
+        border-radius: 12px;
+        margin-bottom: 30px;
+        justify-content: center;
+        align-content: baseline;
+        margin: 10px;
+        font-size: 15px;
+        font-weight: bold;
+        padding: 10px;
+    }
+    .btn-primary{
+        border-radius:10px;
+    }
+    @*Styling for Entries*@
+    .journal-voucher-container {
+        border: 1px solid #333;
+        margin: 20px;
+        padding: 20px;
+        font-size: 15px;
+        border-radius: 8px;
+        position: relative;
+        padding: 40px; /* Space for the h2 */
+
+    }
+
+    .journal-voucher-container h2 {
+        position: absolute;
+        top: -20px;
+        left: 20px;
+        background: #fff;
+        padding: 0 10px;
+        margin: 0;
+    }
+
+    .journal-voucher-container .form-control,
+    .journal-voucher-container .input-group-addon {
+        font-weight: normal; /* Retain normal weight for controls */
+    }
+
+    @*css for the journal entries*@ #ChargeSplits {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+    }
+
+    #ChargeSplits thead {
+        background-color: white;
+        color: #333;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #ChargeSplits th, #ChargeSplits td {
+        padding: 12px;
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+
+    #ChargeSplits th {
+        font-weight: bold;
+    }
+
+    #ChargeSplits tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    #ChargeSplits tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .control-label {
+        flex: 0 0 150px; /* Adjust width as needed */
+        font-weight: bold; /* Optional: make the label text bold */
+        color: #333; /* Set a different color for the labels */
+    }
+
+    input.form-control {
+        color: #007bff; /* Replace with your desired color */
+    }
+    .form-control {
+        color: #007bff;
+    }
+
+</style>
+
+<!-- CSS Styling -->
+<style>
+    .bordered-container {
+        border: 2px solid gray;
+        border-radius: 12px;
+        padding: 15px;
+        margin-top: 10px;
+        position: relative;
+    }
+
+    .bordered-heading {
+        position: absolute;
+        top: -20px;
+        left: 15px;
+        background-color: white;
+        color: black;
+        font-weight: bold;
+        padding: 0 10px;
+        font-size: 18px;
+    }
+
+    /* Table Styles */
+    #RefundBatchEntry {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+    }
+
+        #RefundBatchEntry thead {
+            background-color: white;
+            color: #333;
+        }
+
+        #RefundBatchEntry th, #RefundBatchEntry td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        #RefundBatchEntry th {
+            font-weight: bold;
+        }
+
+        #RefundBatchEntry tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        #RefundBatchEntry tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<div class="row wrapper border-bottom bg-white page-heading">
+    <div class="col-lg-10">
+
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "BackOfficeTransfer", new { Area = "Accounts" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content white-bg">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        @if (TempData["ErrorMsg"] != null)
+                        {
+                            <div class="alert alert-success">
+                                <strong>Error!</strong> @TempData["ErrorMsg"]
+
+                                <button type="button" class="close" data-dismiss="alert">
+                                    <span>
+                                        &times;
+                                    </span>
+                                </button>
+                            </div>
+                        }
+
+
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                    <h2 style="font-style: italic; margin-bottom: 0;">Back Office Transfers</h2>
+
+                </div>
+                <div class="ibox-content bg-white text-info">
+
+                    <div class="main">
+                        @using (Html.BeginForm("Add", "BackOfficeTransfer", new { Area = "Accounts" }, FormMethod.Post, new { id = "formAddBatch" }))
+                        {
+                            @Html.AntiForgeryToken()
+
+                            <div class="journal-voucher-container">
+                                         <!-- Cash Receipt Tab -->
+                                            <div id="cashReceipt" class="inner-tab-pane active">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group form-group-lg">
+                                                            @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "" })
+                                                            @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @id = "TotalValue", @class = "form-control" } })
+                                                            @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
+                                                        </div>
+
+
+                                                        <div class="form-group form-group-lg">
+                                                            @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "" })
+                                                            @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control" } })
+                                                            @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                <h2>Apportionments</h2>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.Apportionments[0].ApportionTo, new { @class = "control-label" })
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                @Html.DropDownListFor(model => model.Apportionments[0].ApportionTo, apportionTo,
+                                                new { @class = "form-control input-md", @id = "entryTypeDropdown1" })
+                                                @Html.ValidationMessageFor(model => model.Apportionments[0].ApportionTo)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div id="chartFields1" class="col-lg-12" style="display:none;">
+                                        <div class="form-group form-group-lg">
+                                            @*@Html.LabelFor(model => model.Apportionments[0].CreditChartOfAccountId, htmlAttributes: new { @class = "control-label" })*@
+                                           @Html.HiddenFor(model => model.Apportionments[0].CreditChartOfAccountId, new { @id = "ChartOfAccountId", @class = "entry-field" })
+                                        
+                                            @Html.EditorFor(model => model.Apportionments[0].CreditCustomerAccount.CustomerAccountTypeTargetProductChartOfAccountName, new { htmlAttributes = new { @id = "ChartOfAccountName", @class = "ChartOfAccountsLookup form-control required entry-field", @placeholder = "Enter space to autofill" } })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="customerFields11" class="col-lg-12" style="display:none;">
+                                    <div class="row">
+
+                                        <div class="col-lg-3">
+                                            <div class="col-md-13 form-group">
+                                                @Html.LabelFor(model => model.Apportionments[0].FullAccountNumber, new { @class = "control-label" })
+                                                <div class="input-group" data-autoclose="true">
+                                                    @Html.HiddenFor(model => model.Apportionments[0].CreditCustomerAccount.Id, new { @id = "CustomerAccountId", @class = "entry-field" })
+                                                    @Html.TextBoxFor(model => model.Apportionments[0].FullAccountNumber, new { @class = "form-control input-md alpha alphaspace required entry-field", @readonly = "readonly", @id = "AccountNumber" })
+                                                    <span class="input-group-addon">
+                                                        <a data-toggle="modal" data-target="#CustomerAccountsLookupModal"><span class="fa fa-search"></span></a>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Apportionments[0].CreditCustomerAccount.Status, htmlAttributes: new { @class = "control-label" })
+
+                                                @Html.EditorFor(model => model.Apportionments[0].CreditCustomerAccount.StatusDescription, new { htmlAttributes = new { @class = " form-control required entry-field", placeholder = "", @readonly = "readonly", id = "AccountStatus" } })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Apportionments[0].CreditCustomerAccount.Remarks, htmlAttributes: new { @class = "control-label" })
+
+                                                @Html.EditorFor(model => model.Apportionments[0].CreditCustomerAccount.Remarks, new { htmlAttributes = new { @class = " form-control required entry-field", placeholder = "", @readonly = "readonly", id = "Remarks" } })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Apportionments[0].CreditCustomerAccount.BookBalance, htmlAttributes: new { @class = "control-label" })
+
+                                                @Html.EditorFor(model => model.Apportionments[0].CreditCustomerAccount.BookBalance, new { htmlAttributes = new { @class = " form-control required entry-field", placeholder = "", @readonly = "readonly", id = "BookBalance" } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.HiddenFor(model => model.Apportionments[0].CreditCustomerAccountJson, new { @id = "CreditCustomerAccountJson" })
+                                                @Html.HiddenFor(model => model.Apportionments[0].DebitCustomerAccountJson, new { @id = "DebitCustomerAccountJson" })
+                                    
+                                                @Html.LabelFor(model => model.Apportionments[0].DebitCustomerAccountId, htmlAttributes: new { @id = "DebitCustomerAccountId", @class = "control-label" })
+                                                @Html.HiddenFor(model => model.Apportionments[0].CreditChartOfAccountId, new { @id = "CreditChartOfAccountId", @class = "entry-field" })
+                                                @Html.HiddenFor(model => model.Apportionments[0].CreditCustomerAccountId, new { @id = "CreditCustomerAccountId", @class = "entry-field" })
+                                                @Html.HiddenFor(model => model.Apportionments[0].DebitCustomerAccountId, new { @id = "BackOfficeTransfersBatchBranchId", @class = "entry-field" })
+                                                @Html.EditorFor(model => model.Apportionments[0].CustomerFullName, new { htmlAttributes = new { @class = " form-control required entry-field", placeholder = "", @readonly = "readonly", id = "CustomerFullName" } })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Apportionments[0].CreditCustomerAccount.Type, htmlAttributes: new { @class = "control-label" })
+
+                                                @Html.EditorFor(model => model.Apportionments[0].CreditCustomerAccount.TypeDescription, new { htmlAttributes = new { @class = " form-control required entry-field", placeholder = "", @readonly = "readonly", id = "CustomerTypeDescription" } })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Apportionments[0].CreditCustomerAccount.CustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "control-label" })
+
+                                                @Html.EditorFor(model => model.Apportionments[0].CreditCustomerAccount.CustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = " form-control required entry-field", placeholder = "", @readonly = "readonly", id = "CustomerIndividualPayrollNumbers" } })
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Apportionments[0].CreditCustomerAccount.CustomerPersonalIdentificationNumber, htmlAttributes: new { @class = "control-label" })
+
+                                                @Html.EditorFor(model => model.Apportionments[0].CreditCustomerAccount.CustomerPersonalIdentificationNumber, new { htmlAttributes = new { @class = " form-control required entry-field", placeholder = "", @readonly = "readonly", id = "CustomerPersonalIdentificationNumber" } })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Apportionments[0].CreditCustomerAccount.CustomerReference1, htmlAttributes: new { @class = "control-label" })
+
+                                                @Html.EditorFor(model => model.Apportionments[0].CreditCustomerAccount.CustomerReference1, new { htmlAttributes = new { @class = " form-control required entry-field", placeholder = "", @readonly = "readonly", id = "CustomerAccountCustomerReference1" } })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Apportionments[0].CreditCustomerAccount.CustomerReference2, htmlAttributes: new { @class = "control-label" })
+
+                                                @Html.EditorFor(model => model.Apportionments[0].CreditCustomerAccount.CustomerReference2, new { htmlAttributes = new { @class = " form-control required entry-field", placeholder = "", @readonly = "readonly", id = "CustomerAccountCustomerReference2" } })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Apportionments[0].CreditCustomerAccount.CustomerReference3, htmlAttributes: new { @class = "control-label" })
+
+                                                @Html.EditorFor(model => model.Apportionments[0].CreditCustomerAccount.CustomerReference3, new { htmlAttributes = new { @class = " form-control required entry-field", placeholder = "", @readonly = "readonly", id = "CustomerAccountCustomerReference3" } })
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                    
+                                </div>
+
+                                <div class="common-fields">
+                                    <div class="row">
+
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Apportionments[0].Principal, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.Apportionments[0].Principal, new { htmlAttributes = new { @id = "Principal", @class = "form-control entry-field", @placeholder = "" } })
+                                                @Html.ValidationMessageFor(model => model.Apportionments[0].Principal, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Apportionments[0].Interest, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.Apportionments[0].Interest, new { htmlAttributes = new { @id = "Interest", @class = "form-control entry-field", @placeholder = "" } })
+                                                @Html.ValidationMessageFor(model => model.Apportionments[0].Interest, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Apportionments[0].PrimaryDescription, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.Apportionments[0].PrimaryDescription, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "" } })
+                                                @Html.ValidationMessageFor(model => model.Apportionments[0].PrimaryDescription, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Apportionments[0].SecondaryDescription, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.Apportionments[0].SecondaryDescription, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "" } })
+                                                @Html.ValidationMessageFor(model => model.Apportionments[0].SecondaryDescription, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Apportionments[0].Reference, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.Apportionments[0].Reference, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "" } })
+                                                @Html.ValidationMessageFor(model => model.Apportionments[0].Reference, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <!-- Center the Submit button -->
+                                    <div style="text-align: right; margin: 20px 20px;">
+                                        <input type="submit" value="Add" class="btn btn-primary" style="width: 100px; border-radius: 4px;" />
+                                    </div>
+
+                                </div>
+
+
+                                <br />
+                                <row>
+                                    <table id="RefundBatchEntry" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
+                                        <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                            <tr>
+                                                <th style="width: 5%;">Customer Name</th>
+                                                <th style="width: 5%;">Account Number </th>
+                                                <th style="width: 5%;">Principal</th>
+                                                <th style="width: 5%;">Interest</th>
+                                                <th style="width: 5%;">Reference</th>
+                                                <th style="width: 5%;">Action</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+
+
+                                </row>
+                            </div>
+
+                        }
+
+
+                        @using (Html.BeginForm("Create", "BackOfficeTransfer", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                        {
+                            <div class="bottom-button">
+                                <div class="row">
+                                    <div class="col-lg-12" style="display: flex; justify-content: flex-end;">
+                                        <div class="form-group form-group-sm">
+                                            <input type="submit" id="submitButton" value="Create" class="btn btn-primary" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="CustomerAccountsLookupModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog custom-modal-styles" role="document">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header bg-primary">
+                <h4 class="font-bold">Credit Customers Account Lookup</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span class="sr-only">Close</span>
+                </button>
+            </div>
+
+            <!-- Modal Body (Scrollable Table Content) -->
+            <div class="modal-body">
+                <!-- Filter Form & Controls (Fixed) -->
+                <form id="modalFilterForm">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            @Html.DropDownListFor(m => m.CustomerAccount.CustomerAccountTypeProductCode, productCode, new { @class = "form-control", id = "productCode" })
+                        </div>
+                        <div class="form-group col-md-6">
+                            @Html.DropDownListFor(m => m.CustomerAccount.CustomerFilter, customerFilter, new { @class = "form-control", id = "customerFilter" })
+                        </div>
+                    </div>
+                    <div class="form-row justify-content-end">
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-primary">Refresh</button>
+                        </div>
+                    </div>
+
+                </form>
+
+                <!-- Table & Scrollable Data Rows -->
+                <div class="table-responsive table-scroll">
+                    <table id="CustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>Customer Full Name</th>
+                                <th>Account No.</th>
+                                <th>Membership</th>
+                                <th>Product</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="5" class="dataTables_empty">Loading data from server...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Modal Footer (Fixed Controls) -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+     <script>
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get the dropdown element
+            var entryTypeDropdown = document.getElementById('entryTypeDropdown1');
+
+        // Add event listener to the dropdown
+        entryTypeDropdown.addEventListener('change', function () {
+                var selectedValue = entryTypeDropdown.value;
+
+        console.log("selected value is", selectedValue);
+        // Hide all fields initially
+        document.getElementById('chartFields1').style.display = 'none';
+        document.getElementById('customerFields11').style.display = 'none';
+
+
+        // Show relevant fields based on selection
+        if (selectedValue == 1) {
+            document.getElementById('customerFields11').style.display = 'block';
+        $('#ChartOfAccountId').hide();
+        $('#CreditChartOfAccountId').show();
+                } else if (selectedValue == 2) {
+            document.getElementById('chartFields1').style.display = 'block';
+        $('#CreditChartOfAccountId').hide();
+        $('#ChartOfAccountId').show();
+                }
+            });
+
+        // Trigger the change event on page load (in case the dropdown already has a selected value)
+        entryTypeDropdown.dispatchEvent(new Event('change'));
+        });
+
+</script>
+
+
+<script>
+   
+        $(document).ready(function () {
+            $('#form').on('submit', function (e) {
+                e.preventDefault(); // Prevent the default form submission
+
+                // Serialize the form data
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    url: $(this).attr('action'), // Form action URL
+                    type: 'POST',                 // Form method (POST)
+                    data: formData,               // Form data
+                    success: function (response) {
+                        // Handle the success response (using SweetAlert for messages)
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success!',
+                                text: response.message,
+                                timer: 1000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href = '/Accounts/BackOfficeTransfer/Create'; // Redirect to index
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: response.message,
+                                timer: 8000,
+                                showConfirmButton: true
+                            });
+                        }
+                    },
+                    error: function () {
+                        // Handle errors in the AJAX request
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'An error occurred while processing your request.',
+                            timer: 8000,
+                            showConfirmButton: true
+                        });
+                    }
+                }); 
+            });
+        });
+
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            // Handle the form submission event
+            $('#formAddBatch').submit(function (event) {
+                event.preventDefault(); // Prevent the default form submission
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            updateEntriesTable(response.data);
+                            $('#TotalValue').val(response.TotalValue);
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success!',
+                                text: 'Entry added successfully.',
+                                timer: 1000,
+                                showConfirmButton: false
+                            });
+                            clearEntryForm();
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: response.message,
+                                timer: 8000,
+                                showConfirmButton: true
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("An error occurred:", error);
+                    }
+                });
+            });
+        });
+
+
+        $(document).ready(function () {
+            // Initial page load: Check the TotalValue and disable the submit button if necessary
+            var totalValue = parseFloat($("#TotalValue").val());
+
+            // If TotalValue is not set or invalid, disable the submit button
+            if (isNaN(totalValue) || totalValue <= 0) {
+                $("#submitButton").prop('disabled', true);
+            }
+        });
+
+        function updateEntriesTable(entries) {
+            var tableBody = $("#RefundBatchEntry tbody");
+            tableBody.empty(); // Clear existing entries
+
+            // Grab the ChartOfAccountName from the input field
+            var chartOfAccountNameDebit = $("#ChartOfAccountNameDebit").val();
+            var totalApportionment = 0;  // Initialize running total for Principal + Interest
+
+            // Loop through each entry and build table rows
+            $.each(entries, function (index, entry) {
+                var customerName = entry.ApportionTo == 2 ? chartOfAccountNameDebit : entry.CustomerFullName;
+                var accountNumber = entry.ApportionTo == 2 ? entry.CreditChartOfAccountId : entry.FullAccountNumber;
+
+                // Calculate total for this entry (Principal + Interest)
+                var entryTotal = parseFloat(entry.Principal) + parseFloat(entry.Interest);
+
+                // Add this entry's total to the running total
+                totalApportionment += entryTotal;
+
+                // Build the row
+                var row = `<tr data-id="${entry.Id}">
+            <td>${customerName}</td>
+            <td>${accountNumber}</td>
+            <td>${entry.Principal}</td>
+            <td>${entry.Interest}</td>
+            <td>${entry.Reference}</td>
+            <td><button type="button" class="btn btn-danger remove-entry" data-id="${entry.Id}">Remove</button></td>
+        </tr>`;
+
+                tableBody.append(row);
+            });
+
+            // Get the TotalValue from the input field
+            var totalValue = parseFloat($("#TotalValue").val());
+
+            // Check if totalValue is valid and not NaN or less than or equal to 0
+            if (isNaN(totalValue) || totalValue <= 0 || entries.length === 0) {
+                // If the input is blank, invalid, or there are no entries, disable the submit button
+                $("#submitButton").prop('disabled', true);
+            } else {
+                // Disable or enable the submit button based on the comparison
+                if (totalApportionment < totalValue) {
+                    $("#submitButton").prop('disabled', true);  // Disable the button
+                } else {
+                    $("#submitButton").prop('disabled', false); // Enable the button
+                }
+            }
+        }
+
+
+
+
+
+
+            // Attach click event to remove buttons
+            $(document).on("click", ".remove-entry", function (event) {
+                event.preventDefault(); // Prevent default behavior
+                var entryId = $(this).data("id"); // Get the GUID from the button's data-id
+                removeEntry(entryId);
+            });
+
+
+        function removeEntry(id) {
+    $.ajax({
+        url: '@Url.Action("Remove", "BackOfficeTransfer")',
+        type: 'POST',
+        data: { id: id },
+        success: function (response) {
+            if (response.success) {
+                // Update the entries table with the new data
+                $('#TotalValue').val(response.totalSum);
+                updateEntriesTable(response.data);
+                console.log("Updated sum amount:", response.totalSum);
+            } else {
+                alert("An error occurred while removing the entry.");
+            }
+        },
+        error: function () {
+            alert("An error occurred while processing the request.");
+        }
+    });
+}
+
+
+
+            function clearEntryForm() {
+                // Reset only the fields with the 'entry-field' class
+                $('#formAddBatch').find('.entry-field').val('');
+            }
+    </script>
+
+    <script>
+
+        $(document).ready(function () {
+            $('#data_3 .input-group.date').datepicker({
+                startView: 2,
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+            });
+        });
+
+
+        // Set Default Value for Filters
+        var defaultProductCode = $('#productCode').val();
+        var defaultCustomerFilter = $('#customerFilter').val();
+
+
+        //Refresh button for reloading the Datable after Applying the filters
+        $('#modalFilterForm').on('submit', function (e) {
+            e.preventDefault();
+            $('#CustomerAccountsGrid').DataTable().ajax.reload();
+        });
+
+
+
+       ////////// customer accounts lookup modal/////////
+
+     $('#CustomerAccountsGrid').DataTable({
+    // Ajax settings
+    "sPaginationType": "full_numbers",
+    "bProcessing": true,
+    "bServerSide": true,
+    "sAjaxSource": "@(Url.Action("FetchCustomerAccountsTable", "BackOfficeTransfer", new { Area = "Accounts"}))",
+    "sServerMethod": "POST",
+
+    // Ensure to include the filters in the Ajax request
+    "fnServerParams": function (aoData) {
+        aoData.push(
+            { "name": "productCode", "value": $('#productCode').val() || defaultProductCode },
+            { "name": "customerFilter", "value": $('#customerFilter').val() || defaultCustomerFilter }
+        );
+         },
+
+         // Callback settings
+         "fnRowCallback": function (nRow, aData) {
+             var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+             var h = ("0" + createdDate.getHours()).slice(-2);
+             var m = ("0" + createdDate.getMinutes()).slice(-2);
+             var s = ("0" + createdDate.getSeconds()).slice(-2);
+             var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+
+             var selectUrl = '<button class="btn btn-outline-info" onclick="selectCustomerAccounts(\'' + aData.Id + '\')">Select</button>';
+
+             $('td:eq(4)', nRow).html(selectUrl);
+
+             return nRow;
+         },
+
+    // Display settings with adjusted column widths
+    "aoColumns": [
+        { "mDataProp": "CustomerFullName", "sTitle": "Name", "sWidth": "30%" },
+        { "mDataProp": "FullAccountNumber", "sTitle": "Account No.", "sWidth": "30%" },
+        { "mDataProp": "CustomerReference2", "sTitle": "Membership", "sWidth": "15%" },
+        { "mDataProp": "CustomerAccountTypeProductCodeDescription", "sTitle": "Product", "sWidth": "15%" },
+        { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "15%", "bSortable": false }
+    ],
+    "aaSorting": [[0, "desc"]]
+});
+
+
+    function selectCustomerAccounts(id) {
+    $.ajax({
+        url: '/Accounts/BackOfficeTransfer/EntryCreditCustomerAccountLookUp',
+        type: 'POST',
+
+        data: { Id: id },
+        success: function (response) {
+            if (response.success) {
+                console.log("everything", response.data);
+                // Populate fields with the returned data
+
+                console.log("credit chart of account id is:", response.data.CreditCustomerAccount.CustomerAccountTypeTargetProductChartOfAccountId);
+
+                $('#CreditCustomerAccountId').val(response.data.CreditCustomerAccount.Id);
+                $('#CustomerFullName').val(response.data.CreditCustomerAccount.CustomerFullName);
+                $('#AccountNumber').val(response.data.FullAccountNumber);
+                $('#CustomerAccountCustomerReference2').val(response.data.CreditCustomerAccount.CustomerReference2);
+                $('#CustomerAccountCustomerReference3').val(response.data.CreditCustomerAccount.CustomerReference3);
+                $('#CustomerPersonalIdentificationNumber').val(response.data.CreditCustomerAccount.CustomerIndividualIdentityCardNumber);
+                $('#BookBalance').val(response.data.CreditCustomerAccount.BookBalance);
+                $('#AccountStatus').val(response.data.CreditCustomerAccount.AccountStatusDescription);
+                $('#Remarks').val(response.data.CreditCustomerAccount.Remarks);
+                $('#CustomerAccountId').val(response.data.CreditCustomerAccount.Id);
+                $('#CustomerTypeDescription').val(response.data.CreditCustomerAccount.CustomerTypeDescription);
+                $('#CustomerIndividualPayrollNumbers').val(response.data.CreditCustomerAccount.CustomerIndividualPayrollNumbers);
+                $('#CustomerAccountCustomerReference1').val(response.data.CreditCustomerAccount.CustomerReference1);
+                $('#CreditChartOfAccountId').val(response.data.CreditCustomerAccount.CustomerAccountTypeTargetProductChartOfAccountId);
+                $('#CreditCustomerAccountJson').val(JSON.stringify(response.data.CreditCustomerAccount));
+
+                $('#DebitCustomerAccountJson').val(JSON.stringify(response.data.CreditCustomerAccount));
+
+
+                //$('#DebitChartOfAccountId').val(response.data.CreditCustomerAccount.CustomerAccountTypeTargetProductChartOfAccountId);*/
+                 //$('#DebitCustomerAccountJson').val(JSON.stringify(response.data.CreditCustomerAccount));
+                 //$('#DebitCustomerAccountId').val(JSON.stringify(response.data.CreditCustomerAccount.Id));
+                // Close the modal
+                $('#CustomerAccountsLookupModal').modal('hide');
+            } else {
+                alert(response.message);
+            }
+        },
+        error: function () {
+            alert('An error occurred while processing your request.');
+        }
+    });
+        }
+
+
+
+        //Refresh button for reloading the Datable after Applying the filters
+        $('#debitModalFilterForm').on('submit', function (e) {
+            e.preventDefault();
+            $('#DebitCustomerAccountsGrid').DataTable().ajax.reload();
+        });
+         ////////// Entry customer accounts lookup modal/////////
+
+
+             //ChartOfAccount typehead starts here
+            $('.ChartOfAccountsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
+                        { query: query },
+                        function (ChartOfAccounts) {
+                            var newChartOfAccountsData = [];
+                            ChartOfAccountsMap = {};
+                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
+                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
+                            });
+                            process(newChartOfAccountsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var chartOfAccount = ChartOfAccountsMap[item];
+                    var chartOfAccountId = chartOfAccount.Id;
+                    var chartOfAccountName = chartOfAccount.AccountName;
+
+                    // Set ChartOfAccountId (hidden input or other element)
+                    $('#ChartOfAccountId').val(chartOfAccountId);
+
+                    // Set ChartOfAccountName (input or other element)
+                    $('#ChartOfAccountName').val(chartOfAccountName);  // Assuming there's a field for the name
+
+                    return item;
+                }
+            });
+
+    </script>
+}

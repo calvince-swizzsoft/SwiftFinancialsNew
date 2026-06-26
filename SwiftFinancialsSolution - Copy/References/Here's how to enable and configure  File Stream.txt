@@ -1,0 +1,45 @@
+Here's how to enable and configure `FILESTREAM` in SQL Server 2022 using SQL Server Configuration Manager:
+
+### Enabling FILESTREAM in SQL Server 2022
+
+1. **Open SQL Server Configuration Manager:**
+   - Press `Win + R`, type `SQLServerManager16.msc` (for SQL Server 2022), and press Enter. This opens SQL Server Configuration Manager.
+
+2. **Enable FILESTREAM:**
+   - In the Configuration Manager, go to **SQL Server Services** in the left pane.
+   - Right-click on the SQL Server instance you want to configure (e.g., `SQL Server (MSSQLSERVER)`), and select **Properties**.
+   - In the Properties window, go to the **FILESTREAM** tab.
+
+3. **Configure FILESTREAM Access:**
+   - You will see three options:
+     - **Enable FILESTREAM for Transact-SQL access**: Check this to enable FILESTREAM for SQL Server queries.
+     - **Enable FILESTREAM for file I/O streaming access**: Check this to enable file I/O streaming access.
+     - **Allow remote clients to have streaming access to FILESTREAM data**: Check this if you need remote access to FILESTREAM data.
+   - Set the access level according to your needs. Setting it to `2` gives both Transact-SQL access and file I/O streaming access.
+
+4. **Apply the Changes:**
+   - Click **Apply** and then **OK** to save the changes.
+   - You may need to restart the SQL Server service for the changes to take effect.
+
+5. **Run the RECONFIGURE Command in SQL Server Management Studio (SSMS):**
+   - After enabling FILESTREAM in the Configuration Manager, open SQL Server Management Studio (SSMS).
+   - Connect to your SQL Server instance.
+   - Run the following SQL commands to finalize the configuration:
+     ```sql
+     EXEC sp_configure 'filestream access level', 2;
+     RECONFIGURE;
+     ```
+
+6. **Verify the Configuration:**
+   - To check if `FILESTREAM` is configured correctly, run:
+     ```sql
+     EXEC sp_configure 'filestream access level';
+     ```
+   - This should return the current setting for the `FILESTREAM` access level.
+
+### Additional Considerations:
+- **Administrative Privileges:** Ensure you have administrative privileges on the machine to make these changes.
+- **Service Restart:** After enabling `FILESTREAM`, it's often necessary to restart the SQL Server service to apply the changes.
+- **NTFS File System:** `FILESTREAM` requires that the database files be stored on an NTFS file system.
+
+These steps should help you enable and configure `FILESTREAM` in SQL Server 2022 successfully.

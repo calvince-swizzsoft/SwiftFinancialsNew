@@ -1,0 +1,1 @@
+/***** Object:  FullTextCatalog [Index]    Script Date: 7/24/2024 9:19:01 AM *****/CREATE FULLTEXT CATALOG [Index] WITH ACCENT_SENSITIVITY = ONGO/***** Object:  UserDefinedFunction [dbo].[Currency_ToWords]    Script Date: 7/24/2024 9:19:01 AM *****/SET ANSI_NULLS ONGOSET QUOTED_IDENTIFIER ONGO

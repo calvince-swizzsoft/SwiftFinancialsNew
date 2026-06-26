@@ -1,0 +1,184 @@
+﻿@model Application.MainBoundedContext.DTO.AccountsModule.RecurringBatchDTO
+
+@{
+    var queuePriority = ViewBag.QueuePriorityTypeSelectList as List<SelectListItem>;
+    var chargeTypes = ViewBag.ChargeTypeSelectList as List<SelectListItem>;
+    var months = ViewBag.MonthsSelectList as List<SelectListItem>;
+    var concessionType = ViewBag.ConcessionTypeSelectList as List<SelectListItem>;
+    ViewBag.Title = "Loan Indefinite Charge";
+}
+
+<!-- Page Heading -->
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Loan Indefinite Charge</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>List</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<!-- Page Content -->
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>Create Loan Indefinite Charge</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        <a class="close-link"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+
+                <div class="ibox-content bg-white">
+                    <!-- Loan Indefinite Charge Form -->
+                    @using (Html.BeginForm("Create", "LoanIndefiniteCharges", new { Area = "Accounts" }, FormMethod.Post, new { @class = "form-horizontal", id = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <!-- Month Selection -->
+                                    <div class="form-group form-group-lg" style="color: cadetblue">
+                                        @Html.LabelFor(model => model.MonthDescription, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.Month, months, new { @class = "form-control input-md" })
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.Month)
+                                    </div>
+
+                                    <!-- Posting Period -->
+                                    <div class="form-group form-group-lg" style="color: cadetblue">
+                                        @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.PostingPeriodId)
+                                        @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control", placeholder = "Select posting period" } })
+                                        @Html.ValidationMessageFor(model => model.PostingPeriodId, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <!-- Priority Selection -->
+                                    <div class="form-group form-group-lg" style="color: cadetblue">
+                                        @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.Priority, queuePriority, new { @class = "form-control input-md" })
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.Priority)
+                                    </div>
+
+                                    <!-- Enforce Month Value Date -->
+                                    <div class="form-group form-group-lg" style="color: cadetblue">
+                                        @Html.CheckBoxFor(model => model.EnforceMonthValueDate)
+                                        @Html.LabelFor(model => model.EnforceMonthValueDate, new { @class = "control-label" })
+                                        @Html.ValidationMessageFor(model => model.EnforceMonthValueDate, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <!-- Table for Loan Products -->
+                        <div class="ibox-content">
+                            <div class="table-responsive">
+                                <table id="LoanProductsGrid" class="table table-striped table-bordered table-hover" width="100%">
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="7" class="dataTables_empty">Loading data from server</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Select All Checkbox -->
+                            <div class="checkbox">
+                                <input type="checkbox" id="headerCheckbox" style="transform: scale(1);">
+                                <label for="headerCheckbox" style="font-weight: bold;">Select All</label>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="form-group">
+                            <div class="col-md-10">
+                                <input type="submit" value="Create" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <!-- Include necessary stylesheets -->
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+}
+
+@section Scripts {
+    <!-- Include necessary scripts -->
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Initialize DataTable and handle checkbox events
+            var table = $('#LoanProductsGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@Url.Action("Index", "LoanProduct", new { Area = "Accounts" })",
+                "sServerMethod": "POST",
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                    var checkboxHTML = '<input type="checkbox" class="rowCheckbox" data-id="' + aData.Id + '">';
+                    $('td:eq(0)', nRow).html(checkboxHTML);
+                    return nRow;
+                },
+                "aoColumns": [
+                    { "mDataProp": "Id", "sTitle": "Select", "sWidth": "10%" },
+                    { "mDataProp": "Description", "sTitle": "Loan Product", "sWidth": "30%" },
+                    { "mDataProp":"LoanRegistrationLoanProductCategoryDescription", "sTitle": "Category", "sWidth": "30%" }
+                ]
+            });
+
+            // Handle header checkbox click
+            $('#headerCheckbox').on('change', function () {
+                $('.rowCheckbox').prop('checked', $(this).prop('checked'));
+            });
+
+            // Handle form submission
+            $('#createButton').click(function () {
+                var selectedRowsData = [];
+                $('.rowCheckbox:checked').each(function () {
+                    selectedRowsData.push({ Id: $(this).data('id') });
+                });
+
+                var formData = $('#form').serializeArray();
+                var dataToSend = { FormData: formData, SelectedRows: selectedRowsData };
+
+                $.ajax({
+                    url: '/Accounts/LoanIndefiniteCharges/Create',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(dataToSend),
+                    success: function (response) {
+                        // Handle success
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error
+                    }
+                });
+            });
+        });
+    </script>
+}

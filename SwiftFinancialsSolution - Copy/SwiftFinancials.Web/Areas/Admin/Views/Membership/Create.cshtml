@@ -1,0 +1,383 @@
+@model  Application.MainBoundedContext.DTO.AdministrationModule.UserBindingModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewBag.Title = "Create System User";
+    var branches = ViewBag.branches;
+
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>System Users</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "Membership", new { Area = "Admin" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    @using (Html.BeginForm("Create", "Membership", new { Area = "Admin" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <!-- Employee Selection -->
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.EmployeeId, new { @class = "control-label" })
+                                    <div class="input-group" data-autoclose="true">
+                                        @Html.HiddenFor(Model => Model.EmployeeId)
+                                        @Html.TextBoxFor(model => model.EmployeeCustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @Placeholder = "Search Employee..." })
+                                        <span class="input-group-addon">
+                                            <a data-toggle="modal" data-target="#employeeLookUpModal">
+                                                <span class="fa fa-search"></span>
+                                            </a>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.EmployeeDesignationDescription, "Department", new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.EmployeeDesignationDescription, new { htmlAttributes = new { @class = "form-control required", placeholder = "", @disabled = "disabled" } })
+                                    @Html.ValidationMessageFor(model => model.EmployeeDesignationDescription, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.BranchDescription, new { @class = "control-label" })
+                                    @Html.HiddenFor(Model => Model.BranchId)
+                                    @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "form-control required", placeholder = "", @disabled = "@disabled" } })
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.UserName, new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control required", oninput = "validateUsername(this)" } })
+                                    <span id="username-warning" class="text-danger" style="display: none;">Username must be lowercase</span>
+                                    @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-8">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.Email, new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control required", @Type = "Email" } })
+                                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+
+                                <div class="form-group form-group-lg" style="margin-left: 20px;">
+                                    <!-- Adjust the margin as needed -->
+                                    @Html.CheckBoxFor(model => model.LockoutEnabled, new { @class = "form-check-input me-2" })
+                                    @Html.LabelFor(model => model.LockoutEnabled, "Locked?", new { @class = "form-check-label mb-0" })
+                                </div>
+                            </div>
+                        </div>
+
+
+
+
+                        <!-- Hidden Fields -->
+                        <input type="hidden" name="SelectedRoles" id="SelectedRoles" />
+                        <input type="hidden" name="SelectedBranches" id="SelectedBranches" />
+
+                        <br />
+                        <!-- Tabs -->
+                        <ul class="nav nav-tabs" style="margin-bottom: 20px; font-size: large; margin-top: 40px;">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#roles"><i class="fa fa-table" aria-hidden="true"></i> Authorized Roles</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="#branches"><i class="fa fa-table" aria-hidden="true"></i> Authorized Branches</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div id="roles" class="tab-pane active">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Select</th>
+                                            <th>Role Name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (ViewBag.roles != null)
+                                        {
+                                            foreach (var role in ViewBag.roles)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <input type="checkbox" name="roles" value="@role" />
+                                                    </td>
+                                                    <td>@($"{role}")</td>
+                                                </tr>
+                                            }
+                                        }
+
+                                        else
+                                        {
+                                            <tr>
+                                                <td colspan="2">No commissions available</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Branches Tab -->
+                            <div id="branches" class="tab-pane">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Select</th>
+                                            <th>Branch Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (branches != null)
+                                        {
+                                            foreach (var branch in branches)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <input type="checkbox" name="Branchids" value="@branch.Id" />
+                                                    </td>
+                                                    <td>@branch.Description</td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td colspan="2">No commissions available</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <br />
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-primary" style="width: 150px;">Create</button>
+                    }
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal  fade" id="employeeLookUpModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">Employees Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+
+            <br />
+            <style>
+                #employeesGrid thead {
+                    background-color: #007bff;
+                    color: white;
+                }
+            </style>
+            <table id="employeesGrid" class="table table-hover" style="width:100%">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+    @if (TempData["BR"] != null)
+    {
+        <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: '@TempData["BR"]',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+            });
+        });
+        </script>
+    }
+
+    <script src="~/Scripts/js/navlink.js"></script>
+
+    <script>
+        $('#employeesGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "Employee", new { Area = "HumanResource"}))",
+                "sServerMethod": "POST",
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<button class="btn btn-outline-info" onclick="selectCoA(\'' + aData.Id + '\')">Select</button>';
+
+                    $('td:eq(5)', nRow).html(dt_Created);
+                    $('td:eq(6)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+                "aoColumns": [
+                    { "mDataProp": "Customer.FullName", "sTitle": "Employee Name", "sWidth": "10%" },
+                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%" },
+                    { "mDataProp": "DepartmentDescription", "sTitle": "Department", "sWidth": "5%" },
+                    { "mDataProp": "CustomerIndividualNationalityDescription", "sTitle": "Nationality", "sWidth": "5%" },
+                    { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Gender", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],
+                "aaSorting": [[0, "desc"]]
+            });
+
+         function selectCoA(id) {
+            console.log("Selected ID:", id);
+            $.ajax({
+                url: '/Admin/Membership/GetEmployeeDetails',
+                type: 'POST',
+                data: { Id: id },
+                success: function (response) {
+                    if (response.success) {
+                        console.log(response);
+                        $('#EmployeeCustomerFullName').val(response.data.EmployeeCustomerFullName);
+                        $('#EmployeeId').val(response.data.EmployeeId);
+                        $('#EmployeeDesignationDescription').val(response.data.department);
+                        $('#BranchDescription').val(response.data.Branch);
+                        $('#BranchId').val(response.data.BranchId);
+
+                        $('#employeeLookUpModal').modal('hide');
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while processing your request.');
+                }
+            });
+        }
+    </script>
+
+    <script>
+        function validateUsername(input) {
+            input.value = input.value.toLowerCase();
+
+            const hasUppercase = /[A-Z]/.test(input.value);
+
+            const warningMessage = document.getElementById("username-warning");
+            if (hasUppercase) {
+                warningMessage.style.display = "block";
+            } else {
+                warningMessage.style.display = "none";
+            }
+        }
+    </script>
+}

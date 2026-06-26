@@ -1,0 +1,866 @@
+﻿
+@model Application.MainBoundedContext.DTO.HumanResourcesModule.SalaryProcessingDTO
+
+@{
+    ViewBag.Title = "Salary Processing";
+    var typeDescription = ViewBag.SalaryHeadTypeSelectList as List<SelectListItem>;
+}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Salary Processing</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "SalaryProcessing", new { Area = "HumanResource" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>ProcessSalary</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
+
+<script>
+    $(document).ready(function () {
+        $('.nav-tabs li:first-child a').addClass('active');
+        $('#tab1').addClass('active');
+
+        $('.tab-link').on('click', function (e) {
+            e.preventDefault();
+
+            $('.tab-link').removeClass('active');
+            $('.tab-content').removeClass('active');
+
+            $(this).addClass('active');
+            $($(this).attr('href')).addClass('active');
+        });
+
+        $('#DurationStartDate').datepicker({
+            format: 'dd-mm-yyyy',
+            todayHighlight: true,
+            autoclose: true
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('.nav-tabs li:first-child a').addClass('active');
+        $('#tab1').addClass('active');
+
+        $('.tab-link').on('click', function (e) {
+            e.preventDefault();
+
+            $('.tab-link').removeClass('active');
+            $('.tab-content').removeClass('active');
+
+            $(this).addClass('active');
+            $($(this).attr('href')).addClass('active');
+        });
+
+        $('#DurationDate').datepicker({
+            format: 'dd-mm-yyyy',
+            todayHighlight: true,
+            autoclose: true
+        });
+    });
+</script>
+
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+
+
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        @using (Html.BeginForm("ProcessSalary", "SalaryProcessing", new { Area = "HumanResource" }, FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.HiddenFor(model => model.Id)
+
+
+                            @Html.HiddenFor(model => model.EmployeeCategoryDescription, new { id = "EmployeeCategoryDescription" })
+                            @Html.HiddenFor(model => model.EmployeeCategory, new { id = "EmployeeCategory" })
+                            @Html.HiddenFor(model => model.Month, new { id = "Month" })
+                            @Html.HiddenFor(model => model.MonthDescription, new { id = "MonthDescription" })
+
+                            @Html.HiddenFor(model => model.PostedEntries, new { id = "PostedEntries" })
+
+                            <fieldset>
+                                <div class="row">
+                                    <!-- Posting Period Section -->
+                                    <div class="col-lg-4">
+                                        @Html.LabelFor(model => model.PostingPeriodDescription, new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.PostingPeriodId, new { id = "PostingPeriodId" })
+                                        @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Select Posting Period" } })
+                                        @Html.ValidationMessageFor(model => model.PostingPeriodDescription, "", new { @class = "text-danger" })
+                                    </div>
+
+                                    <!-- Employee Category Description Section -->
+                                    <div class="col-lg-4">
+                                        @Html.LabelFor(model => model.EmployeeCategoryDescription)
+
+                                        @Html.EditorFor(model => model.EmployeeCategoryDescription, new
+                                        {
+                                            htmlAttributes = new
+                                            {
+                                                @class = "form-control",
+                                                @placeholder = "Autofill...",
+                                                id = "EmployeeCategoryDescription",
+                                                @readonly = "readonly"
+                                            }
+                                        })
+                                    </div>
+
+                                    <!-- Remarks Section -->
+                                    <div class="col-lg-4">
+                                        @Html.LabelFor(model => model.Remarks)
+                                        @Html.EditorFor(model => model.Remarks, new
+                                        {
+                                            htmlAttributes = new
+                                            {
+                                                @class = "form-control",
+                                                @placeholder = "Autofill...",
+                                                id = "Remarks",
+                                                @readonly = "readonly"
+                                            }
+                                        })
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <!-- Tax Relief Amount Section -->
+                                    <div class="col-lg-4">
+                                        @Html.LabelFor(model => model.TaxReliefAmount)
+                                        @Html.EditorFor(model => model.TaxReliefAmount, new
+                                        {
+                                            htmlAttributes = new
+                                            {
+                                                @class = "form-control",
+                                                @placeholder = "Autofill...",
+                                                id = "TaxReliefAmount",
+                                                @readonly = "readonly"
+                                            }
+                                        })
+                                    </div>
+
+                                    <!-- Maximum Provident Fund Relief Amount Section -->
+                                    <div class="col-lg-4">
+                                        @Html.LabelFor(model => model.MaximumProvidentFundReliefAmount)
+                                        @Html.EditorFor(model => model.MaximumProvidentFundReliefAmount, new
+                                        {
+                                            htmlAttributes = new
+                                            {
+                                                @class = "form-control",
+                                                @placeholder = "Autofill...",
+                                                id = "MaximumProvidentFundReliefAmount",
+                                                @readonly = "readonly"
+                                            }
+                                        })
+                                    </div>
+
+                                    <!-- Maximum Insurance Relief Amount Section -->
+                                    <div class="col-lg-4">
+                                        @Html.LabelFor(model => model.MaximumInsuranceReliefAmount)
+                                        @Html.EditorFor(model => model.MaximumInsuranceReliefAmount, new
+                                        {
+                                            htmlAttributes = new
+                                            {
+                                                @class = "form-control",
+                                                @placeholder = "Autofill...",
+                                                id = "MaximumInsuranceReliefAmount",
+                                                @readonly = "readonly"
+                                            }
+                                        })
+                                    </div>
+                                </div>
+
+                                <ul class="nav nav-tabs" id="loanAccountsTab">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" href="#salaryGroups" data-toggle="tab">Salary Groups</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#branches" data-toggle="tab">Branches</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#departments" data-toggle="tab">Departments</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#employeesSection" data-toggle="tab">Employees</a>
+                                    </li>
+                                </ul>
+
+                                <div class="tab-content">
+                                    <!-- SalryGroup Tab Content -->
+                                    <div id="salaryGroups" class="tab-pane fade show active">
+
+                                        <h3>Salary Groups</h3>
+                                        @if (ViewBag.SalaryGroups != null && ViewBag.SalaryGroups.Count > 0)
+                                        {
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Select</th>
+                                                        <th>Name</th>
+                                                        <th>Create Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var salaryGroup in ViewBag.SalaryGroups)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                <input type="checkbox" class="groupSelect" name="selectedGroups" value="@salaryGroup.Id" data-description="@salaryGroup.Description" />
+                                                            </td>
+                                                            <td>@salaryGroup.Description</td>
+                                                            <td>@salaryGroup.CreatedDate.ToString("dd-MM-yyyy")</td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        }
+                                        else
+                                        {
+                                            <p>No salary groups found.</p>
+                                        }
+
+
+                                    </div>
+
+                                    <!-- Branches Tab Content -->
+                                    <div id="branches" class="tab-pane fade">
+                                        <h3>Branches</h3>
+
+                                        @if (ViewBag.Branches != null && ViewBag.Branches.Count > 0)
+                                        {
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Select</th>
+
+                                                        <th>Name</th>
+                                                        <th>Address</th>
+                                                        <th>Street</th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var Branches in ViewBag.Branches)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                <input type="checkbox" class="groupSelect" name="selectedGroups" value="@Branches.Id" data-description="@Branches.Description" />
+                                                            </td>
+                                                            <td>@Branches.Description</td>
+                                                            <td>@Branches.AddressAddressLine1</td>
+                                                            <td>@Branches.AddressStreet</td>
+
+
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        }
+                                        else
+                                        {
+                                            <p>No Branches found for this the employee.</p>
+                                        }
+                                    </div>
+
+
+                                    <!-- Department Tab Content -->
+                                    <div id="departments" class="tab-pane fade">
+                                        <h3>Department</h3>
+
+                                        @if (ViewBag.Departments != null && ViewBag.Departments.Count > 0)
+                                        {
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Select</th>
+
+                                                        <th>Name</th>
+                                                        <th>Created Date</th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var department in ViewBag.Departments)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                <input type="checkbox" class="groupSelect" name="selectedGroups" value="@department.Id" data-description="@department.Description" />
+                                                            </td>
+                                                            <td>@department.Description</td>
+                                                            <td>@department.CreatedDate.ToString("dd-MM-yyyy")</td>
+
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        }
+                                        else
+                                        {
+                                            <p>No loan guarantors found for this customer.</p>
+                                        }
+                                    </div>
+
+                                    <div id="employeesSection" class="tab-pane fade">
+                                        <h3>Employees</h3>
+                                        <table class="table table-bordered" id="employeeTable">
+                                            <thead>
+                                                <tr>
+                                                    <th>Employee Name</th>
+                                                    <th>Card Number</th>
+                                                    <th>Remarks</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Dynamically populated rows -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+
+
+
+
+
+                                </div>
+
+                            </fieldset>
+
+
+
+                            <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
+
+
+
+                                <input type="submit" value="ProcessSalary" class="btn btn-primary btn-update" />
+                            </div>
+
+
+
+                        }
+                    </div>
+                </div>
+
+                <style>
+                    .card {
+                        margin-bottom: 20px;
+                    }
+
+
+
+                    .form-group-lg {
+                        margin-bottom: 1.5rem;
+                    }
+
+                    .form-control {
+                        border-radius: .25rem;
+                    }
+
+
+
+                    .col-lg-2 {
+                        display: flex;
+                        align-items: center; /* Center the title vertically */
+                        justify-content: center; /* Center the title horizontally if needed */
+                        padding: 0; /* Remove default padding if necessary */
+                        border-radius: 4px; /* Rounded corners */
+                    }
+
+                    .bottom-button {
+                        border: 2px solid gray; /* Border color set to gray */
+                        padding: 10px; /* Padding inside the border */
+                        border-radius: 5px; /* Rounded corners (optional) */
+                        font-size: 16px;
+                        font-weight: bold;
+                        background-color: #e0f0ff;
+                    }
+                </style>
+                <style>
+                    .highlight {
+                        background-color: #f0c14b; /* Light yellow color for highlighting */
+                    }
+                </style>
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="salaryPeriodsLookup" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">
+                    Salary Periods Lookup
+                    <button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button>
+                </h3>
+            </div>
+            <div class="modal-body">
+                <table id="salaryPeriodsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Product G/L Code</th>
+                            <th>Priority</th>
+                            <th>Product G/L Nam</th>
+                            <th>Product Code</th>
+                            <th>Created Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="dataTables_empty">Loading data from server</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ChartOfAccountLookup" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">
+                    Chart Of Account Lookup
+                    <button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button>
+                </h3>
+            </div>
+            <div class="modal-body">
+                <table id="chartofaccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Cost Center</th>
+                            <th>Account Code</th>
+                            <th>Account Type</th>
+                            <th>Account Category</th>
+                            <th>Created Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="dataTables_empty">Loading data from server</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+
+
+    <script>
+        $(document).ready(function () {
+            $('#loanAccountsTab a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+                console.log("Activated tab: " + $(e.target).attr("href"));
+            });
+        });
+
+    </script>
+
+
+    <script>
+    $(document).ready(function () {
+        var salaryPeriodsMap = {};
+
+        $('.PostingPeriodsLookup').typeahead({
+            minLength: 1,
+            source: function (query, process) {
+                $.getJSON('@Url.Action("GetSalaryPeriodsAsync", "SalaryProcessing")', function (salaryPeriods) {
+                    if (salaryPeriods && salaryPeriods.length > 0) {
+                        var months = [];
+                        salaryPeriodsMap = {};
+
+                        $.each(salaryPeriods, function (index, salaryPeriod) {
+                            var description = salaryPeriod.PostingPeriodDescription; // Display month description
+                            months.push(description);
+                            salaryPeriodsMap[description] = salaryPeriod;
+                        });
+
+                        process(months);
+                    } else {
+                        console.warn("No salary periods found.");
+                    }
+                }).fail(function () {
+                    console.error("Failed to fetch salary periods.");
+                });
+            },
+            updater: function (item) {
+                var selectedSalaryPeriod = salaryPeriodsMap[item];
+                if (selectedSalaryPeriod) {
+                    $('#PostingPeriodId').val(selectedSalaryPeriod.PostingPeriodId);
+                    $('#EmployeeCategoryDescription').val(selectedSalaryPeriod.EmployeeCategoryDescription);
+                    $('#Remarks').val(selectedSalaryPeriod.Remarks);
+                    $('#TaxReliefAmount').val(selectedSalaryPeriod.TaxReliefAmount);
+                    $('#MaximumProvidentFundReliefAmount').val(selectedSalaryPeriod.MaximumProvidentFundReliefAmount);
+                    $('#MaximumInsuranceReliefAmount').val(selectedSalaryPeriod.MaximumInsuranceReliefAmount);
+                    $('#EmployeeCategoryDescription').val(selectedSalaryPeriod.EmployeeCategoryDescription);
+                    $('#EmployeeCategory').val(selectedSalaryPeriod.EmployeeCategory = 0);
+                    $('#Month').val(selectedSalaryPeriod.Month);
+                    $('#MonthDescription').val(selectedSalaryPeriod.MonthDescription);
+                    $('#PostedEntries').val(selectedSalaryPeriod.PostedEntries);
+
+
+
+                }
+                return item;
+            }
+        });
+    });
+    </script>
+
+    <script>
+        document.getElementById('selectAll').addEventListener('click', function () {
+            var checkboxes = document.querySelectorAll('.groupSelect');
+            checkboxes.forEach(function (checkbox) {
+                checkbox.checked = this.checked;
+            });
+        });
+    </script>
+
+    <script>
+        $(document).on("change", ".groupSelect", function () {
+            const salaryGroupId = $(this).val(); // Get the selected SalaryGroupId
+
+            if ($(this).is(":checked")) {
+                // Send the selected SalaryGroupId to the server
+                $.ajax({
+                    url: "/SalaryProcessing/CheckEmployeesBySalaryGroup",
+                    method: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify({ salaryGroupId }), // Send SalaryGroupId
+                    success: function (response) {
+                        if (response.success) {
+                            const employees = response.data;
+                            // Clear and populate the Employees table
+                            const employeeTableBody = $("#employeeTable tbody");
+                            employeeTableBody.empty(); // Clear previous rows
+
+                            employees.forEach(employee => {
+                                // Fix invalid date handling
+                                const createdDate = new Date(employee.CreatedDate);
+                                const formattedDate = createdDate instanceof Date && !isNaN(createdDate) ? createdDate.toLocaleDateString() : "Invalid Date";
+
+                                // Append the employee data to the table
+                                employeeTableBody.append(`
+                                                    <tr>
+                                                        <td hidden>${employee.EmployeeId}</td> <!-- Make EmployeeId hidden -->
+                                                        <td>${employee.EmployeeCustomerFullName}</td>
+                                                        <td>${employee.CardNumber}</td>
+                                                        <td>${employee.Remarks || "N/A"}</td>
+                                                    </tr>
+                                                `);
+                            });
+                        } else {
+                            alert(response.message || "No employees found for the selected salary group.");
+                        }
+                    },
+                    error: function () {
+                        alert("An error occurred while processing the request.");
+                    }
+                });
+            }
+        });
+    </script>
+
+    <script>
+        $(document).on("submit", "#salaryProcessingForm", function (e) {
+            e.preventDefault(); // Prevent default form submission
+
+            // Collect Employee IDs from the table
+            const employeeIds = [];
+            $("#employeeTable tbody tr").each(function () {
+                const employeeId = $(this).find("td:first").text(); // Assuming EmployeeId is in the first cell
+                if (employeeId) {
+                    employeeIds.push(employeeId.trim());
+                }
+            });
+
+            // Include Employee IDs in the form data
+            const formData = $(this).serializeArray(); // Serialize the form fields
+            formData.push({ name: "employeeIds", value: employeeIds });
+
+            // Send the form data via AJAX
+            $.ajax({
+                url: $(this).attr("action"),
+                method: "POST",
+                data: $.param(formData), // Serialize the form data for the server
+                success: function (response) {
+                    if (response.success) {
+                        alert("Salary processing successful!");
+                        window.location.href = response.redirectUrl;
+                    } else {
+                        alert(response.message || "Failed to process salary.");
+                    }
+                },
+                error: function () {
+                    alert("An error occurred while processing the form.");
+                }
+            });
+        });
+
+    </script>
+
+    @*<script>
+            $(document).on("change", ".groupSelect", function () {
+                const branchId = $(this).val(); // Get the selected SalaryGroupId
+
+                if ($(this).is(":checked")) {
+                    // Send the selected SalaryGroupId to the server
+                    $.ajax({
+                        url: "/SalaryProcessing/CheckEmployeesByBrach",
+                        method: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify({ branchId }), // Send SalaryGroupId
+                        success: function (response) {
+                            if (response.success) {
+                                const employees = response.data;
+                                // Clear and populate the Employees table
+                                const employeeTableBody = $("#employeeTable tbody");
+                                employeeTableBody.empty(); // Clear previous rows
+
+                                employees.forEach(employee => {
+                                    // Fix invalid date handling
+                                    const createdDate = new Date(employee.CreatedDate);
+                                    const formattedDate = createdDate instanceof Date && !isNaN(createdDate) ? createdDate.toLocaleDateString() : "Invalid Date";
+
+                                    // Append the employee data to the table
+                                    employeeTableBody.append(`
+                                                    <tr>
+                                                        <td hidden>${employee.EmployeeId}</td> <!-- Make EmployeeId hidden -->
+                                                        <td>${employee.EmployeeCustomerFullName}</td>
+                                                        <td>${employee.CardNumber}</td>
+                                                        <td>${employee.Remarks || "N/A"}</td>
+                                                    </tr>
+                                                `);
+                                });
+                            } else {
+                                alert(response.message || "No employees found for the selected salary group.");
+                            }
+                        },
+                        error: function () {
+                            alert("An error occurred while processing the request.");
+                        }
+                    });
+                }
+            });
+        </script>*@
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <style>
+        .container1 {
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .summary-table td {
+                padding: 10px;
+                border: 1px solid #ddd;
+            }
+
+            .summary-table label {
+                display: block;
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+
+            .summary-table input {
+                width: 100%;
+                padding: 8px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                background-color: #f9f9f9;
+            }
+
+        .tab-content {
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .tab-pane {
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 50px;
+        }
+
+        thead {
+            background-color: #f5f5f5;
+        }
+
+            thead th {
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: center;
+                font-style: italic;
+                color: cadetblue;
+            }
+
+        tbody td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .btn-danger {
+            color: #fff;
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+            .btn-danger:hover {
+                background-color: #c82333;
+                border-color: #bd2130;
+            }
+
+
+
+        .tab-content {
+            border-top: 1px solid #ddd; /* Add a subtle border if needed */
+            padding: 15px; /* Optional: Add padding for spacing */
+        }
+
+        /* Optional: Add spacing between tab navigation and content */
+        .container {
+            margin-top: 20px; /* Adjust top margin as needed */
+        }
+    </style>
+
+
+
+
+
+
+
+
+
+}

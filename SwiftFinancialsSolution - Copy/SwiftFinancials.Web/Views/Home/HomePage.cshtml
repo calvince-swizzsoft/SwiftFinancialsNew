@@ -1,0 +1,63 @@
+﻿@using Infrastructure.Crosscutting.Framework.Utils;
+@{
+    /**/
+
+    ViewBag.Title = "Home";
+}
+
+@if (User.IsInRole(WellKnownUserRoles.Customer))
+{
+    <div class="row wrapper border-bottom white-bg page-heading">
+        <div class="col-lg-9">
+            <h2>My Saccos</h2>
+        </div>
+    </div>
+
+    <div class="wrapper wrapper-content animated fadeInRight">
+        <div class="row ibox-content">
+            <div class="sk-spinner sk-spinner-wave">
+                <div class="sk-rect1"></div>
+                <div class="sk-rect2"></div>
+                <div class="sk-rect3"></div>
+                <div class="sk-rect4"></div>
+                <div class="sk-rect5"></div>
+            </div>
+            @*Using Bootstrap Responsive grids, it is not necessary to manually build a table and loop through the rows.
+                Bootstrap will automatically wrap columns for you. Bootstrap works on a grid system using 12 columns,
+                and if more than 12 columns are placed within a single row, each group of extra columns will, move as one unit*@
+
+            @if (ViewBag.Saccos != null)
+            {
+                foreach (var sacco in ViewBag.Saccos)
+                {
+                    <div class="col-lg-3">
+                        <div class="widget-head-color-box navy-bg p-lg text-center">
+                            <img alt="image" class="rounded-circle" src="~/Images/bank.jpg">
+                        </div>
+                        <div class="widget-text-box">
+                            <a href="/dashboard/dashboard/customersummary/@sacco.CompanyId">
+                                <h3>Click to view account details</h3>
+                            </a>
+                            <h3 class="m-b-xs"><strong>@sacco.CompanyDescription</strong></h3>
+                            <address class="m-t-md">
+                                <strong>@sacco.CompanyAddressAddressLine1</strong><br>
+                                @sacco.CompanyAddressAddressLine2<br>
+                                @sacco.CompanyAddressEmail<br>
+                                <abbr title="Phone">P:</abbr>@sacco.CompanyAddressMobileLine
+                            </address>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+}
+
+@section scripts {
+    <script type="text/javascript">
+        window.onbeforeunload = function (event) {
+            // do stuff here when navigating away
+            $('.ibox-content').toggleClass('sk-loading');
+        };
+    </script>
+}

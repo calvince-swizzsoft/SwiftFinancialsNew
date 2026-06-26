@@ -1,0 +1,108 @@
+﻿
+@model  Application.MainBoundedContext.DTO.AdministrationModule.ReportDTO
+@{
+    ViewBag.Title = "View Report";
+}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Report</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "Report", new { Area = "Admin" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>View</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.ReportName)</strong><br>
+
+                                @Html.DisplayFor(model => model.ReportName)<br>
+                            </p>
+
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.Parent.ReportName)</strong><br>
+
+                                @Html.DisplayFor(model => model.Parent.ReportName)<br>
+                            </p>
+
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.ReportPath)</strong><br>
+
+                                @Html.DisplayFor(model => model.ReportPath)<br>
+                            </p>
+
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.ReportURL)</strong><br>
+
+                                @Html.DisplayFor(model => model.ReportURL)<br>
+                            </p>
+                        </div>
+                        <div class="col-lg-6">
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.ReportQuery)</strong><br>
+
+                                @Html.DisplayFor(model => model.ReportQuery)<br>
+                            </p>
+
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.ReportPort)</strong><br>
+
+                                @Html.DisplayFor(model => model.ReportPort)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.Category)</strong><br>
+
+                                @Html.DisplayFor(model => model.Category)<br>
+                            </p>
+
+                            <p>
+                                <strong> @Html.DisplayNameFor(model => model.CategoryDescription)</strong><br>
+
+                                @Html.DisplayFor(model => model.CategoryDescription)<br>
+                            </p>
+
+                            <p>
+                                <strong> @Html.DisplayNameFor(model => model.Depth)</strong><br>
+
+                                @Html.DisplayFor(model => model.Depth)<br>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p>
+                                @Html.ActionLink("Edit", "Edit", "Report", new { id = Model.Id, Area = "Admin" }, new { @class = "btn btn-success" })
+                                @Html.ActionLink("Back to List", "Index", "Report", new { Area = "Admin" }, new { @class = "btn btn-success" })
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

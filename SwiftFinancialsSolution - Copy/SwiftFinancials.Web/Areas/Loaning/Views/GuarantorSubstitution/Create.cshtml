@@ -1,0 +1,1316 @@
+﻿@model  Application.MainBoundedContext.DTO.BackOfficeModule.LoanCaseDTO
+
+@{
+    ViewBag.Title = "Guarantor Substitution";
+
+    var LoanCaseFilter = ViewBag.LoanCaseFilterSelectList as List<SelectListItem>;
+    var LoanCaseStatus = ViewBag.LoanCaseStatusSelectList as List<SelectListItem>;
+
+    var CustomerFilter = ViewBag.CustomerFilter as List<SelectListItem>;
+
+
+
+    var recordStatus = ViewBag.recordStatus as List<SelectListItem>;
+    var customerFilter = ViewBag.customerFilter as List<SelectListItem>;
+
+
+    var successMessage = TempData["Success"] as string;
+    var customerGuarantorEmpty = TempData["CustomerGuarantorEmpty"] as string;
+    var emptyLoansGuaranteedIds = TempData["EmptyLoansGuaranteedIds"] as string;
+}
+
+<style>
+    .tab {
+        overflow: hidden;
+        background-color: whitesmoke;
+        border-radius: 8px;
+        margin: 20px;
+    }
+
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            color: black;
+            font-size: 16px;
+            border-radius: 8px 8px 0 0;
+            margin-right: 2px;
+        }
+
+            .tab button:hover {
+                background-color: lightgray;
+            }
+
+            .tab button.active {
+                background-color: lightgray;
+            }
+
+
+    .tabcontent {
+        display: none;
+        padding: 16px;
+        border: 1px solid #ccc;
+        border-top: none;
+        border-radius: 0 8px 8px 8px;
+        background-color: white;
+        margin: 0 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        height: auto;
+    }
+
+        .tabcontent h3 {
+            margin-top: 0;
+        }
+
+
+    .incomeAdjustment-section {
+        margin-top: 20px;
+        background-color: #e0f0ff;
+        padding: 15px;
+        border-radius: 8px;
+    }
+
+    .blue-section {
+        margin-top: 20px;
+        background-color: #e0f0ff;
+        padding: 15px;
+        border-radius: 8px;
+    }
+
+    .navbar {
+        background-color: rgba(255, 255, 255, 0.9); /* White with transparency */
+        padding: 15px 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .nav-menu {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+    }
+
+        .nav-menu li {
+            position: relative;
+            margin: 0 15px;
+        }
+
+    .nav-link {
+        text-decoration: none;
+        color: #333; /* Dark gray for text */
+        padding: 10px 15px;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        background-color: transparent; /* Clear background for default state */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+        .nav-link:hover {
+            color: #007bff; /* Blue for active link */
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-link:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+
+
+
+    #loansGuaranteed {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #loansGuaranteed, th, td {
+        padding: 15px;
+        text-align: center;
+        border: 1px solid #ddd;
+        transition: background 0.3s, transform 0.3s;
+    }
+
+    #loansGuaranteed, th {
+        background: linear-gradient(to bottom, #4a90e2, #003366);
+        color: white;
+        text-transform: uppercase;
+        font-size: 1.1em;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    #loansGuaranteed, tr:hover td {
+        background: rgba(74, 144, 226, 0.2);
+        transform: translateY(-2px);
+    }
+
+    #loansGuaranteed, td {
+        background: #f9f9f9;
+        color: #333;
+    }
+
+    #loansGuaranteed, tr:nth-child(even) td {
+        background: #f2f2f2;
+    }
+
+    #loansGuaranteed, tr:nth-child(odd) td {
+        background: #ffffff;
+    }
+
+    #loansGuaranteed, tr:last-child td {
+        border-bottom: none;
+    }
+
+
+
+    #savingsAccountsTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #savingsAccountsTable, th, td {
+        padding: 15px;
+        text-align: center;
+        border: 1px solid #ddd;
+        transition: background 0.3s, transform 0.3s;
+    }
+
+    #savingsAccountsTable, th {
+        background: linear-gradient(to bottom, #4a90e2, #003366);
+        color: white;
+        text-transform: uppercase;
+        font-size: 1.1em;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    #savingsAccountsTable, tr:hover td {
+        background: rgba(74, 144, 226, 0.2);
+        transform: translateY(-2px);
+    }
+
+    #savingsAccountsTable, td {
+        background: #f9f9f9;
+        color: #333;
+    }
+
+    #savingsAccountsTable, tr:nth-child(even) td {
+        background: #f2f2f2;
+    }
+
+    #savingsAccountsTable, tr:nth-child(odd) td {
+        background: #ffffff;
+    }
+
+    #savingsAccountsTable, tr:last-child td {
+        border-bottom: none;
+    }
+
+
+
+    #investmentsAccountsTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #investmentsAccountsTable, th, td {
+        padding: 15px;
+        text-align: center;
+        border: 1px solid #ddd;
+        transition: background 0.3s, transform 0.3s;
+    }
+
+    #investmentsAccountsTable, th {
+        background: linear-gradient(to bottom, #4a90e2, #003366);
+        color: white;
+        text-transform: uppercase;
+        font-size: 1.1em;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    #investmentsAccountsTable, tr:hover td {
+        background: rgba(74, 144, 226, 0.2);
+        transform: translateY(-2px);
+    }
+
+    #investmentsAccountsTable, td {
+        background: #f9f9f9;
+        color: #333;
+    }
+
+    #investmentsAccountsTable, tr:nth-child(even) td {
+        background: #f2f2f2;
+    }
+
+    #investmentsAccountsTable, tr:nth-child(odd) td {
+        background: #ffffff;
+    }
+
+    #investmentsAccountsTable, tr:last-child td {
+        border-bottom: none;
+    }
+
+
+
+
+    #loanAccountTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #loanAccountTable, th, td {
+        padding: 15px;
+        text-align: center;
+        border: 1px solid #ddd;
+        transition: background 0.3s, transform 0.3s;
+    }
+
+    #loanAccountTable, th {
+        background: linear-gradient(to bottom, #4a90e2, #003366);
+        color: white;
+        text-transform: uppercase;
+        font-size: 1.1em;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    #loanAccountTable, tr:hover td {
+        background: rgba(74, 144, 226, 0.2);
+        transform: translateY(-2px);
+    }
+
+    #loanAccountTable, td {
+        background: #f9f9f9;
+        color: #333;
+    }
+
+    #loanAccountTable, tr:nth-child(even) td {
+        background: #f2f2f2;
+    }
+
+    #loanAccountTable, tr:nth-child(odd) td {
+        background: #ffffff;
+    }
+
+    #loanAccountTable, tr:last-child td {
+        border-bottom: none;
+    }
+
+
+
+
+    .section-container {
+        border: 1px solid #00000080;
+        border-radius: 5px;
+        padding: 20px;
+        background-color: #fff;
+        width: 100%;
+        margin: auto;
+        position: relative;
+    }
+
+    .section-title {
+        position: absolute;
+        top: -12px;
+        left: 20px;
+        background-color: #fff;
+        padding: 0 10px;
+        font-weight: bold;
+        color: black;
+    }
+
+    .blue-section {
+        margin-top: 20px;
+        background-color: #e0f0ff;
+        padding: 15px;
+        border-radius: 8px;
+    }
+
+
+
+    .no-dataLoansGuaranteed-message {
+        color: red;
+        font-size: 1.2rem;
+        text-align: center;
+    }
+
+    .no-dataSavingsAccounts-message {
+        color: red;
+        font-size: 1.2rem;
+        text-align: center;
+    }
+
+    .no-dataLoanAccounts-message {
+        color: red;
+        font-size: 1.2rem;
+        text-align: center;
+    }
+
+    .no-dataInvestmentsAccounts-message {
+        color: red;
+        font-size: 1.2rem;
+        text-align: center;
+    }
+</style>
+
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h1>Back Office</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "GuarantorSubstitution", new { Area = "Loaning" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<br />
+<nav class="navbar">
+    <ul class="nav-menu">
+        <li>@Html.ActionLink("Loan Restructuring", "Index", "LoanRestructuring", new { area = "Loaning" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("Guarantor Attachment", "Create", "GuarantorAttachment", new { area = "Loaning" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("Guarantor Substitution", "Create", "GuarantorSubstitution", new { area = "Loaning" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("Guarantor Relieving", "Index", "GuarantorRelieving", new { area = "Loaning" }, new { @class = "nav-link" })</li>
+        <li>@Html.ActionLink("Guarantor Management", "Index", "GuarantorManagement", new { area = "Loaning" }, new { @class = "nav-link" })</li>
+    </ul>
+</nav>
+
+
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h2>Guarantor Substitution</h2>
+
+                    @if (successMessage != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success',
+                                    text: 'Operation Completed Successfully.',
+                                    confirmButtonColor: '#007bff',
+                                });
+                            });
+                        </script>
+                    }
+
+
+                    @if (customerGuarantorEmpty != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: 'Customer and Substitute Guarantor required to complete Guarantor Substitution!',
+                                    confirmButtonColor: '#FF0000',
+                                });
+                            });
+                        </script>
+                    }
+
+                    @if (emptyLoansGuaranteedIds != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: 'Select at least one Guaranteed Loan to complete Guarantor Substitution!',
+                                    confirmButtonColor: '#FF0000',
+                                });
+                            });
+                        </script>
+                    }
+
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-white">
+                    @using (Html.BeginForm("Create", "GuarantorSubstitution", new { Area = "Loaning" }, FormMethod.Post, new { @id = "substitutionForm" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-md-3 form-group">
+                                    @Html.LabelFor(model => model.CustomerFullName, new { @class = "control-label" })
+                                    <div class="input-group" data-autoclose="true">
+                                        @Html.HiddenFor(model => model.CustomerId)
+                                        @Html.TextBoxFor(model => model.CustomerIndividualFirstName, new { @class = "form-control input-md alpha alphaspace required", @disabled = "", @placeholder = "Search Customer..." })
+                                        <span class="input-group-addon">
+                                            <a data-toggle="modal" data-target="#CustomerLookupModal"><span class="fa fa-search"></span></a>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 form-group">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CustomerTypeDescription, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.CustomerNonIndividualDescription, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 form-group">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CustomerStationZoneDivisionEmployerDescription, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.CustomerStationZoneDivisionEmployerDescription, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 form-group">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CustomerStation, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.CustomerStation, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-3 form-group">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CustomerPersonalIdentificationNumber, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.CustomerPersonalIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 form-group">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CustomerReference1, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.CustomerReference1, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                        @Html.ValidationMessageFor(model => model.CustomerReference1, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 form-group">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CustomerReference2, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.CustomerReference2, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                        @Html.ValidationMessageFor(model => model.CustomerReference2, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 form-group">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CustomerReference3, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.CustomerReference3, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                        @Html.ValidationMessageFor(model => model.CustomerReference3, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12 form-group">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+
+
+                        <style>
+                            #popover-button {
+                                position: absolute;
+                                right: 50px;
+                            }
+                        </style>
+                        <div class="tab">
+                            <button class="tablinks active" onclick="openTab(event, 'MainTab1')"><i class="fa fa-table" aria-hidden="true"></i> Loans Guaranteed</button>
+                            <button class="tablinks" onclick="openTab(event, 'MainTab2')"><i class="fa fa-table" aria-hidden="true"></i> Savings Accounts</button>
+                            <button class="tablinks" onclick="openTab(event, 'MainTab3')"><i class="fa fa-table" aria-hidden="true"></i> Loans Accounts</button>
+                            <button class="tablinks" onclick="openTab(event, 'MainTab4')"><i class="fa fa-table" aria-hidden="true"></i> Investments Accounts</button>
+
+                            <button id="popover-button" data-toggle="popover" title="Guarantor Substitution" data-content="Only Loans Guaranteed with status &quot;Attached&quot; can be subjected to Substitution." type="button"><i class="fa fa-question-circle" aria-hidden="true"></i></button>
+                        </div>
+
+                        <input type="hidden" id="loansguaranteedInput" name="loansGuaranteedIds" value="" />
+                        <div id="MainTab1" class="tabcontent" style="display: block;">
+                            <div class="table-container">
+                                <h3 style="font-size: 1.9rem; text-align: center;">Loans Guaranteed</h3>
+                                <div id="noDataLoansGuaranteedMessage" class="no-dataLoansGuaranteed-message mt-2">No Data Available!</div>
+                                <table id="loansGuaranteed" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Select?</th>
+                                            <th>Status</th>
+                                            <th>Loan Product</th>
+                                            <th>Total Shares</th>
+                                            <th>Committed Shares</th>
+                                            <th>Amount Guaranteed</th>
+                                            <th>Amount Pledged</th>
+                                            <th>Loanee</th>
+                                            <th>Identity Card Number</th>
+                                            <th>Payroll Numbers</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="MainTab2" class="tabcontent">
+                            <div class="table-container">
+                                <h3 style="font-size: 1.9rem; text-align: center;">Savings Accounts</h3>
+                                <div id="noDataSavingsAccountsMessage" class="no-dataSavingsAccounts-message mt-2">No Data Available!</div>
+                                <table id="savingsAccountsTable" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Full Account Number</th>
+                                            <th>Account Number</th>
+                                            <th>Record Status</th>
+                                            <th>Membership Number</th>
+                                            <th>Personal File Number</th>
+                                            <th>Product Name</th>
+                                            <th>Available Balance</th>
+                                            <th>Book Balance</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="MainTab3" class="tabcontent">
+                            <div class="table-container">
+                                <h3 style="font-size: 1.9rem; text-align: center;">Loans Accounts</h3>
+                                <div id="noDataLoanAccountsMessage" class="no-dataLoanAccounts-message mt-2">No Data Available!</div>
+                                <table id="loanAccountTable" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Full Account Number</th>
+                                            <th>Account Number</th>
+                                            <th>Record Status</th>
+                                            <th>Membership Number</th>
+                                            <th>Personal File Number</th>
+                                            <th>Product Name</th>
+                                            <th>Available Balance</th>
+                                            <th>Book Balance</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div id="MainTab4" class="tabcontent">
+                            <div class="table-container">
+                                <h3 style="font-size: 1.9rem; text-align: center;">Investments Accounts</h3>
+                                <div id="noDataInvestmentsAccountsMessage" class="no-dataInvestmentsAccounts-message mt-2">No Data Available!</div>
+                                <table id="investmentsAccountsTable" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Full Account Number</th>
+                                            <th>Account Number</th>
+                                            <th>Record Status</th>
+                                            <th>Membership Number</th>
+                                            <th>Personal File Number</th>
+                                            <th>Product Name</th>
+                                            <th>Available Balance</th>
+                                            <th>Book Balance</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <br />
+                        <br />
+                        <br />
+
+
+                        <div class="section-container">
+                            <div class="section-title">Substitute</div>
+                            <div class="row">
+                                <div class="col-md-3 form-group">
+                                    @Html.LabelFor(model => model.GuarantorName, new { @class = "control-label" })
+                                    <div class="input-group" data-autoclose="true">
+                                        @Html.HiddenFor(model => model.GuarantorId)
+                                        @Html.TextBoxFor(model => model.GuarantorIndividualFirstName, new { @class = "form-control input-md alpha alphaspace required", @disabled = "", @placeholder = "Link Substitute Guarantor..." })
+                                        <span class="input-group-addon">
+                                            <a data-toggle="modal" data-target="#substituteGuarantorLookupModal"><span class="fa fa-search"></span></a>
+                                        </span>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.GuarantorTypeDescription, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.GuarantorTypeDescription, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.GuarantorEmployerDescription, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.GuarantorEmployerDescription, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.GuarantorStationDescription, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.GuarantorStationDescription, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.GuarantorIdentificationNumber, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.GuarantorIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                        @Html.ValidationMessageFor(model => model.GuarantorIdentificationNumber, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.GuarantorReference1, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.GuarantorReference1, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.GuarantorReference2, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.GuarantorReference2, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.GuarantorReference3, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.GuarantorReference3, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12 form-group">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.GuarantorRemarks, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.GuarantorRemarks, new { htmlAttributes = new { @class = "form-control", @disabled = "" } })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-1">
+                                    <button id="createButton" class="btn btn-primary" style="width: 150px;">Create</button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal  fade" id="CustomerLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">Customers Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <div class="blue-section">
+                <form id="filterForm">
+                    <div class="row" style="display: flex; justify-content: flex-start; align-content:center;">
+                        <div class="col-lg-3" hidden>
+                            <div class="form-group form-group-lg">
+                                <label for="filterType">Record Status</label>
+
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                    @Html.DropDownListFor(model => model.RecordStatus, recordStatus,
+                                    new { @class = "form-control input-md", @id = "recordStatus" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="form-group form-group-lg">
+                                <label for="filterType">Customer Filter</label>
+
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                    @Html.DropDownListFor(model => model.CustomerFilter, customerFilter,
+                                    new { @class = "form-control input-md", @id = "customerFilter" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4" style="margin-top: 27px;">
+                            <div class="form-group spacing-form-group">
+                                <div class="input-group text-box">
+                                    @Html.TextBox("text", null, new { @class = "form-control", @placeholder = "Enter filter value...", @id = "text" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1" style="margin-top:20px;">
+                            <div class="form-group form-group-sm">
+                                <input type="submit" value="Refresh" id="applyFilter" class="btn btn-primary" style="width: 80px; height: auto; " />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <br />
+
+
+            <style>
+                #customersGrid thead {
+                    background-color: #007bff;
+                    color: white;
+                }
+            </style>
+
+            <table id="customersGrid" class="table table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal  fade" id="substituteGuarantorLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">Substitute Guarantor Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <div class="blue-section">
+                <form id="filterForm2">
+                    <div class="row" style="display: flex; justify-content: flex-start; align-content:center;">
+                        <div class="col-lg-3" hidden>
+                            <div class="form-group form-group-lg">
+                                <label for="filterType">Record Status</label>
+
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                    @Html.DropDownListFor(model => model.RecordStatus, recordStatus,
+                                    new { @class = "form-control input-md", @id = "recordStatus2" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="form-group form-group-lg">
+                                <label for="filterType">Customer Filter</label>
+
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                    @Html.DropDownListFor(model => model.CustomerFilter, customerFilter,
+                                    new { @class = "form-control input-md", @id = "customerFilter2" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4" style="margin-top: 27px;">
+                            <div class="form-group spacing-form-group">
+                                <div class="input-group text-box">
+                                    @Html.TextBox("text2", null, new { @class = "form-control", @placeholder = "Enter filter value...", @id = "text2" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1" style="margin-top:20px;">
+                            <div class="form-group form-group-sm">
+                                <input type="submit" value="Refresh" id="applyFilter2" class="btn btn-primary" style="width: 80px; height: auto; " />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <br />
+
+
+            <style>
+                #substituteGuarantorsGrid thead {
+                    background-color: #007bff;
+                    color: white;
+                }
+            </style>
+
+            <table id="substituteGuarantorsGrid" class="table table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+    <link href="~/Scripts/css/ViewbagTable.css" rel="stylesheet" />
+    <script>
+        document.getElementById('createButton').addEventListener('click', function () {
+            const selectedIds = Array.from(
+                document.querySelectorAll('.loansGuaranteed-checkbox:checked')
+            ).map(checkbox => checkbox.value);
+
+            if (selectedIds.length === 0) {
+                return;
+            }
+
+            const collateralIdsInput = document.getElementById('loansguaranteedInput');
+            if (collateralIdsInput) {
+                collateralIdsInput.value = selectedIds.join(',');
+            } else {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'loansGuaranteedIds';
+                input.id = 'loansguaranteedInput';
+                input.value = selectedIds.join(',');
+                document.getElementById('substitutionForm').appendChild(input);
+            }
+
+            document.getElementById('substitutionForm').submit();
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('[data-toggle="popover"]').popover();
+        });
+    </script>
+
+    <script>
+        var defaultCustomerFilter = $('#customerFilter').val();
+        var defaultRecordStatus = $('#recordStatus').val();
+        var defaulText = $('#text').val();
+
+            $('#customersGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("CustomerIndex", "LoanRegistration", new { Area = "Loaning"}))",
+                "sServerMethod": "POST",
+                "fnServerParams": function (aoData) {
+                    aoData.push(
+                        { "name": "customerFilter", "value": $('#customerFilter').val() || defaultCustomerFilter },
+                        { "name": "recordStatus", "value": $('#recordStatus').val() || defaultRecordStatus },
+                        { "name": "text", "value": $('#text').val() || defaulText }
+                    );
+                },
+
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<button class="btn btn-outline-info" onclick="selectCustomer(\'' + aData.Id + '\')">Select</button>';
+
+                    $('td:eq(5)', nRow).html(dt_Created);
+                    $('td:eq(6)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+                "aoColumns": [
+                    { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "5%" },
+                    { "mDataProp": "Reference1", "sTitle": "Account Number", "sWidth": "5%" },
+                    { "mDataProp": "Reference2", "sTitle": "Membership Number", "sWidth": "5%" },
+                    { "mDataProp": "FullName", "sTitle": "Name", "sWidth": "20%" },
+                    { "mDataProp": "IndividualIdentityCardNumber", "sTitle": "Identity Card Number", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+                "aaSorting": [[0, "desc"]]
+            });
+
+                $('#filterForm').on('submit', function (e) {
+                    e.preventDefault();
+                    $('#customersGrid').DataTable().ajax.reload();
+                });
+
+
+        function selectCustomer(id) {
+            console.log("Selected ID:", id);
+            $.ajax({
+                url: '/Loaning/GuarantorSubstitution/CustomerLookUp',
+                type: 'POST',
+                data: { Id: id },
+                success: function (response) {
+                    if (response.success) {
+                        $('#CustomerId').val(response.data.CustomerId);
+                        $('#CustomerIndividualFirstName').val(response.data.CustomerIndividualFirstName);
+                        $('#CustomerNonIndividualDescription').val(response.data.CustomerNonIndividualDescription);
+                        $('#CustomerStationZoneDivisionEmployerDescription').val(response.data.CustomerStationZoneDivisionEmployerDescription);
+                        $('#CustomerStation').val(response.data.CustomerStation);
+                        $('#CustomerPersonalIdentificationNumber').val(response.data.CustomerPersonalIdentificationNumber);
+                        $('#CustomerReference1').val(response.data.CustomerReference1);
+                        $('#CustomerReference2').val(response.data.CustomerReference2);
+                        $('#CustomerReference3').val(response.data.CustomerReference3);
+                        $('#Remarks').val(response.data.Remarks);
+
+                        //Loans Guaranteed
+                        var loansGuaranteed = response.data.LoansGuaranteed;
+                        const nodataLoansGuaranteedDataMessage = document.querySelector('.no-dataLoansGuaranteed-message');
+                        if (!loansGuaranteed || loansGuaranteed.length === 0) {
+                            nodataLoansGuaranteedDataMessage.style.display = 'block';
+                            $('#loansGuaranteed tbody').empty();
+                        } else {
+                            nodataLoansGuaranteedDataMessage.style.display = 'none';
+                            var tbody = $('#loansGuaranteed tbody');
+                            tbody.empty();
+                            console.log(loansGuaranteed);
+                            loansGuaranteed.forEach(function (loansGuaranteed) {
+                                var isCheckboxEnabled = loansGuaranteed.Status === 0 ? '' : 'disabled';
+                                var row = '<tr>' +
+                                    '<td><input type="checkbox" class="loansGuaranteed-checkbox" value="' + loansGuaranteed.Id + '" ' + isCheckboxEnabled + '></td>' +
+                                    '<td>' + loansGuaranteed.StatusDescription + '</td>' +
+                                    '<td>' + loansGuaranteed.LoanProductDescription + '</td>' +
+                                    '<td style="text-align: right;">' + loansGuaranteed.TotalShares + '</td>' +
+                                    '<td style="text-align: right;">' + loansGuaranteed.CommittedShares + '</td>' +
+                                    '<td style="text-align: right;">' + loansGuaranteed.AmountGuaranteed + '</td>' +
+                                    '<td style="text-align: right;">' + loansGuaranteed.AmountPledged + '</td>' +
+                                    '<td>' + loansGuaranteed.LoaneeCustomerFullName + '</td>' +
+                                    '<td>' + loansGuaranteed.LoaneeCustomerIndividualIdentityCardNumber + '</td>' +
+                                    '<td>' + loansGuaranteed.CustomerIndividualPayrollNumbers + '</td>' +
+                                    '</tr>';
+                                tbody.append(row);
+                            });
+
+                            document.getElementById('loansGuaranteed').addEventListener('change', function (event) {
+                                if (event.target && event.target.classList.contains('loansGuaranteed-checkbox')) {
+                                    const selectedIds = Array.from(
+                                        document.querySelectorAll('.loansGuaranteed-checkbox:checked')
+                                    ).map(checkbox => checkbox.value);
+
+                                    selectedIdsField.value = selectedIds.join(',');
+                                }
+                            });
+                        }
+
+
+                        // Savings Accounts
+                        var savingsAccounts = response.data.SavingsAccounts;
+                        const nodatadataSavingsAccountsDataMessage = document.querySelector('.no-dataSavingsAccounts-message');
+                        if (!savingsAccounts || savingsAccounts.length === 0) {
+                            nodatadataSavingsAccountsDataMessage.style.display = 'block';
+                            $('#savingsAccountsTable tbody').empty();
+                        } else {
+                            nodatadataSavingsAccountsDataMessage.style.display = 'none';
+                            var tbody = $('#savingsAccountsTable tbody');
+                            tbody.empty();
+                            console.log(savingsAccounts);
+                            savingsAccounts.forEach(function (savingsAccounts) {
+                                var row = '<tr>' +
+                                    '<td>' + savingsAccounts.FullAccountNumber + '</td>' +
+                                    '<td>' + savingsAccounts.CustomerReference1 + '</td>' +
+                                    '<td>' + savingsAccounts.RecordStatusDescription + '</td>' +
+                                    '<td>' + savingsAccounts.CustomerReference2 + '</td>' +
+                                    '<td>' + savingsAccounts.CustomerReference3 + '</td>' +
+                                    '<td>' + savingsAccounts.CustomerAccountTypeTargetProductDescription + '</td>' +
+                                    '<td style="text-align: right;">' + savingsAccounts.AvailableBalance + '</td>' +
+                                    '<td style="text-align: right;">' + savingsAccounts.BookBalance + '</td>' +
+                                    '</tr>';
+                                tbody.append(row);
+                            });
+                        }
+
+
+                        // Investments Accounts
+                        var investmentsAccounts = response.data.InvestmentsAccounts;
+                        const nodataInvestmentsAccountsDataMessage = document.querySelector('.no-dataInvestmentsAccounts-message');
+                        if (!investmentsAccounts || investmentsAccounts.length === 0) {
+                            nodataInvestmentsAccountsDataMessage.style.display = 'block';
+                            $('#investmentsAccountsTable tbody').empty();
+                        } else {
+                            nodataInvestmentsAccountsDataMessage.style.display = 'none';
+                            var tbody = $('#investmentsAccountsTable tbody');
+                            tbody.empty();
+                            console.log(investmentsAccounts);
+                            investmentsAccounts.forEach(function (investmentsAccounts) {
+                                var row = '<tr>' +
+                                    '<td>' + investmentsAccounts.FullAccountNumber + '</td>' +
+                                    '<td>' + investmentsAccounts.CustomerReference1 + '</td>' +
+                                    '<td>' + investmentsAccounts.RecordStatusDescription + '</td>' +
+                                    '<td>' + investmentsAccounts.CustomerReference2 + '</td>' +
+                                    '<td>' + investmentsAccounts.CustomerReference3 + '</td>' +
+                                    '<td>' + investmentsAccounts.CustomerAccountTypeTargetProductDescription + '</td>' +
+                                    '<td style="text-align: right;">' + investmentsAccounts.AvailableBalance + '</td>' +
+                                    '<td style="text-align: right;">' + investmentsAccounts.BookBalance + '</td>' +
+                                    '</tr>';
+                                tbody.append(row);
+                            });
+                        }
+
+
+                        // Loans Accounts
+                        var loanAccounts = response.data.LoansAccounts;
+                        const nodataLoanAccountsDataMessage = document.querySelector('.no-dataLoanAccounts-message');
+                        if (!loanAccounts || loanAccounts.length === 0) {
+                            nodataLoanAccountsDataMessage.style.display = 'block';
+                            $('#loanAccountTable tbody').empty();
+                        } else {
+                            nodataLoanAccountsDataMessage.style.display = 'none';
+                            var tbody = $('#loanAccountTable tbody');
+                            tbody.empty();
+                            console.log(loanAccounts);
+                            loanAccounts.forEach(function (loanAccounts) {
+                                var row = '<tr>' +
+                                    '<td>' + loanAccounts.FullAccountNumber + '</td>' +
+                                    '<td>' + loanAccounts.CustomerReference1 + '</td>' +
+                                    '<td>' + loanAccounts.RecordStatusDescription + '</td>' +
+                                    '<td>' + loanAccounts.CustomerReference2 + '</td>' +
+                                    '<td>' + loanAccounts.CustomerReference3 + '</td>' +
+                                    '<td>' + loanAccounts.CustomerAccountTypeTargetProductDescription + '</td>' +
+                                    '<td style="text-align: right;">' + loanAccounts.AvailableBalance + '</td>' +
+                                    '<td style="text-align: right;">' + loanAccounts.BookBalance + '</td>' +
+                                    '</tr>';
+                                tbody.append(row);
+                            });
+                        }
+
+                        $('#CustomerLookupModal').modal('hide');
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while processing your request.');
+                }
+            });
+        }
+    </script>
+
+    <script>
+        var defaultCustomerFilter2 = $('#customerFilter2').val();
+        var defaultRecordStatus2 = $('#recordStatus2').val();
+        var defaulText2 = $('#text2').val();
+
+        $('#substituteGuarantorsGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("CustomerIndex", "GuarantorSubstitution", new { Area = "Loaning"}))",
+                "sServerMethod": "POST",
+                "fnServerParams": function (aoData) {
+                    aoData.push(
+                        { "name": "customerFilter2", "value": $('#customerFilter2').val() || defaultCustomerFilter2 },
+                        { "name": "recordStatus2", "value": $('#recordStatus2').val() || defaultRecordStatus2 },
+                        { "name": "text2", "value": $('#text2').val() || defaulText2 }
+                    );
+                },
+
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<button class="btn btn-outline-info" onclick="selectSubstituteCustomer(\'' + aData.Id + '\')">Select</button>';
+
+                    $('td:eq(5)', nRow).html(dt_Created);
+                    $('td:eq(6)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+                "aoColumns": [
+                    { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "5%" },
+                    { "mDataProp": "Reference1", "sTitle": "Account Number", "sWidth": "5%" },
+                    { "mDataProp": "Reference2", "sTitle": "Membership Number", "sWidth": "5%" },
+                    { "mDataProp": "FullName", "sTitle": "Name", "sWidth": "20%" },
+                    { "mDataProp": "IndividualIdentityCardNumber", "sTitle": "Identity Card Number", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+                "aaSorting": [[0, "desc"]]
+            });
+
+                $('#filterForm2').on('submit', function (e) {
+                    e.preventDefault();
+                    $('#substituteGuarantorsGrid').DataTable().ajax.reload();
+                });
+
+
+        function selectSubstituteCustomer(id) {
+            console.log("Selected ID:", id);
+            $.ajax({
+                url: '/Loaning/GuarantorSubstitution/SubstituteCustomerLookUp',
+                type: 'POST',
+                data: { Id: id },
+                success: function (response) {
+                    if (response.success) {
+                        $('#GuarantorId').val(response.data.GuarantorId);
+                        $('#GuarantorIndividualFirstName').val(response.data.GuarantorIndividualFirstName);
+                        $('#GuarantorTypeDescription').val(response.data.GuarantorTypeDescription);
+                        $('#GuarantorEmployerDescription').val(response.data.GuarantorEmployerDescription);
+                        $('#GuarantorStationDescription').val(response.data.GuarantorStationDescription);
+                        $('#GuarantorIdentificationNumber').val(response.data.GuarantorIdentificationNumber);
+                        $('#GuarantorReference1').val(response.data.GuarantorReference1);
+                        $('#GuarantorReference2').val(response.data.GuarantorReference2);
+                        $('#GuarantorReference3').val(response.data.GuarantorReference3);
+                        $('#GuarantorRemarks').val(response.data.GuarantorRemarks);
+
+                        $('#substituteGuarantorLookupModal').modal('hide');
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while processing your request.');
+                }
+            });
+        }
+    </script>
+
+
+    <script>
+        function openTab(evt, tabName) {
+            evt.preventDefault();
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        function openSubTab(evt, subTabName) {
+            evt.preventDefault();
+            var i, subtabcontent, subtablinks;
+            subtabcontent = document.getElementsByClassName("subtabcontent");
+            for (i = 0; i < subtabcontent.length; i++) {
+                subtabcontent[i].style.display = "none";
+            }
+            subtablinks = document.getElementsByClassName("subtablinks");
+            for (i = 0; i < subtablinks.length; i++) {
+                subtablinks[i].className = subtablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(subTabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        function openSubSubTab(evt, subSubTabName) {
+            evt.preventDefault();
+            var i, subsubtabcontent, subsubtablinks;
+            subsubtabcontent = document.getElementsByClassName("subsubtabcontent");
+            for (i = 0; i < subsubtabcontent.length; i++) {
+                subsubtabcontent[i].style.display = "none";
+            }
+            subsubtablinks = document.getElementsByClassName("subsubtablinks");
+            for (i = 0; i < subsubtablinks.length; i++) {
+                subsubtablinks[i].className = subsubtablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(subSubTabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        document.getElementById("MainTab1").style.display = "block";
+        document.getElementById("SubTab1-1").style.display = "block";
+        document.getElementById("SubSubTab1-1-1").style.display = "block";
+    </script>
+}

@@ -1,0 +1,163 @@
+﻿@using SwiftFinancials.Web.Identity
+
+<style>
+    .sidebar-collapse::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .sidebar-collapse::-webkit-scrollbar-thumb {
+        background-color: #1ab394;
+        border-radius: 10px;
+    }
+
+    .search-menu input {
+        padding: 8px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        width: 100%;
+        margin-bottom: 15px;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .search-menu input:focus {
+            border-color: #1ab394;
+            box-shadow: 0 0 5px rgba(26, 179, 148, 0.5);
+            outline: none;
+        }
+
+        .search-menu input::placeholder {
+            color: #a7b1c2;
+            font-style: italic;
+        }
+</style>
+
+<nav class="navbar-expand navbar-static-side" role="navigation">
+    <div class="sidebar-collapse" style="height: 100vh; overflow-y: auto; background-color: #2f4050;">
+        <!-- Search Menu -->
+        <div class="search-menu">
+            <input type="text" id="menu-search" placeholder="Search..." class="form-control" aria-label="Search menu">
+        </div>
+        <ul class="nav metismenu" id="side-menu" style="padding: 15px;">
+            <li class="nav-header" style="margin-bottom: 20px;">
+                <div class="dropdown profile-element">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#" style="color: #fff;">
+                        @if (Request.IsAuthenticated)
+                        {
+                            <span class="block m-t-xs font-bold">
+                                <i class="fa fa-user-circle"></i>
+                                @HttpContext.Current.User.Identity.GetFullName()
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="block m-t-xs font-bold">
+                                @Html.Raw("Unknown user.")
+                            </span>
+                        }
+                    </a>
+                </div>
+                <div class="logo-element" style="color: #fff; font-weight: bold;">
+                    Menu
+                </div>
+            </li>
+
+            <li class="@Html.IsSelected("Home")">
+                <a href="@Url.Action("Index", "Home", new { Area = ""})" style="color: #a7b1c2;">
+                    <i class="fa fa-home"></i>
+                    <span class="nav-label">Dashboard</span>
+                </a>
+            </li>
+
+            <li class="@Html.IsSelected("Home")">
+                <a href="@Url.Action("Index", "MTransaction", new { Area = ""})" style="color: #a7b1c2;">
+                    <i class="fa fa-money"></i>
+                    <span class="nav-label">Mobile Transactions</span>
+                </a>
+            </li>
+
+            @* Dynamic Menu Rendering *@
+            @{
+                var menuList = ViewBag.NavigationItems as List<Application.MainBoundedContext.DTO.AdministrationModule.NavigationItemDTO>;
+
+                if (menuList != null && menuList.Any())
+                {
+                    @RenderDynamicMenu(menuList)
+                }
+            }
+
+            
+        </ul>
+    </div>
+</nav>
+
+@helper RenderDynamicMenu(List<Application.MainBoundedContext.DTO.AdministrationModule.NavigationItemDTO> menusList, int? code = 0, int level = 0)
+{
+    var items = menusList.Where(m => m.AreaCode == code);
+
+    if (items.Any())
+    {
+        // If AreaCode > 0, item is not a parent root
+        if (items.First().AreaCode > 0)
+        {
+            level++;
+        }
+
+        foreach (var item in items)
+        {
+            var itemActionName = item.ActionName;
+            var itemControllerName = item.ControllerName;
+            var itemAreaName = item.AreaName;
+            var itemDescription = item.Description;
+
+            if (item.IsArea)
+            {
+                <li class="@Html.IsSelected(controller: itemControllerName ?? itemDescription)">
+                    <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">@item.Description</span> <span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level collapse @Html.IsSelected(controller: itemControllerName ?? itemDescription, cssClass: "in")">
+                        @RenderDynamicMenu(menusList, item.Code, level)
+                    </ul>
+                </li>
+            }
+            else
+            {
+                if (item.ControllerName == null && item.ActionName == null && !item.IsArea)
+                {
+                    <li class="@Html.IsSelected(controller: itemControllerName ?? itemDescription)">
+                        <a href="#"><i class="fa fa-sitemap"></i> <span class="nav-label">@item.Description</span> <span class="fa arrow"></span></a>
+                        <ul class="nav nav-third-level">
+                            @RenderDynamicMenu(menusList, item.Code, level)
+                        </ul>
+                    </li>
+                }
+                else
+                {
+                    <li class="@Html.IsSelected(controller: itemControllerName)">
+                        <a href="@Url.Action(itemActionName, itemControllerName, new { Area = itemAreaName })">
+                            <i class="@item.Icon"></i> <span class="nav-label">@item.Description</span>
+                        </a>
+                    </li>
+
+                    @RenderDynamicMenu(menusList, item.Code, level)
+                }
+            }
+        }
+    }
+}
+
+<!-- JavaScript for Menu Search -->
+<script>
+    document.getElementById('menu-search').addEventListener('keyup', function () {
+        var searchTerm = this.value.toLowerCase();
+        var menuItems = document.querySelectorAll('#side-menu li');
+
+        menuItems.forEach(function (item) {
+            var text = item.textContent.toLowerCase();
+            if (text.includes(searchTerm)) {
+                item.style.display = '';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    });
+</script>

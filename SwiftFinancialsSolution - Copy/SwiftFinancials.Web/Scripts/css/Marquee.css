@@ -1,0 +1,41 @@
+﻿.marquee-container {
+    width: 100%;
+    overflow: hidden;
+    perspective: 1000px; 
+    background-color: #f0f0f0; 
+    padding: 10px 0; 
+}
+
+.marquee {
+    display: inline-block;
+    white-space: nowrap;
+    animation: scroll 100s linear infinite; 
+    font-size: 1.2rem; 
+    font-family: 'Arial', sans-serif;
+    color: #333; 
+    transform: translateZ(0); 
+}
+
+    .marquee span {
+        display: inline-block;
+        padding: 5px 15px;
+        background: linear-gradient(135deg, #e0e0e0, #d3d3d3); 
+        border-radius: 8px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1); 
+        transform: rotateY(10deg);
+        transition: transform 0.5s;
+    }
+
+        .marquee span:hover {
+            transform: rotateY(0deg) scale(1.1); 
+        }
+
+@keyframes scroll {
+    0% {
+        transform: translateX(100%);
+    }
+
+    100% {
+        transform: translateX(-100%);
+    }
+}

@@ -1,0 +1,287 @@
+﻿@{
+    ViewBag.Title = "ERP Executive Dashboard";
+}
+<style>
+    body {
+        background-color: #F4F6F9;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .ibox {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+        transition: all 0.3s ease-in-out;
+    }
+
+        .ibox:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);
+        }
+
+    .ibox-title {
+        padding: 18px 24px;
+        border-bottom: 1px solid #E1E5EB;
+        font-weight: 600;
+        font-size: 17px;
+        color: #333;
+    }
+
+    .ibox-content {
+        padding: 25px 24px;
+    }
+
+    .counter-number {
+        font-size: 36px;
+        font-weight: bold;
+        color: #007BFF;
+    }
+
+    .description {
+        font-size: 14px;
+        color: #6C757D;
+    }
+
+    .chart-container {
+        height: 280px;
+    }
+
+    .list-group-item {
+        font-size: 14px;
+        border-left: 4px solid #007BFF;
+        background-color: #F9FBFF;
+    }
+</style>
+
+<div class="container-fluid">
+    <!-- KPI Summary -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="ibox">
+                <div class="ibox-title">Total Members</div>
+                <div class="ibox-content text-center">
+                    <div class="counter-number" id="customers">0</div>
+                    <div class="description">SACCO Membership</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="ibox">
+                <div class="ibox-title">Savings Accounts</div>
+                <div class="ibox-content text-center">
+                    <div class="counter-number" id="totalSavingsAmount">KES 0</div>                    <div class="description">Active Savings</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="ibox">
+                <div class="ibox-title">Loan Portfolio</div>
+                <div class="ibox-content text-center">
+                    <div class="counter-number" id="loans">KES 0</div>
+                    <div class="description">Disbursed Loans</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="ibox">
+                <div class="ibox-title">Dividends Paid</div>
+                <div class="ibox-content text-center">
+                    <div class="counter-number" id="dividends">KES 5.3M</div>
+                    <div class="description">Total Paid (KES)</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts -->
+    <div class="row">
+        <div class="col-md-6 mb-3">@ChartBox("Monthly Savings Trends", "savingsChart")</div>
+        <div class="col-md-6 mb-3">@ChartBox("Loan Repayment Status", "repaymentChart")</div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">@ChartBox("Revenue Performance", "revenueChart")</div>
+        <div class="col-md-6 mb-3">@ChartBox("Expense Allocation", "expenseChart")</div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">@ChartBox("Profitability Analysis", "profitChart")</div>
+        <div class="col-md-6 mb-3">@ChartBox("Risk Heatmap", "riskChart")</div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">@ChartBox("Branch Performance", "branchChart")</div>
+        <div class="col-md-6 mb-3">
+            <div class="ibox">
+                <div class="ibox-title">Notifications & Alerts</div>
+                <div class="ibox-content">
+                    <ul class="list-group">
+                        <li class="list-group-item">🔔 New Loan Application Submitted</li>
+                        <li class="list-group-item">⚠️ Compliance Alert: KYC Pending</li>
+                        <li class="list-group-item">📢 AGM Scheduled for 15th July</li>
+                        <li class="list-group-item">💼 3 Positions Open for Recruitment</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@helper ChartBox(string title, string chartId)
+{
+    <div class="ibox">
+        <div class="ibox-title">@title</div>
+        <div class="ibox-content">
+            <div class="chart-container">
+                <canvas id="@chartId"></canvas>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/plugins/chartjs")
+<script>
+        $(document).ready(function () {
+            loadKPIs();
+            loadBranchPerformance();
+            // Refresh KPIs every 10 seconds
+            setInterval(loadKPIs, 10000);
+        });
+
+        function loadKPIs() {
+            // Load Total Members
+            $.get('@Url.Action("Customers", "Dashboard", new { Area = "Dashboard" })', function (data) {
+                if (data.success) {
+                    $('#customers').text(data.Customers.toLocaleString());
+                }
+            });
+                // Load Total Savings Amount
+            $.get('@Url.Action("TotalsavingsAccounts", "Dashboard", new { Area = "Dashboard" })', function (data) {
+                if (data.success) {
+                    // Assuming your controller returns TotalSavingsAmount property
+                    let total = data.TotalSavingsAmount || 0;
+                    let display = total > 0
+                        ? total.toLocaleString('en-KE', { style: 'currency', currency: 'KES', minimumFractionDigits: 0 })
+                        : "KES 0";
+                    $('#totalSavingsAmount').text(display);
+                }
+            });
+
+            // Load Total Savings Amount
+            $.get('@Url.Action("TotalSavings", "Dashboard", new { Area = "Dashboard" })', function (data) {
+                console.log("TotalSavings response:", data); // Debug log
+                if (data.success && data.TotalJournalAmount != null) {
+                    let total = data.TotalJournalAmount;
+                    let display = total > 0
+                        ? total.toLocaleString('en-KE', { style: 'currency', currency: 'KES', minimumFractionDigits: 0 })
+                        : "KES 0";
+                    $('#savingscard').text(display);
+                } else {
+                    $('#savingscard').text("KES 0");
+                }
+            });
+
+            // Load Loan Portfolio Amount
+            $.get('@Url.Action("LoanPortfolio", "Dashboard", new { Area = "Dashboard" })', function (data) {
+                if (data.success) {
+                    let loanAmount = data.Loans?.TotalAmount || 0;
+                    let display = loanAmount > 0
+                        ? loanAmount.toLocaleString('en-KE', { style: 'currency', currency: 'KES', minimumFractionDigits: 0 })
+                        : "KES 0";
+                    $('#loans').text(display);
+                }
+            });
+        }
+
+        function loadBranchPerformance() {
+            $.get('@Url.Action("BranchPerformance", "Dashboard", new { Area = "Dashboard" })', function (data) {
+                if (data && data.length > 0) {
+                    let labels = data.map(b => b.Branch);
+                    let values = data.map(b => b.TotalValue);
+                    new Chart($('#branchChart'), {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                data: values,
+                                backgroundColor: '#007BFF'
+                            }]
+                        }
+                    });
+                }
+            });
+
+            // Initialize other static charts
+            initStaticCharts();
+        }
+
+        function initStaticCharts() {
+            new Chart($('#savingsChart'), {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Savings (KES)',
+                        data: [150000, 180000, 200000, 220000, 240000, 260000],
+                        backgroundColor: 'rgba(0,123,255,0.2)',
+                        borderColor: '#007BFF',
+                        fill: true
+                    }]
+                }
+            });
+
+            new Chart($('#repaymentChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Paid', 'Overdue', 'Pending'],
+                    datasets: [{
+                        data: [65, 20, 15],
+                        backgroundColor: ['#28A745', '#DC3545', '#FFC107']
+                    }]
+                }
+            });
+
+            new Chart($('#revenueChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+                    datasets: [{
+                        data: [1.2, 2.0, 1.5, 2.5],
+                        backgroundColor: '#007BFF'
+                    }]
+                }
+            });
+
+            new Chart($('#expenseChart'), {
+                type: 'pie',
+                data: {
+                    labels: ['Salaries', 'Office Rent', 'Marketing', 'Utilities'],
+                    datasets: [{
+                        data: [400000, 150000, 80000, 70000],
+                        backgroundColor: ['#FFC107', '#007BFF', '#28A745', '#DC3545']
+                    }]
+                }
+            });
+
+            new Chart($('#profitChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        data: [200000, 250000, 300000, 320000, 350000, 400000],
+                        backgroundColor: '#17A2B8'
+                    }]
+                }
+            });
+
+            new Chart($('#riskChart'), {
+                type: 'polarArea',
+                data: {
+                    labels: ['Credit Risk', 'Liquidity Risk', 'Operational Risk', 'Compliance Risk'],
+                    datasets: [{
+                        data: [50, 40, 30, 20],
+                        backgroundColor: ['#DC3545', '#FFC107', '#007BFF', '#28A745']
+                    }]
+                }
+            });
+        }
+</script>
+}

@@ -1,0 +1,45 @@
+﻿@{
+    ViewBag.Title = "Stored Procedures";
+}
+
+<h2>Select a Stored Procedure</h2>
+
+<p style="color: darkblue; text-align: center;">Total Stored Procedures: @ViewBag.StoredProcedureCount</p>
+
+
+@using (Html.BeginForm("FetchParameters", "StoredProcedure", FormMethod.Post, new { id = "spForm" }))
+{
+    <div>
+        @Html.Label("Select Stored Procedure: ")
+        @Html.DropDownList("storedProcedureName", (SelectList)ViewBag.StoredProcedures, "Select a Stored Procedure", new { id = "spDropdown" })
+    </div>
+
+    <br />
+
+    <div id="parameterList">
+        @Html.Partial("_StoredProcedureParameters", new List<SwiftFinancials.Web.Areas.Reports.Models.StoredProcedureParameter>())
+    </div>
+}
+
+@section scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#spDropdown").change(function () {
+                var selectedSP = $(this).val();
+                if (selectedSP) {
+                    $.ajax({
+                        url: '@Url.Action("FetchParameters", "StoredProcedure")',
+                        type: 'POST',
+                        data: { storedProcedureName: selectedSP },
+                        success: function (data) {
+                            $('#parameterList').html(data);
+                        }
+                    });
+                } else {
+                    $('#parameterList').html('');
+                }
+            });
+        });
+    </script>
+}

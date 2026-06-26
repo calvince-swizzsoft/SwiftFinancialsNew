@@ -1,0 +1,171 @@
+﻿
+@model  Application.MainBoundedContext.DTO.MessagingModule.EmailAlertBindingModel
+
+@{
+    ViewBag.Title = "Create Email Batch";
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Text Editor</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Dashboard_1", "Dashboards")">Home</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a>Forms</a>
+            </li>
+            <li class="active breadcrumb-item">
+                <strong>Text Editor</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h5>Wyswig Summernote Editor</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="fa fa-wrench"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-user">
+                            <li>
+                                <a href="#" class="dropdown-item">Config option 1</a>
+                            </li>
+                            <li>
+                                <a href="#" class="dropdown-item">Config option 2</a>
+                            </li>
+                        </ul>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content no-padding bg-secondary text-info">
+                    @using (Html.BeginForm("Create", "EmailAlert", new { Area = "Messaging" }, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.CompanyId, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    @Html.HiddenFor(model => model.CompanyId)
+                                    @Html.ValidationMessageFor(model => model.CompanyId, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.CompanyDescription, new { htmlAttributes = new { @class = "CompaniesLookup form-control required", placeholder = "Description.." } })
+                                </div>
+                            </div>
+                            <div class="col-lg-8">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.MailMessageTo, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.MailMessageTo, new { htmlAttributes = new { @class = "form-control required", placeholder = "Subject", colspan = "10" } })
+                                    @Html.ValidationMessageFor(model => model.MailMessageTo, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-lg-8">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.MailMessageSubject, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.MailMessageSubject, new { htmlAttributes = new { @class = "form-control required", placeholder = "Subject", colspan = "10" } })
+                                    @Html.ValidationMessageFor(model => model.MailMessageSubject, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-lg-8">
+                                <div class="form-group form-group-lg">
+                                    @Html.TextAreaFor(model => model.MailMessageBody, new
+                               {
+                                   rows = "20",
+                                   style = "resize:none;width:400px;",
+                                   placeholder = Html.DisplayNameFor(model => model.MailMessageBody),
+                                   @class = "form-control input-lg textarea-editor"
+                               })
+                                </div>
+                            </div>
+                            <div class="col-lg-8">
+                                <div class="form-group form-group-lg">
+                                    <input type="submit" value="Submit" class="btn btn-primary" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Styles {
+    @Styles.Render("~/plugins/summernoteStyles")
+}
+
+@section Scripts {
+    @Scripts.Render("~/plugins/summernote")
+    @Scripts.Render("~/plugins/typehead")
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            $('.summernote').summernote();
+            $('.textarea-editor').summernote({
+        height: 300, // set editor height
+        minHeight: null, // set minimum height of editor
+        maxHeight: null, // set maximum height of editor
+        focus: true // set focus to editable area after initializing summernote
+    });
+
+                //Company typehead starts here
+                $('.CompaniesLookup').typeahead({
+                    source: function (query, process) {
+                        return $.getJSON(
+                            '@Url.Action("GetCompaniesAsync", "EmailAlert", new { Area = "Messaging" })',
+                            { query: query },
+                            function (Companies) {
+                                var newCompaniesData = [];
+                                CompaniesMap = {};
+                                $.each(Companies, function (i, Company) {
+                                    newCompaniesData.push(Company.Description);
+                                    CompaniesMap[Company.Description] = Company;
+                                });
+                                process(newCompaniesData); return;
+                            });
+                    },
+                    matcher: function (item) {
+                        if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                            return true;
+                        }
+                    },
+                    sorter: function (items) {
+                        return items.sort();
+                    },
+                    highlighter: function (item) {
+                        var regex = new RegExp('(' + this.query + ')', 'gi');
+                        return item.replace(regex, "<strong>$1</strong>");
+                    },
+                    updater: function (item) {
+                        var CompanyId = "";
+                        CompanyId = CompaniesMap[item].Id;
+                        $('#CompanyId').val(CompanyId);
+                        //console.log(CompanyId)
+                        return item;
+                    }
+                });
+        });
+
+        //var edit = function () {
+        //    $('.click2edit').summernote({ focus: true });
+        //};
+
+        //var save = function () {
+        //    var aHTML = $('.click2edit').code(); //save HTML If you need(aHTML: array).
+        //    $('.click2edit').destroy();
+        //};
+    </script>
+}
+
+

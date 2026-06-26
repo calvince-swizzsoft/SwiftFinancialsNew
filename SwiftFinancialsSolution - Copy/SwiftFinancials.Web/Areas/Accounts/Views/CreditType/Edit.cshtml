@@ -1,0 +1,699 @@
+﻿@model  Application.MainBoundedContext.DTO.AccountsModule.CreditTypeDTO
+
+@{
+    /**/
+
+    ViewBag.Title = "Edit Credit Type";
+    var transactionOwnerships = ViewBag.TransactionOwnershipSelectList as List<SelectListItem>;
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h1>Accounts</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "CreditType", new { Area = "Accounts" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger fade in">
+        <button class="close" data-dismiss="alert">
+            ×
+        </button>
+        <i class="fa-fw fa fa-times"></i>
+        <strong>Error!</strong> @TempData["Error"]
+    </div>
+}
+
+<style>
+    .tab {
+        overflow: hidden;
+        background-color: whitesmoke;
+        border-radius: 8px;
+        margin: 20px;
+    }
+
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            color: black;
+            font-size: 16px;
+            border-radius: 8px 8px 0 0;
+            margin-right: 2px;
+        }
+
+            .tab button:hover {
+                background-color: lightgray;
+            }
+
+            .tab button.active {
+                background-color: lightgray;
+            }
+
+
+    .tabcontent {
+        display: none;
+        padding: 16px;
+        border: 1px solid #ccc;
+        border-top: none;
+        border-radius: 0 8px 8px 8px;
+        background-color: white;
+        margin: 0 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        height: auto;
+    }
+
+        .tabcontent h3 {
+            margin-top: 0;
+        }
+
+
+
+    .compact-table {
+        border-collapse: collapse;
+    }
+
+        .compact-table td,
+        .compact-table th {
+            padding: 5px;
+            margin: 0;
+        }
+
+        .compact-table tbody tr {
+            line-height: 1;
+        }
+
+            .compact-table tbody tr:hover {
+                background-color: #f5f5f5;
+            }
+
+        .compact-table th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+
+
+
+
+    .tabcontent {
+        max-height: 500px;
+        overflow-y: auto;
+        padding: 10px;
+        box-sizing: border-box;
+        border: 1px solid #ddd;
+        background-color: #f9f9f9;
+    }
+</style>
+
+
+
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h2>Edit Credit Type</h2>
+
+                    @if (TempData["EmptySubmit"] != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: '@TempData["EmptySubmit"]',
+                                    confirmButtonColor: '#FF0000',
+                                });
+                            });
+                        </script>
+                    }
+
+                    @if (TempData["ErrorMessageResult"] != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: '@TempData["ErrorMessageResult"]',
+                                    confirmButtonColor: '#FF0000',
+                                });
+                            });
+                        </script>
+                    }
+
+                     @if (TempData["Fail"] != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: '@TempData["Fail"]',
+                                    confirmButtonColor: '#FF0000',
+                                });
+                            });
+                        </script>
+                    }
+
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-white">
+                    @using (Html.BeginForm("Edit", "CreditType", new { Area = "Accounts" }, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-horizontal">
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                            <fieldset>
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-sm">
+                                            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4 form-group">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.ChartOfAccountId, new { @class = "control-label" })
+                                            <div class="input-group" data-autoclose="true">
+                                                @Html.HiddenFor(model => model.ChartOfAccountId, new { @id = "ChartOfAccountId" })
+                                                @Html.TextBoxFor(model => model.ChartOfAccountAccountName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @required = "required", @placeholder = "", @id = "ChartOfAccountAccountName" })
+                                                <span class="input-group-addon">
+                                                    <a data-toggle="modal" data-target="#chartofAccountLookupModal"><span class="fa fa-search"></span></a>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.TransactionOwnershipDescription, new { @class = "control-label" })
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                @Html.DropDownListFor(model => model.TransactionOwnershipDescription, transactionOwnerships, new { @class = "form-control input-md" })
+                                                @Html.ValidationMessageFor(model => model.TransactionOwnershipDescription)
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-1" style="margin-top: 35px;">
+                                        <div class="form-group form-group-lg">
+                                            @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
+                                            @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                            @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="tab">
+                                    <button class="tablinks active" onclick="openTab(event, 'MainTab1')"><i class="fa fa-table" aria-hidden="true"></i> Applicable Charges</button>
+                                    <button class="tablinks" onclick="openTab(event, 'MainTab2')"><i class="fa fa-table" aria-hidden="true"></i> Applicable Direct Debits</button>
+                                    <button class="tablinks" onclick="openTab(event, 'MainTab3')"><i class="fa fa-table" aria-hidden="true"></i> Attached Loan Products</button>
+                                    <button class="tablinks" onclick="openTab(event, 'MainTab4')"><i class="fa fa-table" aria-hidden="true"></i> Concession-Exempt Loan Products</button>
+                                    <button class="tablinks" onclick="openTab(event, 'MainTab5')"><i class="fa fa-table" aria-hidden="true"></i> Attached Investments Products</button>
+                                    <button class="tablinks" onclick="openTab(event, 'MainTab6')"><i class="fa fa-table" aria-hidden="true"></i> Attached Savings Products</button>
+                                </div>
+
+                                <!--Applicable Charges-->
+                                <div id="MainTab1" class="tabcontent" style="display: block;">
+                                    <input type="hidden" id="SelectedApplicableChargesIds" name="SelectedApplicableChargesIds" value="" />
+                                    <div class="tab-content">
+                                        <div class="list-responsive">
+                                            <ul id="ApplicableChargesList" class="list-group">
+                                                @if (ViewBag.CommissionsEdit != null)
+                                                {
+                                                    foreach (var item in ViewBag.CommissionsEdit)
+                                                    {
+                                                        <li class="list-group-item">
+                                                            <input type="checkbox" class="ApplicableChargesrowCheckbox rowCheckbox" data-id="@item.Id" @(ViewBag.CheckedApplicableStatesEdit.ContainsKey(item.Id) && ViewBag.CheckedApplicableStatesEdit[item.Id] ? "checked" : "") style="font-weight: bold;" />
+                                                            <span>@item.Description</span>
+                                                        </li>
+                                                    }
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Applicable Direct Debits-->
+                                <div id="MainTab2" class="tabcontent">
+                                    <input type="hidden" id="SelectedApplicableDirectDebitsIds" name="SelectedApplicableDirectDebitsIds" value="" />
+                                    <div class="tab-content">
+                                        <div class="list-responsive">
+                                            <ul id="ApplicableDirectDebitsList" class="list-group">
+                                                @if (ViewBag.DirectDebitsEdit != null)
+                                                {
+                                                    foreach (var item in ViewBag.DirectDebitsEdit)
+                                                    {
+                                                        <li class="list-group-item">
+                                                            <input type="checkbox" class="ApplicableDirectDebitsrowCheckbox rowCheckbox" data-id="@item.Id" @(ViewBag.CheckedApplicableDirectDebitsStatesEdit.ContainsKey(item.Id) && ViewBag.CheckedApplicableDirectDebitsStatesEdit[item.Id] ? "checked" : "") style="font-weight: bold;" />
+                                                            <span>@item.Description</span>
+                                                        </li>
+                                                    }
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Attached Loan Products-->
+                                <div id="MainTab3" class="tabcontent">
+                                    <input type="hidden" id="SelectedAttachedLoanProductsIds" name="SelectedAttachedLoanProductsIds" value="" />
+                                    <div class="tab-content">
+                                        <div class="list-responsive">
+                                            <ul id="AttachedLoanProductsList" class="list-group">
+                                                @if (ViewBag.AttachedLoanProductsEdit != null)
+                                                {
+                                                    foreach (var item in ViewBag.AttachedLoanProductsEdit)
+                                                    {
+                                                        <li class="list-group-item">
+                                                            <input type="checkbox" class="AttachedLoanProductsrowCheckbox rowCheckbox" data-id="@item.Id" @(ViewBag.CheckedAttachedLoanProductsStatesEdit.ContainsKey(item.Id) && ViewBag.CheckedAttachedLoanProductsStatesEdit[item.Id] ? "checked" : "") style="font-weight: bold;" />
+                                                            <span>@item.Description</span>
+                                                        </li>
+                                                    }
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Concession-Exempt Loan Products-->
+                                <div id="MainTab4" class="tabcontent">
+                                    <input type="hidden" id="SelectedCELoanProductsIds" name="SelectedCELoanProductsIds" value="" />
+                                    <div class="tab-content">
+                                        <div class="list-responsive">
+                                            <ul id="CELoanProductsList" class="list-group">
+                                                @if (ViewBag.ConcessionExemptLoanProductsEdit != null)
+                                                {
+                                                    foreach (var item in ViewBag.ConcessionExemptLoanProductsEdit)
+                                                    {
+                                                        <li class="list-group-item">
+                                                            <input type="checkbox" class="CELoanProductsrowCheckbox rowCheckbox" data-id="@item.Id" @(ViewBag.CheckedConcessionExemptLoanProductsStatesEdit.ContainsKey(item.Id) && ViewBag.CheckedConcessionExemptLoanProductsStatesEdit[item.Id] ? "checked" : "") style="font-weight: bold;" />
+                                                            <span>@item.Description</span>
+                                                        </li>
+                                                    }
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Attached Investments Products-->
+                                <div id="MainTab5" class="tabcontent">
+                                    <input type="hidden" id="SelectedAttachedInvestmentsProductsIds" name="SelectedAttachedInvestmentsProductsIds" value="" />
+                                    <div class="tab-content">
+                                        <div class="list-responsive">
+                                            <ul id="AttachedInvestmentsProductsList" class="list-group">
+                                                @if (ViewBag.AttachedInvestmentsProductsEdit != null)
+                                                {
+                                                    foreach (var item in ViewBag.AttachedInvestmentsProductsEdit)
+                                                    {
+                                                        <li class="list-group-item">
+                                                            <input type="checkbox" class="AttachedInvestmentsProductsrowCheckbox rowCheckbox" data-id="@item.Id" @(ViewBag.CheckedAttachedInvestmentsProductsStatesEdit.ContainsKey(item.Id) && ViewBag.CheckedAttachedInvestmentsProductsStatesEdit[item.Id] ? "checked" : "") style="font-weight: bold;" />
+                                                            <span>@item.Description</span>
+                                                        </li>
+                                                    }
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!--Attached Savings Products-->
+                                <div id="MainTab6" class="tabcontent">
+                                    <input type="hidden" id="SelectedAttachedSavingsProductsIds" name="SelectedAttachedSavingsProductsIds" value="" />
+                                    <div class="tab-content">
+                                        <div class="list-responsive">
+                                            <ul id="AttachedSavingsProductsList" class="list-group">
+                                                @if (ViewBag.AttachedSavingsProductsEdit != null)
+                                                {
+                                                    foreach (var item in ViewBag.AttachedSavingsProductsEdit)
+                                                    {
+                                                        <li class="list-group-item">
+                                                            <input type="checkbox" class="AttachedSavingsProductsrowCheckbox rowCheckbox" data-id="@item.Id" @(ViewBag.CheckedAttachedSavingsProductsStatesEdit.ContainsKey(item.Id) && ViewBag.CheckedAttachedSavingsProductsStatesEdit[item.Id] ? "checked" : "") style="font-weight: bold;" />
+                                                            <span>@item.Description</span>
+                                                        </li>
+                                                    }
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-5">
+                                    <div class="col-lg-3">
+                                        <button type="submit" id="submit-btn" class="btn btn-primary" value="Create" style="width: 150px;">Update</button>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal  fade" id="chartofAccountLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">G/L Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+
+            <br />
+            <style>
+                #chartsofAccountGrid thead {
+                    background-color: #007bff;
+                    color: white;
+                }
+            </style>
+            <table id="chartsofAccountGrid" class="table table-hover" style="width:100%">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            function updateHiddenInput(tabId, hiddenInputId, checkboxClass) {
+                const checkboxes = document.querySelectorAll(`#${tabId} .${checkboxClass}`);
+                const hiddenInput = document.getElementById(hiddenInputId);
+
+                const selectedIds = Array.from(checkboxes)
+                    .filter(checkbox => checkbox.checked)
+                    .map(checkbox => checkbox.getAttribute("data-id"));
+
+                hiddenInput.value = selectedIds.join(",");
+            }
+
+            const tabs = [
+                { tabId: "MainTab1", hiddenInputId: "SelectedApplicableChargesIds", checkboxClass: "ApplicableChargesrowCheckbox" },
+                { tabId: "MainTab2", hiddenInputId: "SelectedApplicableDirectDebitsIds", checkboxClass: "ApplicableDirectDebitsrowCheckbox" },
+                { tabId: "MainTab3", hiddenInputId: "SelectedAttachedLoanProductsIds", checkboxClass: "AttachedLoanProductsrowCheckbox" },
+                { tabId: "MainTab4", hiddenInputId: "SelectedCELoanProductsIds", checkboxClass: "CELoanProductsrowCheckbox" },
+                { tabId: "MainTab5", hiddenInputId: "SelectedAttachedInvestmentsProductsIds", checkboxClass: "AttachedInvestmentsProductsrowCheckbox" },
+                { tabId: "MainTab6", hiddenInputId: "SelectedAttachedSavingsProductsIds", checkboxClass: "AttachedSavingsProductsrowCheckbox" }
+            ];
+
+            tabs.forEach(tab => {
+                const checkboxes = document.querySelectorAll(`#${tab.tabId} .${tab.checkboxClass}`);
+                checkboxes.forEach(checkbox => {
+                    checkbox.addEventListener("change", () => updateHiddenInput(tab.tabId, tab.hiddenInputId, tab.checkboxClass));
+                });
+
+                updateHiddenInput(tab.tabId, tab.hiddenInputId, tab.checkboxClass);
+            });
+
+            document.querySelectorAll('[id$="headerCheckbox"]').forEach(headerCheckbox => {
+                headerCheckbox.addEventListener("change", function () {
+                    const tabId = this.id.replace("headerCheckbox", "");
+                    const rowCheckboxes = document.querySelectorAll(`#${tabId} .rowCheckbox`);
+                    rowCheckboxes.forEach(checkbox => {
+                        checkbox.checked = this.checked;
+                    });
+                    const matchingTab = tabs.find(tab => tab.tabId === tabId);
+                    if (matchingTab) {
+                        updateHiddenInput(tab.tabId, matchingTab.hiddenInputId, matchingTab.checkboxClass);
+                    }
+                });
+            });
+        });
+    </script>
+
+
+
+    <script>
+        $(document).ready(function () {
+            $('#ApplicableChargesheaderCheckbox').on('change', function () {
+                var isChecked = $(this).prop('checked');
+                $('.ApplicableChargesrowCheckbox').prop('checked', isChecked);
+            });
+
+            $('#ApplicableChargesList').on('change', '.ApplicableChargesrowCheckbox', function () {
+                var allChecked = $('.ApplicableChargesrowCheckbox').length === $('.ApplicableChargesrowCheckbox:checked').length;
+                $('#ApplicableChargesheaderCheckbox').prop('checked', allChecked);
+            });
+        });
+
+
+        $(document).ready(function () {
+            $('#ApplicableDirectDebitsheaderCheckbox').on('change', function () {
+                var isChecked = $(this).prop('checked');
+                $('.ApplicableDirectDebitsrowCheckbox').prop('checked', isChecked);
+            });
+
+            $('#ApplicableDirectDebitsList').on('change', '.ApplicableDirectDebitsrowCheckbox', function () {
+                var allChecked = $('.ApplicableDirectDebitsrowCheckbox').length === $('.ApplicableDirectDebitsrowCheckbox:checked').length;
+                $('#ApplicableDirectDebitsheaderCheckbox').prop('checked', allChecked);
+            });
+        });
+
+
+        $(document).ready(function () {
+            $('#AttachedLoanProductsheaderCheckbox').on('change', function () {
+                var isChecked = $(this).prop('checked');
+                $('.AttachedLoanProductsrowCheckbox').prop('checked', isChecked);
+            });
+
+            $('#AttachedLoanProductsList').on('change', '.AttachedLoanProductsrowCheckbox', function () {
+                var allChecked = $('.AttachedLoanProductsrowCheckbox').length === $('.AttachedLoanProductsrowCheckbox:checked').length;
+                $('#AttachedLoanProductsheaderCheckbox').prop('checked', allChecked);
+            });
+        });
+
+
+        $(document).ready(function () {
+            $('#CELoanProductsheaderCheckbox').on('change', function () {
+                var isChecked = $(this).prop('checked');
+                $('.CELoanProductsrowCheckbox').prop('checked', isChecked);
+            });
+
+            $('#CELoanProductsList').on('change', '.CELoanProductsrowCheckbox', function () {
+                var allChecked = $('.CELoanProductsrowCheckbox').length === $('.CELoanProductsrowCheckbox:checked').length;
+                $('#CELoanProductsheaderCheckbox').prop('checked', allChecked);
+            });
+        });
+
+
+        $(document).ready(function () {
+            $('#AttachedInvestmentsProductsheaderCheckbox').on('change', function () {
+                var isChecked = $(this).prop('checked');
+                $('.AttachedInvestmentsProductsrowCheckbox').prop('checked', isChecked);
+            });
+
+            $('#AttachedInvestmentsProductsList').on('change', '.AttachedInvestmentsProductsrowCheckbox', function () {
+                var allChecked = $('.AttachedInvestmentsProductsrowCheckbox').length === $('.AttachedInvestmentsProductsrowCheckbox:checked').length;
+                $('#AttachedInvestmentsProductsheaderCheckbox').prop('checked', allChecked);
+            });
+        });
+
+
+        $(document).ready(function () {
+            $('#AttachedSavingsProductsheaderCheckbox').on('change', function () {
+                var isChecked = $(this).prop('checked');
+                $('.AttachedSavingsProductsrowCheckbox').prop('checked', isChecked);
+            });
+
+            $('#AttachedSavingsProductsList').on('change', '.AttachedSavingsProductsrowCheckbox', function () {
+                var allChecked = $('.AttachedSavingsProductsrowCheckbox').length === $('.AttachedSavingsProductsrowCheckbox:checked').length;
+                $('#AttachedSavingsProductsheaderCheckbox').prop('checked', allChecked);
+            });
+        });
+    </script>
+
+    <script>
+        $('#chartsofAccountGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("ChartOfAccountsIndex", "CreditType", new { Area = "Accounts"}))",
+                "sServerMethod": "POST",
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<button class="btn btn-outline-info" onclick="selectCoA(\'' + aData.Id + '\')">Select</button>';
+
+                    $('td:eq(3)', nRow).html(dt_Created);
+                    $('td:eq(4)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+                "aoColumns": [
+                    { "mDataProp": "AccountName", "sTitle": "G/L Account Name", "sWidth": "10%" },
+                    { "mDataProp": "CostCenterDescription", "sTitle": "Cost Center", "sWidth": "10%" },
+                    { "mDataProp": "AccountCode", "sTitle": "Code", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],
+                "aaSorting": [[0, "desc"]]
+            });
+
+         function selectCoA(id) {
+            console.log("Selected ID:", id);
+            $.ajax({
+                url: '/Accounts/CreditType/ChartOfAccountLookUp',
+                type: 'POST',
+                data: { Id: id },
+                success: function (response) {
+                    if (response.success) {
+                        console.log(response);
+                        $('#ChartOfAccountId').val(response.data.ChartOfAccountId);
+                        $('#ChartOfAccountAccountName').val(response.data.ChartOfAccountAccountName);
+
+                        $('#chartofAccountLookupModal').modal('hide');
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while processing your request.');
+                }
+            });
+        }
+    </script>
+
+    <script>
+        function openTab(evt, tabName) {
+            evt.preventDefault();
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        function openSubTab(evt, subTabName) {
+            evt.preventDefault();
+            var i, subtabcontent, subtablinks;
+            subtabcontent = document.getElementsByClassName("subtabcontent");
+            for (i = 0; i < subtabcontent.length; i++) {
+                subtabcontent[i].style.display = "none";
+            }
+            subtablinks = document.getElementsByClassName("subtablinks");
+            for (i = 0; i < subtablinks.length; i++) {
+                subtablinks[i].className = subtablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(subTabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        function openSubSubTab(evt, subSubTabName) {
+            evt.preventDefault();
+            var i, subsubtabcontent, subsubtablinks;
+            subsubtabcontent = document.getElementsByClassName("subsubtabcontent");
+            for (i = 0; i < subsubtabcontent.length; i++) {
+                subsubtabcontent[i].style.display = "none";
+            }
+            subsubtablinks = document.getElementsByClassName("subsubtablinks");
+            for (i = 0; i < subsubtablinks.length; i++) {
+                subsubtablinks[i].className = subsubtablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(subSubTabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+
+        document.getElementById("MainTab1").style.display = "block";
+        document.getElementById("SubTab1-1").style.display = "block";
+        document.getElementById("SubSubTab1-1-1").style.display = "block";
+    </script>
+}

@@ -1,0 +1,216 @@
+﻿@model  Application.MainBoundedContext.DTO.AccountsModule.SavingsProductDTO
+@{
+    ViewBag.Title = "Savings Product Details";
+}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h1>Accounts</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "SavingsProduct", new { Area = "Accounts" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>View</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h2>Savings Products Details</h2>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.Description)</strong><br>
+                                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.Code)</strong><br>
+                                @Html.EditorFor(model => model.Code, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.ChartOfAccountAccountName)</strong><br>
+                                @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
+                            </p>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.MaximumAllowedWithdrawal)</strong><br>
+                                @Html.EditorFor(model => model.MaximumAllowedWithdrawal, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.MinimumBalance)</strong><br>
+                                @Html.EditorFor(model => model.MinimumBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.OperatingBalance)</strong><br>
+                                @Html.EditorFor(model => model.OperatingBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
+                            </p>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.WithdrawalNoticeAmount)</strong><br>
+                                @Html.EditorFor(model => model.WithdrawalNoticeAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
+                            </p>
+                            <p>
+                                <strong> @Html.DisplayNameFor(model => model.CreatedDate)</strong><br>
+                                @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Maximum Allowed Withdrawal", @readonly = "readonly" } })
+                            </p>
+
+
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.Priority)</strong><br>
+                                @Html.EditorFor(model => model.PriorityDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
+                            </p>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.WithdrawalNoticePeriod)</strong><br>
+                                @Html.EditorFor(model => model.WithdrawalNoticePeriod, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
+                            </p>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.WithdrawalInterval)</strong><br>
+                                @Html.EditorFor(model => model.WithdrawalInterval, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
+                            </p>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.AnnualPercentageYield)</strong><br>
+                                @Html.EditorFor(model => model.AnnualPercentageYield, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
+                            </p>
+                        </div>
+                    </div>
+                    <div class="tabs-container">
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-toggle="tab" href="#tab-product">Charges</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#tab-charges">Exemptions</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div id="tab-product" class="tab-pane active">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <p>
+                                            <strong>@Html.DisplayNameFor(model => model.ChargeTypeDescription)</strong><br>
+                                            @Html.EditorFor(model => model.ChargeTypeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
+                                        </p>
+                                    </div>
+                                    <div class="col-6">
+                                        <p>
+                                            <strong>@Html.DisplayNameFor(model => model.ChargeBenefactorDescription)</strong><br>
+                                            @Html.EditorFor(model => model.ChargeBenefactorDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
+                                        </p>
+                                    </div>
+                                </div>
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Select</th>
+                                            <th>Commission Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (ViewBag.Commisions != null)
+                                        {
+                                            foreach (var commission in ViewBag.Commisions)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <input type="checkbox" name="commisionIds" value="@commission.Id" />
+                                                    </td>
+                                                    <td>@commission.Description</td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td colspan="2">No commissions available</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                            <div id="tab-charges" class="tab-pane">
+                                <h3>Charges</h3>
+
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Select</th>
+                                            <th>Commission Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @*@if (ViewBag.EXCEMPTIONS != null)
+                                        {
+                                            foreach (var commission in ViewBag.EXCEMPTIONS)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <input type="checkbox" name="ExcemptedommisionId" value="@commission.Id" />
+                                                    </td>
+                                                    <td>@commission.Description</td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td colspan="2">No commissions available</td>
+                                            </tr>
+                                        }*@
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p>
+                                @Html.ActionLink("Back to List", "Index", "SavingsProduct", new { Area = "Accounts" }, new { @class = "btn btn-success" })
+
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                                @Html.ActionLink("Edit Savings Products", "Edit", "SavingsProduct", new { id = Model.Id, Area = "Accounts" }, new { @class = "btn btn-success" })
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

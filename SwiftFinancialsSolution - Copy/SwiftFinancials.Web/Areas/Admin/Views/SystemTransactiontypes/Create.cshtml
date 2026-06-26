@@ -1,0 +1,310 @@
+﻿@model Application.MainBoundedContext.DTO.AdministrationModule.SystemPermissionTypeInRoleDTO
+
+@{
+    var month = ViewBag.SystemPermissionTypeSelectList as List<SelectListItem>;
+    ViewBag.Title = "Update System Permission";
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h2>Update System Permission</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">@Html.ActionLink("Dashboard", "Index", "Home")</li>
+            <li class="breadcrumb-item">@Html.ActionLink("Home", "Index", "SystemTransactiontypes", new { Area = "Admin" })</li>
+            <li class="breadcrumb-item active"><strong>Update System Permission</strong></li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    @*@if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Success!</strong> @TempData["Success"]
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        </div>
+                    }
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            <strong>Error!</strong> @TempData["Error"]
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        </div>
+                    }*@
+                    <div class="ibox-tools">
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        <a class="close-link"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-white text-dark">
+                    @using (Html.BeginForm("Create", "SystemTransactiontypes", new { Area = "Admin" }, FormMethod.Post, new { id = "updateForm" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <div class="form-horizontal">
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.SystemPermissionTypeDescription)
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                    @Html.DropDownListFor(model => model.SystemPermissionType, month, new { @class = "form-control input-md", id = "SystemPermissionType" })
+                                    @Html.ValidationMessageFor(model => model.SystemPermissionTypeDescription)
+                                </div>
+                            </div>
+
+                            <input type="hidden" name="SelectedRoles" id="SelectedRoles" />
+                            <input type="hidden" name="SelectedBranches" id="SelectedBranches" />
+
+                            <ul class="nav nav-tabs" id="roleBranchTabs" role="tablist">
+                                <li class="nav-item"><a class="nav-link active" id="roles-tab" data-toggle="tab" href="#roles" role="tab">Roles</a></li>
+                                <li class="nav-item"><a class="nav-link" id="branches-tab" data-toggle="tab" href="#branches" role="tab">Branches</a></li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div class="tab-pane fade show active" id="roles" role="tabpanel">
+                                    <div class="panel panel-primary">
+                                        <div class="panel-heading">Roles</div>
+                                        <div class="panel-body">
+                                            <table class="table table-hover" id="rolesTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="display: none">Id</th>
+                                                        <th>Name</th>
+                                                        <th>Map</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="rolesTableBody"></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="tab-pane fade" id="branches" role="tabpanel">
+                                    <div class="panel panel-primary">
+                                        <div class="panel-heading">Branches</div>
+                                        <div class="panel-body">
+                                            <table class="table table-hover" id="branchesTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="display: none">Id</th>
+                                                        <th>Description</th>
+                                                        <th>Map</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="branchesTableBody"></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function () {
+            $('#updateForm').on('submit', function (e) {
+                e.preventDefault();
+                submitForm();
+            });
+
+            $('#SystemPermissionType').change(function () {
+                loadRolesAndBranches($(this).val());
+            });
+
+            function loadRolesAndBranches(systemPermissionTypeId) {
+                $.ajax({
+                    url: '@Url.Action("GetAction", "SystemTransactiontypes", new { Area = "Admin" })',
+                    type: 'GET',
+                    data: { systemPermissionTypeId: systemPermissionTypeId },
+                    dataType: 'json',
+                    success: function (data) {
+                        populateRoles(data.allRoles, data.linkedRoles);
+                        populateBranches(data.allBranches, data.linkedBranches);
+                    },
+                    error: function () {
+                        toastr.error('Failed to load roles and branches.', 'Error');
+                    }
+                });
+            }
+
+            function populateRoles(allRoles, linkedRoles) {
+                var rolesTableBody = $('#rolesTableBody');
+                rolesTableBody.empty();
+                $.each(allRoles, function (index, role) {
+                    var isChecked = linkedRoles.some(linkedRole => linkedRole.Name === role.Name);
+                    rolesTableBody.append('<tr>' +
+                        '<td style="display: none">' + role.Id + '</td>' +
+                        '<td>' + role.Name + '</td>' +
+                        '<td><input type="checkbox" class="role-checkbox" data-role-id="' + role.Id + '" data-role-name="' + role.Name + '"' + (isChecked ? ' checked' : '') + '></td>' +
+                        '</tr>'
+                    );
+                });
+                $('.role-checkbox').change(function () {
+                    var isChecked = $(this).is(':checked');
+                    var roleId = $(this).data('role-id');
+                    var roleName = $(this).data('role-name');
+
+                    if (isChecked) {
+                        updateRoleSelection();
+                    } else {
+                        removeRole(roleId, roleName);
+                    }
+                });
+            }
+
+            function populateBranches(allBranches, linkedBranches) {
+                var branchesTableBody = $('#branchesTableBody');
+                branchesTableBody.empty();
+                $.each(allBranches, function (index, branch) {
+                    var isChecked = linkedBranches.some(linkedBranch => linkedBranch.Id === branch.Id);
+                    branchesTableBody.append('<tr>' +
+                        '<td style="display: none">' + branch.Id + '</td>' +
+                        '<td>' + branch.Description + '</td>' +
+                        '<td><input type="checkbox" class="branch-checkbox" data-branch-id="' + branch.Id + '"' + (isChecked ? ' checked' : '') + '></td>' +
+                        '</tr>'
+                    );
+                });
+                $('.branch-checkbox').change(function () {
+                    var isChecked = $(this).is(':checked');
+                    var branchId = $(this).data('branch-id');
+
+                    if (isChecked) {
+                        updateBranchSelection();
+                    } else {
+                        removeBranch(branchId);
+                    }
+                });
+            }
+
+            function updateRoleSelection() {
+                var selectedRoles = [];
+                $('.role-checkbox:checked').each(function () {
+                    var roleId = $(this).data('role-id');
+                    var roleName = $(this).data('role-name');
+                    selectedRoles.push(roleId + '|' + roleName);
+                });
+                sendDataToCreateAction(selectedRoles.join(','), $('#SelectedBranches').val());
+            }
+
+            function updateBranchSelection() {
+                var selectedBranches = [];
+                $('.branch-checkbox:checked').each(function () {
+                    selectedBranches.push($(this).data('branch-id'));
+                });
+                sendDataToCreateAction($('#SelectedRoles').val(), selectedBranches.join(','));
+            }
+
+            function sendDataToCreateAction(selectedRoles, selectedBranches) {
+                $.ajax({
+                    url: '@Url.Action("Create", "SystemTransactiontypes", new { Area = "Admin" })',
+                    type: 'POST',
+                    data: {
+                        selectedRoles: selectedRoles,
+                        selectedBranches: selectedBranches,
+                        systemPermissionType: $('#SystemPermissionType').val()
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({ icon: 'success', title: 'Success!', text: response.message, timer: 1000, showConfirmButton: false });
+                        } else {
+                            Swal.fire({ icon: 'error', title: 'Error!', text: response.message, timer: 8000, showConfirmButton: true });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({ icon: 'error', title: 'Error!', text: 'An error occurred while processing your request.', timer: 8000, showConfirmButton: true });
+                    }
+                });
+            }
+
+            function removeRole(roleId, roleName) {
+                $.ajax({
+                    url: '@Url.Action("Remove", "SystemTransactiontypes", new { Area = "Admin" })',
+                    type: 'POST',
+                    data: {
+                        selectedRoles: roleId + '|' + roleName,
+                        selectedBranches: $('#SelectedBranches').val(),
+                        systemPermissionType: $('#SystemPermissionType').val()
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({ icon: 'error', title: 'Removed!', text: response.message, timer: 1000, showConfirmButton: false });
+                        } else {
+                            Swal.fire({ icon: 'error', title: 'Error!', text: response.message, timer: 8000, showConfirmButton: true });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({ icon: 'error', title: 'Error!', text: 'An error occurred while removing the role.', timer: 8000, showConfirmButton: true });
+                    }
+                });
+            }
+
+            function removeBranch(branchId) {
+                $.ajax({
+                    url: '@Url.Action("Remove", "SystemTransactiontypes", new { Area = "Admin" })',
+                    type: 'POST',
+                    data: {
+                        selectedRoles: $('#SelectedRoles').val(),
+                        selectedBranches: branchId,
+                        systemPermissionType: $('#SystemPermissionType').val()
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({ icon: 'error', title: 'Removed!', text: response.message, timer: 1000, showConfirmButton: false });
+                        } else {
+                            Swal.fire({ icon: 'error', title: 'Error!', text: response.message, timer: 8000, showConfirmButton: true });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({ icon: 'error', title: 'Error!', text: 'An error occurred while removing the branch.', timer: 8000, showConfirmButton: true });
+                    }
+                });
+            }
+
+            function submitForm() {
+                var selectedRoles = [];
+                var selectedBranches = [];
+
+                $('.role-checkbox:checked').each(function () {
+                    var roleId = $(this).data('role-id');
+                    var roleName = $(this).data('role-name');
+                    selectedRoles.push(roleId + '|' + roleName);
+                });
+
+                $('.branch-checkbox:checked').each(function () {
+                    selectedBranches.push($(this).data('branch-id'));
+                });
+
+                $('#SelectedRoles').val(selectedRoles.join(','));
+                $('#SelectedBranches').val(selectedBranches.join(','));
+
+                var formData = $('#updateForm').serialize();
+                $.ajax({
+                    url: $('#updateForm').attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({ icon: 'success', title: 'Success!', text: response.message, timer: 1000, showConfirmButton: false })
+                                .then(() => { window.location.href = '/Accounts/SystemTransactiontypes/Create'; });
+                        } else {
+                            Swal.fire({ icon: 'error', title: 'Error!', text: response.message, timer: 8000, showConfirmButton: true });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({ icon: 'error', title: 'Error!', text: 'An error occurred while processing your request.', timer: 8000, showConfirmButton: true });
+                    }
+                });
+            }
+        });
+    </script>
+}

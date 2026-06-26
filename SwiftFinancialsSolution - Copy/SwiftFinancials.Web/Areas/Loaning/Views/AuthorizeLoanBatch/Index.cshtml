@@ -1,0 +1,179 @@
+﻿
+@{
+    ViewBag.Title = "Loan Authorization";
+}
+
+
+<style>
+    #tabs-container {
+        background-color: #f5f5f5;
+        border-bottom: 1px solid #ddd;
+        margin-bottom: 20px;
+    }
+
+    .nav-tabs {
+        padding: 15px 0;
+        list-style: none;
+        margin: 0;
+    }
+
+        .nav-tabs li {
+            display: inline-block;
+            margin-right: 20px;
+        }
+
+        .nav-tabs a {
+            text-decoration: none;
+            font-size: 16px;
+            color: #333;
+            padding: 10px 15px;
+            border-bottom: 2px solid transparent;
+            transition: border-bottom-color 0.3s ease-in-out;
+        }
+
+            .nav-tabs a:hover {
+                border-bottom-color: #007bff;
+                color: #007bff;
+            }
+</style>
+
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h1>Loan Origination</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>List</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h2>Loan Authorization</h2>
+
+                    @if (TempData["approve"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Success !</strong> @TempData["approve"]
+                        </div>
+                    }
+
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="sk-spinner sk-spinner-double-bounce">
+                        <div class="sk-double-bounce1"></div>
+                        <div class="sk-double-bounce2"></div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="LoanRegistrationsGrid" class="table table-striped table-bordered table-hover" width="100%">
+                            <tbody>
+                                <tr>
+                                    <td colspan="7" class="dataTables_empty">
+                                        Loading data from server
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+}
+
+@section scripts {
+    @Scripts.Render("~/plugins/dataTables")
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#LoanRegistrationsGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "AuthorizeLoanBatch", new { Area = "Loaning"}))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var receivedDate = new Date(parseInt(aData.ReceivedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + receivedDate.getHours()).slice(-2);
+                    var m = ("0" + receivedDate.getMinutes()).slice(-2);
+                    var s = ("0" + receivedDate.getSeconds()).slice(-2);
+
+                    var dt_ReceivedDate = $.datepicker.formatDate('dd/mm/yy', receivedDate) ;
+                    aData.ReceivedDate = dt_ReceivedDate;
+
+                    var dropdownHtml = `
+                        <div class="dropdown">
+                            <button style="width: 100px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Action
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="/loaning/approveloan/approve/${aData.Id}">Approve Loan</a>
+                            </div>
+                        </div>`;
+
+                    var approveUrl = '<a  href="/loaning/authorizeloanbatch/authorize/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Authorize</a>';
+
+
+                    //$('td:eq(4)', nRow).html(dt_ReceivedDate);
+                    $('td:eq(9)', nRow).html(dt_Created);
+                    $('td:eq(10)', nRow).html(approveUrl);
+
+                    return nRow;
+                },
+                "aoColumns": [
+                    { "mDataProp": "CaseNumber", "sTitle": "Loan Number", "sWidth": "5%" },
+                    { "mDataProp": "CustomerFullName", "sTitle": "Customer", "sWidth": "20%" },
+                    { "mDataProp": "CustomerReference1", "sTitle": "Account Number", "sWidth": "5%" },
+                    { "mDataProp": "CustomerReference2", "sTitle": "Membership Number", "sWidth": "5%" },
+                    { "mDataProp": "LoanProductDescription", "sTitle": "Loan Product", "sWidth": "5%" },
+                    { "mDataProp": "AmountApplied", "sTitle": "Amount Applied", "sWidth": "5%" },
+                    { "mDataProp": "LoanProductDescription", "sTitle": "Loan Product", "sWidth": "5%" },
+                    { "mDataProp": "LoanPurposeDescription", "sTitle": "Loan Purpose", "sWidth": "5%" },
+                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "5%" },
+                    { "mDataProp": "AuditedDate", "sTitle": "Verified Date", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Actions", "sWidth": "15%", "bSortable": false }],
+                "aaSorting": [[0, "desc"]]
+            });
+        });
+
+        $(document).ajaxStart(function () {
+            $('.ibox').children('.ibox-content').toggleClass('sk-loading');
+        });
+        $(document).ajaxStop(function () {
+            $('.ibox').children('.ibox-content').toggleClass('sk-loading');
+        });
+    </script>
+
+}

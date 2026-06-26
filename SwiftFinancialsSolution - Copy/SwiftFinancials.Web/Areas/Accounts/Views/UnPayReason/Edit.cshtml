@@ -1,0 +1,384 @@
+﻿@model  Application.MainBoundedContext.DTO.AccountsModule.UnPayReasonDTO
+
+@{
+    /**/
+
+    ViewBag.Title = "Edit UnPay Reason";
+}
+
+
+<style>
+    #AppliedApplicableChargesTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #AppliedApplicableChargesTable, th, td {
+        padding: 15px;
+        text-align: center;
+        border: 1px solid #ddd;
+        transition: background 0.3s, transform 0.3s;
+    }
+
+    #AppliedApplicableChargesTable, th {
+        background: linear-gradient(to bottom, #4a90e2, #003366);
+        color: white;
+        text-transform: uppercase;
+        font-size: 1.1em;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    #AppliedApplicableChargesTable, tr:hover td {
+        background: rgba(74, 144, 226, 0.2);
+        transform: translateY(-2px);
+    }
+
+    #AppliedApplicableChargesTable, td {
+        background: #f9f9f9;
+        color: #333;
+    }
+
+    #AppliedApplicableChargesTable, tr:nth-child(even) td {
+        background: #f2f2f2;
+    }
+
+    #AppliedApplicableChargesTable, tr:nth-child(odd) td {
+        background: #ffffff;
+    }
+
+    #AppliedApplicableChargesTable, tr:last-child td {
+        border-bottom: none;
+    }
+</style>
+
+
+
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h1>Accounts</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "UnPayReason", new { Area = "Accounts" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger fade in">
+        <button class="close" data-dismiss="alert">
+            ×
+        </button>
+        <i class="fa-fw fa fa-times"></i>
+        <strong>Error!</strong> @TempData["Error"]
+    </div>
+}
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h2>Edit Unpay Reason</h2>
+                    <br />
+
+                    @if (TempData["ErrorMessageResult"] != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: '@TempData["ErrorMessageResult"]',
+                                    confirmButtonColor: '#FF0000',
+                                });
+                            });
+                        </script>
+                    }
+
+                    @if (TempData["CreateError"] != null)
+                    {
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: '@TempData["CreateError"]',
+                                    confirmButtonColor: '#FF0000',
+                                });
+                            });
+                        </script>
+                    }
+
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-white">
+                    @using (Html.BeginForm("Edit", "UnPayReason", new { Area = "Accounts" }, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-lg-8">
+                                    <div class="form-group form-group-sm">
+                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter text...", @required = "" } })
+                                    </div>
+                                </div>
+
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-sm" title="The Return codes are allocated  as defined in Kenya Bankers Association Clearing House Standards for Automated Clearing">
+                                        @Html.LabelFor(model => model.Code, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.Code, new { htmlAttributes = new { @class = "form-control", @Type = "Number", @Min = "0", @Style = "text-align: right;", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-1" style="margin-top: 30px;">
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                        @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <br />
+                            <ul class="nav nav-tabs" style="margin-bottom: 20px; font-size: large; margin-top: 40px;">
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="#NewApplicableCharges"><i class="fa fa-table" aria-hidden="true"></i>New Applicable Charges</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="#AppliedApplicableCharges"><i class="fa fa-table" aria-hidden="true"></i>Applied Applicable Charges</a>
+                                </li>
+                            </ul>
+
+                            <input type="hidden" id="SelectedIds" name="SelectedIds" value="" />
+                            <div class="tab-content">
+                                <div id="NewApplicableCharges" class="tab-pane active">
+                                    <div style="text-align: left; margin-left: 15px;">
+                                        <input type="checkbox" id="headerCheckbox" style="transform: scale(1); color: blue;">
+                                        <label for="headerCheckbox" style="font-weight: bold;">Select All</label>
+                                    </div>
+
+                                    <div class="table-responsive">
+                                        <table id="ApplicableChargesGrid" class="table table-hover" width="100%">
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan="7" class="dataTables_empty">
+                                                        Loading data from server
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+
+                                <div id="AppliedApplicableCharges" class="tab-pane">
+                                    <div class="table-container">
+                                        <h3 style="font-size: 1.9rem; text-align: center;">Applied Applicable Charges</h3>
+                                        <table id="#AppliedApplicableChargesTable" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Select?</th>
+                                                    <th>Charge Name</th>
+                                                    <th>Maximum Charge</th>
+                                                    <th>Charge Basis Value</th>
+                                                    <th>Benefactor</th>
+                                                    <th>RoundingType</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (ViewBag.CommissionsEdit != null)
+                                                {
+                                                    foreach (var item in ViewBag.CommissionsEdit)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                <input type="checkbox" class="rowCheckboxEdit" data-id="@item.Id"
+                                                                       @(ViewBag.CheckedStatesEdit.ContainsKey(item.Id) && ViewBag.CheckedStatesEdit[item.Id] ? "checked" : "") style="font-weight: bold;" />
+                                                            </td>
+                                                            <td>@item.Description</td>
+                                                            <td style="text-align: right;">@item.MaximumCharge</td>
+                                                            <td>@item.ChargeBasisValueDescription</td>
+                                                            <td>@item.ChargeBenefactorDescription</td>
+                                                            <td>@item.RoundingTypeDescription</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <br />
+                            <hr />
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <button type="submit" id="submit-btn" class="btn btn-primary" value="Create" style="width: 150px;">Create</button>
+                                </div>
+                            </div>
+                        </fieldset>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+
+    <script src="~/Scripts/js/navlink.js"></script>
+    <link href="~/Scripts/css/ViewbagTable.css" rel="stylesheet" />
+
+
+    <script>
+        $(document).ready(function () {
+            function saveCheckboxState(key, state) {
+                localStorage.setItem(key, state);
+            }
+
+            function loadCheckboxState(key) {
+                return localStorage.getItem(key) === 'true';
+            }
+
+            $('#headerCheckbox').on('change', function () {
+                $('.rowCheckbox').prop('checked', $(this).prop('checked')).each(function () {
+                    var checkboxKey = $(this).attr('id');
+                    saveCheckboxState(checkboxKey, $(this).prop('checked'));
+                });
+                saveCheckboxState('headerCheckbox', $(this).prop('checked'));
+            });
+
+            $('#ApplicableChargesGrid').on('change', '.rowCheckbox', function () {
+                var checkboxKey = $(this).attr('id');
+                saveCheckboxState(checkboxKey, $(this).prop('checked'));
+
+                if (!$(this).prop('checked')) {
+                    $('#headerCheckbox').prop('checked', false);
+                    saveCheckboxState('headerCheckbox', false);
+                } else {
+                    var allChecked = $('.rowCheckbox:checked').length === $('.rowCheckbox').length;
+                    $('#headerCheckbox').prop('checked', allChecked);
+                    saveCheckboxState('headerCheckbox', allChecked);
+                }
+            });
+
+            var table = $('#ApplicableChargesGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@Url.Action("CommissionsIndex", "UnPayReason", new { Area = "Accounts" })",
+                "sServerMethod": "POST",
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                    var checkboxHTML = '<input type="checkbox" class="rowCheckbox" data-id="' + aData.Id + '"';
+                    if (aData.AutomateLedgerFeeCalculation === true) {
+                        checkboxHTML += ' checked';
+                    }
+                    checkboxHTML += '>';
+                    $('td:eq(0)', nRow).html(checkboxHTML);
+                    return nRow;
+                },
+                "aoColumns": [
+                    { "mDataProp": "Id", "sTitle": "Select", "sWidth": "0.09%" },
+                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%", "bSortable": false }
+                ],
+                "aaSorting": [[0, "desc"]],
+                "initComplete": function (settings, json) {
+                    $('#headerCheckbox').prop('checked', false);
+                }
+            });
+
+
+            $(document).ready(function () {
+                $('#headerCheckbox').on('change', function () {
+                    $('.rowCheckbox').prop('checked', $(this).prop('checked'));
+                });
+
+                $('#submit-btn').on('click', function (e) {
+                    var selectedIds = [];
+                    $('.rowCheckbox:checked').each(function () {
+                        selectedIds.push($(this).data('id'));
+                    });
+                    $('#SelectedIds').val(selectedIds.join(','));
+                });
+            });
+
+        });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            $('.rowCheckboxEdit').on('click', function (e) {
+                e.preventDefault();
+            });
+        });
+    </script>
+}

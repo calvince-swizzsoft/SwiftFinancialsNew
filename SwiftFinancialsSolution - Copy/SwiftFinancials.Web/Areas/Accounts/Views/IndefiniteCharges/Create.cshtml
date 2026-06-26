@@ -1,0 +1,169 @@
+﻿@model Application.MainBoundedContext.DTO.AccountsModule.DynamicChargeDTO
+
+@{
+    ViewBag.Title = "Create Indefinite Charges";
+    var source = ViewBag.Source as List<SelectListItem>;
+    var charge = ViewBag.DynamicCharge as List<SelectListItem>;
+    var commissions = ViewBag.Commisions;
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h1>Accounts</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "IndefiniteCharges", new { Area = "Accounts" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h2>Create Indefinite Charges</h2>
+                    <div class="ibox-tools">
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        <a class="close-link"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-white">
+                    @using (Html.BeginForm("Create", "IndefiniteCharges", new { Area = "Accounts" }, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-md-12 form-group">
+                                    @Html.LabelFor(model => model.RecoverySource, new { @class = "control-label" })
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                        @Html.DropDownListFor(model => model.RecoverySource, source, new { @class = "form-control input-md" })
+                                        @Html.ValidationMessageFor(model => model.RecoverySource)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Description, new { @class = "" })
+                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Description ." } })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.RecoveryMode, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.RecoveryMode, charge, new { @class = "form-control input-md" })
+                                            @Html.ValidationMessageFor(model => model.RecoveryMode)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.FactorInLoanTerm, new { @class = "" })
+                                        @Html.CheckBoxFor(model => model.FactorInLoanTerm, new { htmlAttributes = new { @class = "form-control", @placeholder = " ." } })
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.IsLocked, new { @class = "" })
+                                        @Html.CheckBoxFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = " ." } })
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ComputeChargeOnTopUp, new { @class = "" })
+                                        @Html.CheckBoxFor(model => model.ComputeChargeOnTopUp, new { htmlAttributes = new { @class = "form-control", @placeholder = " ." } })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <br />
+
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Select</th>
+                                            <th>Commission Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (commissions != null)
+                                        {
+                                            foreach (var commission in commissions)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <input type="checkbox" name="commisionIds" value="@commission.Id" />
+                                                    </td>
+                                                    <td>@commission.Description</td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td colspan="2">No commissions available</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+                            <button type="submit" id="submitCharges" class="btn btn-primary">Submit</button>
+                        </fieldset>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    @Scripts.Render("~/plugins/dataTables")
+
+    <script>
+        function showTab() {
+            $('.nav-tabs a[href="#applicableChargesTab"]').tab('show');
+        }
+
+        $(document).ready(function () {
+            var table = $('#LoanProductsGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "Commission", new { Area = "Accounts" }))",
+                "sServerMethod": "POST",
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                    var checkboxHTML = '<input type="checkbox" class="rowCheckbox" data-id="' + aData.Id + '">';
+                    $('td:eq(0)', nRow).html(checkboxHTML);
+                    return nRow;
+                },
+                "aoColumns": [
+                    { "mDataProp": "Id", "sTitle": "Select", "sWidth": "0.09%" },
+                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%", "bSortable": false }
+                ],
+                "aaSorting": [[0, "desc"]]
+            });
+
+            $('#headerCheckbox').on('change', function () {
+                $('.rowCheckbox').prop('checked', $(this).prop('checked'));
+            });
+        });
+    </script>
+}

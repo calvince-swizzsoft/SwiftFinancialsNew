@@ -1,0 +1,60 @@
+﻿@model List<Application.MainBoundedContext.DTO.MessagingModule.TextAlertDTO>
+
+@{
+    ViewBag.Title = "Instant Messages";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Instant Messages</h2>
+
+<form method="get" action="@Url.Action("Index", "InstantMessaging")" class="row mb-4">
+    <div class="col-md-3">
+        <label>Dlr Status</label>
+        <select name="dlrstatus" class="form-control">
+            <option value="">-- All --</option>
+            <option value="0">Pending</option>
+            <option value="1">Delivered</option>
+            <option value="2">Failed</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label>Search</label>
+        <input type="text" name="search" class="form-control" placeholder="Search keyword" />
+    </div>
+    <div class="col-md-3">
+        <label>Days Cap</label>
+        <input type="number" name="dayscap" class="form-control" placeholder="e.g. 7" />
+    </div>
+    <div class="col-md-3 mt-4">
+        <button type="submit" class="btn btn-primary mt-2">Search</button>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">No messages found.</div>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Message</th>
+                <th>Recipient</th>
+                <th>Status</th>
+                <th>Date Sent</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.TextMessageBody</td>
+                    <td>@item.TextMessageRecipient</td>
+                    <td>@item.TextMessageDLRStatusDescription</td>
+                    <td>@item.CreatedDate.ToString("g")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

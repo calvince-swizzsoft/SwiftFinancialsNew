@@ -1,0 +1,22 @@
+1. Set project to Release mode
+2. Publish the WCF and Web projects and save to individual folders(make sure they are empty).
+3. Copy the Utility and Windows Service release files from the SwiftFinancials Solution root directory.
+   Utility: "D:\works\SwiftFinancials\SwiftFinancialsSolution\SwiftFinancials.Utility\bin\Release" according to your Utility release files.
+   Windows Service: "D:\works\SwiftFinancials\SwiftFinancialsSolution\SwiftFinancials.WindowsService\bin\Release" according to your WindowsService realease files.
+4. Host the WCF and Web projects to IIS.
+5. In all the projects, make sure to change the following contents of file extension ".CONFIG":
+   a) WebService URL: Change to the new host IP
+   b) Connection String: Change to point the host server
+   c) Client Endpoints: Make sure the services IP Address and Port number point to the WCF hosted project.
+   d) Templates path: Make sure the AccountAlertsTemplates path directs to "C:\Users\Administrator\Documents\SwiftFin_Deploy\WCF\App_Data\AccountAlertTemplates" according to your local/server path for the WCF release files.
+6. Change the Client endpoints in WindowsService.exe.config in the release files to point to the WCF hosted project.
+
+			** Installing Windows Service **
+			- Open CMD and run as Administrator
+			- Enter the following:
+			
+					* cd C:\Windows\Microsoft.NET\Framework\v4.0.30319
+					* installutil.exe "C:\Users\Administrator\Documents\SwiftFin_Deploy\Windows Service\SwiftFinancials.WindowsService.exe"      //Make sure the directory in the quotes matches your Windows Service Release files
+					  directory.
+					
+					

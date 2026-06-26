@@ -1,0 +1,644 @@
+﻿@model  Application.MainBoundedContext.DTO.BackOfficeModule.LoanGuarantorDTO
+@{
+    /**/
+    ViewBag.Title = "Create Loan Guarantor";
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h2>Loan Guarantor</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "LoanGuarantor", new { Area = "Loaning" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content m-b-sm border-bottom">
+                    <div class="ibox-content bg-white text-info">
+                        @using (Html.BeginForm("Search", "LoanGuarantor", new { Area = "Loaning" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                        {
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanCaseId, new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.LoanCaseId)
+                                        <div class="input-group" id="searchInput">
+                                            @Html.TextBoxFor(model => model.LoanCaseCaseNumber, new { @class = "form-control", @placeholder = "Enter Loan number and click search" })
+
+                                            <!-- The following line should be corrected -->
+                                            <button id="searchButton" type="submit"><span class="fa fa-search"></span></button>
+
+                                            <div id="searchResults">
+                                                <!-- Loan Number and Loan Case ID will be displayed here -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoaneeCustomerIndividualFirstName, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.LoaneeCustomerIndividualFirstName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Loanee Customer First Name", disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.LoaneeCustomerIndividualFirstName, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoaneeCustomerIndividualLastName, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.LoaneeCustomerIndividualLastName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Loanee Customer Last Name", disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.LoaneeCustomerIndividualLastName, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanCaseAmountApplied, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.LoanCaseAmountApplied, new { htmlAttributes = new { @class = "form-control", @placeholder = "Amount Applied", disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.LoanCaseAmountApplied, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanProductId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.LoanProductId)
+                                        @Html.ValidationMessageFor(model => model.LoanProductDescription, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.LoanProductDescription, new { htmlAttributes = new { @class = "LoanProductsLookup form-control required", placeholder = "Loan Product Name", disabled = "disabled" } })
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="ibox-content m-b-sm border-bottom">
+                    <div class="ibox-content bg-white text-info">
+                        @using (Html.BeginForm("SearchA", "LoanGuarantor", new { Area = "Loaning" }, FormMethod.Post, new { @class = "wizard-big", @id = "form2" }))
+                        {
+                            <h2>Guarantor Details</h2>
+                            <fieldset>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerId, new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.CustomerId)
+                                            <div class="input-group" id="searchInput">
+                                                @Html.TextBoxFor(model => model.CustomerIndividualIdentityCardNumber, new { @class = "form-control", @placeholder = "Enter ID number and click search" })
+
+                                                <!-- The following line should be corrected -->
+                                                <button id="searchButton" type="submit"><span class="fa fa-search"></span></button>
+
+                                                
+                                            </div>
+                                        </div>
+                                        @*<div class="col-md-13 form-group">
+                    @Html.LabelFor(model => model.CustomerId, new { @class = "control-label" })
+                    <div class="input-group" data-autoclose="true">
+                        @Html.HiddenFor(model => model.CustomerId)
+                        @Html.TextBoxFor(model => model.CustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                        <span class="input-group-addon">
+                            <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
+                        </span>
+                    </div>
+                </div>*@
+                                        @*<div class="form-group form-group-lg">
+                    @Html.LabelFor(model => model.CustomerId, htmlAttributes: new { @class = "control-label" })
+                    @Html.HiddenFor(model => model.CustomerId)
+                    @Html.ValidationMessageFor(model => model.CustomerId, "", new { @class = "text-danger" })
+                    @Html.EditorFor(model => model.CustomerFullName, new { htmlAttributes = new { @class = "CustomersLookup form-control required", placeholder = "Description.." } })
+                </div>*@
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerIndividualFirstName, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.CustomerIndividualFirstName, new { htmlAttributes = new { @class = "form-control", @placeholder = "First Name", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.CustomerIndividualFirstName, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerIndividualLastName, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.CustomerIndividualLastName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Last Name", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.CustomerIndividualLastName, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.TotalShares, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.TotalShares, new { htmlAttributes = new { @class = "form-control", @placeholder = "Total Shares" } })
+                                            @Html.ValidationMessageFor(model => model.TotalShares, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.AppraisalFactor, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.AppraisalFactor, new { htmlAttributes = new { @class = "form-control", @placeholder = "Appraisal Factor" } })
+                                            @Html.ValidationMessageFor(model => model.AppraisalFactor, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CommittedShares, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.CommittedShares, new { htmlAttributes = new { @class = "form-control", @placeholder = "Committed Shares" } })
+                                            @Html.ValidationMessageFor(model => model.CommittedShares, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.AmountGuaranteed, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.AmountGuaranteed, new { htmlAttributes = new { @class = "form-control", @placeholder = "Amount Guranteed" } })
+                                    @Html.ValidationMessageFor(model => model.AmountGuaranteed, "", new { @class = "text-danger" })
+                                </div>
+                            </fieldset>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="ibox-content m-b-sm border-bottom">
+                @using (Html.BeginForm("Create", "LoanGuarantor", new { Area = "Loaning" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                {
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <input type="submit" value="Post" class="btn btn-success" />
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal  fade" id="customerLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header  bg-primary">
+                <h3 class="font-bold">Customers Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="customersGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+    <script>
+
+                            $('#customersGrid').DataTable({
+                                        // Ajax settings
+                                        "sPaginationType": "full_numbers",
+                                        "bProcessing": true,
+                                        "bServerSide": true,
+                                        "sAjaxSource": "@(Url.Action("Index", "Customer", new { Area = "Registry" }))",
+                                        "sServerMethod": "POST",
+                                        // Callback settings
+                                        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                                           var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                                            var h = ("0" + createdDate.getHours()).slice(-2);
+                                            var m = ("0" + createdDate.getMinutes()).slice(-2);
+                                            var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                                            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                                            aData.CreatedDate = dt_Created;
+
+                                            var selectUrl = '<a  href="/Loaning/LoanGuarantor/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                                            $('td:eq(4)', nRow).html(dt_Created);
+                                            $('td:eq(5)', nRow).html(selectUrl);
+
+                                            return nRow;
+                                        },
+                                // Display settings
+                                "aoColumns": [
+                                    { "mDataProp": "FullName", "sTitle": "Name", "sWidth": "15%" },
+                                    { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "10%" },
+                                    { "mDataProp": "Reference2", "sTitle": "Membership  Number", "sWidth": "10%" },
+                                    { "mDataProp": "IndividualTypeDescription", "sTitle": "Individual Type", "sWidth": "15%" },
+                                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+                                "aaSorting": [[0, "desc"]]
+                            });
+
+                            $("#s tbody").on("click", "tr", function () {
+                                var data = customersGrid.row(this).data();
+
+                                $('#CustomerId').val(data.Id);
+                                $('input[name=CustomerId]').val(data.Id);
+                                $('input[name=CustomerFullName]').val(data.FullName);
+
+                                var CustomerId = "";
+                                CustomerId = CustomersMap[item].Id;
+                                $('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
+                                $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
+                                $('#CustomerSerialNumber').val(CustomersMap[item].SerialNumber);
+                                $('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
+                                $('#CustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
+                                $('#customerLookupModal').modal('hide');
+                            });
+                                            //customers typehead starts here
+                                            $('.CustomersLookup').typeahead({
+                                                source: function (query, process) {
+                                                    return $.getJSON(
+                                                        '@Url.Action("GetCustomersAsync", "Customer", new { Area = "Registry" })',
+                                                        { query: query },
+                                                        function (Customers) {
+                                                            var newCustomersData = [];
+                                                            CustomersMap = {};
+                                                            $.each(Customers, function (i,Customer) {
+                                                                newCustomersData.push(Customer.FullName);
+                                                                CustomersMap[Customer.FullName] = Customer;
+                                                                CustomersMap[Customer.CustomerIndividualIdentityCardNumber] = Customer;
+                                                            });
+                                                            process(newCustomersData); return;
+                                                        });
+                                                },
+                                                matcher: function (item) {
+                                                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                                                        return true;
+                                                    }
+                                                },
+                                                sorter: function (items) {
+                                                    return items.sort();
+                                                },
+                                                highlighter: function (item) {
+                                                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                                                    return item.replace(regex, "<strong>$1</strong>");
+                                                },
+                                                updater: function (item) {
+                                                    var customerId = "";
+                                                    CustomerId = CustomersMap[item].Id;
+                                                    $('#CustomerId').val(CustomerId);
+                                                    $('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
+                                                    $('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
+                                                    $('#TotalShares').val(CustomersMap[item].TotalShares);
+                                                    $('#CommittedShares').val(CustomersMap[item].CommittedShares);
+                                                    //console.log(CustomerId)
+                                                    return item;
+                                                }
+                                            });
+                                            //LoanCases typehead starts here
+                                            $('.LoanCasesLookup').typeahead({
+                                                source: function (query, process) {
+                                                    return $.getJSON(
+                                                        '@Url.Action("GetLoanCasesAsync", "LoanRegistration", new { Area = "Loaning" })',
+                                                        { query: query },
+                                                        function (LoanCases) {
+                                                            var newLoanCasesData = [];
+                                                            LoanCasesMap = {};
+                                                            $.each(LoanCases, function (i,LoanCase) {
+                                                                newLoanCasesData.push(LoanCase.CaseNumber);
+                                                                LoanCasesMap[LoanCase.CaseNumber] = LoanCase;
+                                                            });
+                                                            process(newLoanCasesData); return;
+                                                        });
+                                                },
+                                                matcher: function (item) {
+                                                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                                                        return true;
+                                                    }
+                                                },
+                                                sorter: function (items) {
+                                                    return items.sort();
+                                                },
+                                                highlighter: function (item) {
+                                                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                                                    return item.replace(regex, "<strong>$1</strong>");
+                                                },
+                                                updater: function (item) {
+                                                    var LoanCaseId = "";
+                                                    LoanCaseId = LoanCasesMap[item].Id;
+                                                    LoaneeCustomerFullName = LoanCasesMap[item].LoaneeCustomerFullName;
+                                                    $('#LoaneeCustomerFullName').val(LoanCasesMap[item].LoaneeCustomerFullName);
+                                                    $('#LoanCaseId').val(LoanCaseId);
+                                                    //console.log(LoanCaseId)
+                                                    return item;
+                                                }
+                                            });
+                                            //LoaneeCustomers typehead starts here
+                                        $('.LoaneeCustomersLookup').typeahead({
+                                                source: function (query, process) {
+                                                    return $.getJSON(
+                                                        '@Url.Action("GetLoanCaseByLoanCaseNumberAsync", "LoanRegistration", new { Area = "Loaning" })',
+                                                        { query: query },
+                                                        function (LoanCases) {
+                                                            var newLoanCasesData = [];
+                                                            LoanCasesMap = {};
+                                                            $.each(LoanCases, function (i,LoanCase) {
+                                                                newLoanCasesData.push(Customer.FullName);
+                                                                LoanCasesMap[Customer.FullName] = LoanCase;
+                                                            });
+                                                            process(newLoanCasesData); return;
+                                                        });
+                                                },
+                                                matcher: function (item) {
+                                                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                                                        return true;
+                                                    }
+                                                },
+                                                sorter: function (items) {
+                                                    return items.sort();
+                                                },
+                                                highlighter: function (item) {
+                                                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                                                    return item.replace(regex, "<strong>$1</strong>");
+                                                },
+                                                updater: function (item) {
+                                                    var LoanCaseId = "";
+                                                    LoanCaseId = LoanCasesMap[item].Id;
+                                                    $('LoanCaseId').val(LoanCaseId);
+                                                    CustomerId = LoanCasesMap[item].CustomerId;
+                                                    $('CustomerFullName').val(CustomerFullName);
+                                                    //console.log(LoanCaseId)
+                                                    return item;
+                                                }
+                                            });
+                                            //Employer typehead starts here
+                                            $('.EmployersLookup').typeahead({
+                                                source: function (query, process) {
+                                                    return $.getJSON(
+                                                        '@Url.Action("GetEmployersAsync", "Employer", new { Area = "Registry" })',
+                                                        { query: query },
+                                                        function (Employers) {
+                                                            var newEmployersData = [];
+                                                            EmployersMap = {};
+                                                            $.each(Employers, function (i, Employer) {
+                                                                newEmployersData.push(Employer.Description);
+                                                                EmployersMap[Employer.Description] = Employer;
+                                                            });
+                                                            process(newEmployersData); return;
+                                                        });
+                                                },
+                                                matcher: function (item) {
+                                                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                                                        return true;
+                                                    }
+                                                },
+                                                sorter: function (items) {
+                                                    return items.sort();
+                                                },
+                                                highlighter: function (item) {
+                                                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                                                    return item.replace(regex, "<strong>$1</strong>");
+                                                },
+                                                updater: function (item) {
+                                                    var employerId = "";
+                                                    EmployerId = EmployersMap[item].Id;
+                                                    $('#EmployerId').val(EmployerId);
+                                                    //console.log(EmployerId)
+                                                    return item;
+                                                }
+                                            });
+                                            //Station typehead starts here
+                                            $('.StationsLookup').typeahead({
+                                                source: function (query, process) {
+                                                    return $.getJSON(
+                                                        '@Url.Action("GetStationsAsync", "Station", new { Area = "Registry" })',
+                                                        { query: query },
+                                                        function (Stations) {
+                                                            var newStationsData = [];
+                                                            StationsMap = {};
+                                                            $.each(Stations, function (i, Station) {
+                                                                newStationsData.push(Station.Description);
+                                                                StationsMap[Station.Description] = Station;
+                                                            });
+                                                            process(newStationsData); return;
+                                                        });
+                                                },
+                                                matcher: function (item) {
+                                                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                                                        return true;
+                                                    }
+                                                },
+                                                sorter: function (items) {
+                                                    return items.sort();
+                                                },
+                                                highlighter: function (item) {
+                                                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                                                    return item.replace(regex, "<strong>$1</strong>");
+                                                },
+                                                updater: function (item) {
+                                                    var StationId = "";
+                                                    StationId = StationsMap[item].Id;
+                                                    $('#StationId').val(StationId);
+                                                    //console.log(StationId)
+                                                    return item;
+                                                }
+                                            });
+                                            //LoanProduct typehead starts here
+                                            $('.LoanProductsLookup').typeahead({
+                                                source: function (query, process) {
+                                                    return $.getJSON(
+                                                        '@Url.Action("GetLoanProductsAsync", "LoanProduct", new { Area = "Accounts" })',
+                                                        { query: query },
+                                                        function (LoanProducts) {
+                                                            var newLoanProductsData = [];
+                                                            LoanProductsMap = {};
+                                                            $.each(LoanProducts, function (i, LoanProduct) {
+                                                                newLoanProductsData.push(LoanProduct.Description);
+                                                                LoanProductsMap[LoanProduct.Description] = LoanProduct;
+                                                            });
+                                                            process(newLoanProductsData); return;
+                                                        });
+                                                },
+                                                matcher: function (item) {
+                                                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                                                        return true;
+                                                    }
+                                                },
+                                                sorter: function (items) {
+                                                    return items.sort();
+                                                },
+                                                highlighter: function (item) {
+                                                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                                                    return item.replace(regex, "<strong>$1</strong>");
+                                                },
+                                                updater: function (item) {
+                                                    var loanProductId = "";
+                                                    LoanProductId = LoanProductsMap[item].Id;
+                                                    $('#LoanProductId').val(LoanProductId);
+                                                    //console.log(LoanProductId)
+                                                    return item;
+                                                }
+                                            });
+                                        $(document).ready(function () {
+                                            $("#wizard").steps();
+                                            $("#form").steps({
+                                                bodyTag: "fieldset",
+                                                onStepChanging: function (event, currentIndex, newIndex) {
+                                                    // Always allow going backward even if the current step contains invalid fields!
+                                                    if (currentIndex > newIndex) {
+                                                        return true;
+                                                    }
+
+                                                    // Forbid suppressing "Warning" step if the user is to young
+                                                    if (newIndex === 3 && Number($("#age").val()) < 18) {
+                                                        return false;
+                                                    }
+
+                                                    var form = $(this);
+
+                                                    // Clean up if user went backward before
+                                                    if (currentIndex < newIndex) {
+                                                        // To remove error styles
+                                                        $(".body:eq(" + newIndex + ") label.error", form).remove();
+                                                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
+                                                    }
+
+                                                    // Disable validation on fields that are disabled or hidden.
+                                                    form.validate().settings.ignore = ":disabled,:hidden";
+
+                                                    // Start validation; Prevent going forward if false
+                                                    return form.valid();
+                                                },
+                                                onStepChanged: function (event, currentIndex, priorIndex) {
+                                                    // Suppress (skip) "Warning" step if the user is old enough.
+                                                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
+                                                        $(this).steps("next");
+                                                    }
+
+                                                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
+                                                    if (currentIndex === 2 && priorIndex === 3) {
+                                                        $(this).steps("previous");
+                                                    }
+                                                },
+                                                onFinishing: function (event, currentIndex) {
+                                                    var form = $(this);
+
+                                                    // Disable validation on fields that are disabled.
+                                                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
+                                                    form.validate().settings.ignore = ":disabled";
+
+                                                    // Start validation; Prevent form submission if false
+                                                    return form.valid();
+                                                },
+                                                onFinished: function (event, currentIndex) {
+                                                    var form = $(this);
+
+                                                    // Submit form input
+                                                    form.submit();
+                                                }
+                                            }).validate({
+                                                errorPlacement: function (error, element) {
+                                                    element.before(error);
+                                                },
+                                                rules: {
+                                                    confirm: {
+                                                        equalTo: "#password"
+                                                    }
+                                                }
+                                            });
+
+                                            $('#data_3 .input-group.date').datepicker({
+                                                startView: 2,
+                                                todayBtn: "linked",
+                                                keyboardNavigation: false,
+                                                forceParse: false,
+                                                autoclose: true,
+                                            });
+                                        });
+
+                                    @*$('#customersGrid').DataTable({
+                                                // Ajax settings
+                                                "sPaginationType": "full_numbers",
+                                                "bProcessing": true,
+                                                "bServerSide": true,
+                                                "sAjaxSource": "@(Url.Action("Index", "Customer", new { Area = "Registry" }))",
+                                                "sServerMethod": "POST",
+                                                // Callback settings
+                                                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                                                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                                                    var h = ("0" + createdDate.getHours()).slice(-2);
+                                                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                                                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                                                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                                                    aData.CreatedDate = dt_Created;
+
+                                                    var selectUrl = '<a  href="/loaning/loanRegistration/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                                                    $('td:eq(4)', nRow).html(dt_Created);
+                                                    $('td:eq(5)', nRow).html(selectUrl);
+
+                                                    return nRow;
+                                                },
+                                        // Display settings
+                                        "aoColumns": [
+                                            { "mDataProp": "FullName", "sTitle": "Name", "sWidth": "15%" },
+                                            { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "10%" },
+                                            { "mDataProp": "Reference2", "sTitle": "Membership  Number", "sWidth": "10%" },
+                                            { "mDataProp": "IndividualTypeDescription", "sTitle": "Individual Type", "sWidth": "15%" },
+                                            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                                            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+                                        "aaSorting": [[0, "desc"]]
+                                    });
+
+                                    $("#s tbody").on("click", "tr", function () {
+                                        var data = customersGrid.row(this).data();
+
+                                        $('#CustomerId').val(data.Id);
+                                        $('input[name=CustomerId]').val(data.Id);
+                                        $('input[name=CustomerFullName]').val(data.FullName);
+                                        //$('input[name=ChartOfAccountAccountCode]').val(data.AccountCode);
+
+                                        $('#customerLookupModal').modal('hide');
+                                    });*@
+
+    </script>
+}

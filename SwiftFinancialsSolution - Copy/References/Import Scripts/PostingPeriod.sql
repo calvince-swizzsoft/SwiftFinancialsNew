@@ -1,0 +1,28 @@
+
+INSERT INTO [SwiftFinancialsDB_DEV].[dbo].[swiftfin_PostingPeriods]([Id]
+      ,[Description]
+      ,[Duration_StartDate]
+      ,[Duration_EndDate]
+      ,[IsLocked]
+      ,[IsActive]
+      ,[IsClosed]
+      ,[ClosedBy]
+      ,[ClosedDate]
+      ,[SequentialId]
+      ,[CreatedBy]
+      ,[CreatedDate])
+
+	  SELECT [Id]
+      ,[Description]
+      ,[Duration_StartDate]
+      ,[Duration_EndDate]
+      ,[IsLocked]
+      ,[IsActive]
+      ,[IsClosed]
+      ,[ClosedBy]
+      ,[ClosedDate]
+      ,[SequentialId]
+      ,[CreatedBy]
+      ,[CreatedDate]
+  FROM [SwiftFinancialsDB_TEST].[dbo].[vfin_PostingPeriods]
+   

@@ -1,0 +1,1222 @@
+﻿@model Application.MainBoundedContext.DTO.MicroCreditModule.MicroCreditGroupDTO
+
+@{
+    ViewBag.Title = "Apportion Micro-Credit Group";
+
+    var typeDescription = ViewBag.TypeDescriptionSelectList as List<SelectListItem>;
+    var meetingFrequencyDescription = ViewBag.MeetingFrequencyDescriptionSelectList as List<SelectListItem>;
+    var meetingDayOfWeekDescription = ViewBag.MeetingDayOfWeekDescriptionSelectList as List<SelectListItem>;
+    var designation = ViewBag.DesignationSelectList as List<SelectListItem>;
+}
+
+
+
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('.nav-tabs li:first-child a').addClass('active');
+        $('#tab1').addClass('active');
+
+        $('.tab-link').on('click', function (e) {
+            e.preventDefault();
+
+            $('.tab-link').removeClass('active');
+            $('.tab-content').removeClass('active');
+
+            $(this).addClass('active');
+            $($(this).attr('href')).addClass('active');
+        });
+
+        $('#ValueDate').datepicker({
+            format: 'dd/mm/yyyy',
+            todayHighlight: true,
+            autoclose: true
+        });
+    });
+</script>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h1>Micro-Credit Group</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "MicroCreditGroups", new { Area = "MicroCredit" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Apportionment</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+
+
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-body">
+                        @using (Html.BeginForm("Apportionment", "MicroCreditGroups", new { Area = "MicroCredit" }, FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.HiddenFor(model => model.Id) <!-- This ensures the id is part of the form data -->
+
+
+                            @Html.HiddenFor(model => model.MicroCreditOfficerEmployeeCustomerSalutationDescription, new { id = "MicroCreditOfficerEmployeeCustomerSalutationDescription" })
+                            @Html.HiddenFor(model => model.MicroCreditOfficerId, new { id = "MicroCreditOfficerId" })
+                            @Html.HiddenFor(model => model.MicroCreditOfficerEmployeeCustomerIndividualFirstName, new { id = "MicroCreditOfficerEmployeeCustomerIndividualFirstName" })
+                            @Html.HiddenFor(model => model.MicroCreditOfficerEmployeeCustomerIndividualLastName, new { id = "MicroCreditOfficerEmployeeCustomerIndividualLastName" })
+                            @Html.HiddenFor(model => model.CustomerNonIndividualRegistrationNumber, new { id = "CustomerNonIndividualRegistrationNumber" })
+                            @Html.HiddenFor(model => model.CustomerStationId, new { id = "CustomerStationId" })
+                            @Html.HiddenFor(model => model.CustomerNonIndividualDateEstablished, new { id = "CustomerNonIndividualDateEstablished" })
+                            @Html.HiddenFor(model => model.CustomerRegistrationDate, new { id = "CustomerRegistrationDate" })
+                            @Html.HiddenFor(model => model.ParentId, new { id = "ParentId" })
+
+
+
+
+                            <fieldset>
+                                <div class="card mb-4">
+                                    <div class="card-body text-dark">
+                                        <div class="card-body text-dark">
+                                            <div class="row">
+
+                                                <!-- Customer Account Fields -->
+                                                <div class="col-lg-4 customer-fields">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.CustomerStationDescription, new { @class = "control-label" })
+                                                        @Html.EditorFor(model => model.CustomerStationDescription, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text...", @readonly = "" })
+
+                                                        @Html.ValidationMessageFor(model => model.CustomerStationDescription, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-4 customer-fields">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.MicroCreditOfficerEmployeeCustomerFullName, new { @class = "control-label" })
+                                                        @Html.HiddenFor(model => model.CustomerId, new { id = "CustomerId" })
+                                                        @Html.EditorFor(model => model.MicroCreditOfficerEmployeeCustomerFullName, new { @class = "form-control", @placeholder = "Enter Text...", @readonly = "" })
+                                                        @Html.ValidationMessageFor(model => model.MicroCreditOfficerEmployeeCustomerFullName, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-4">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.TypeDescription, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.EditorFor(model => model.TypeDescription, new { @class = "form-control", @placeholder = "Enter Text...", @readonly = "" })
+                                                        @Html.ValidationMessageFor(model => model.TypeDescription, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-lg-4">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.MeetingFrequencyDescription, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.EditorFor(model => model.MeetingFrequencyDescription, new { @class = "form-control", @placeholder = "Enter Text...", @readonly = "" })
+                                                        @Html.ValidationMessageFor(model => model.MeetingFrequencyDescription, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+
+                                                <div class="col-lg-4">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.Purpose, new { @class = "control-label" })
+                                                        @Html.TextAreaFor(model => model.Purpose, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text..." })
+                                                        @Html.ValidationMessageFor(model => model.Purpose, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-4">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.Activities, new { @class = "control-label" })
+                                                        @Html.TextAreaFor(model => model.Activities, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text..." })
+                                                        @Html.ValidationMessageFor(model => model.Activities, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+
+                                                <div class="col-lg-4 group-fields">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.MinimumMembers, new { @class = "control-label" })
+                                                        @Html.TextBoxFor(model => model.MinimumMembers, new { @class = "form-control", type = "number", id = "MinimumMembers", min = "0", value = "1" })
+                                                        @Html.ValidationMessageFor(model => model.MinimumMembers, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-4 group-fields">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.MaximumMembers, new { @class = "control-label" })
+                                                        @Html.TextBoxFor(model => model.MaximumMembers, new { @class = "form-control", type = "number", id = "MaximumMembers", min = "0", value = "1" })
+                                                        @Html.ValidationMessageFor(model => model.MaximumMembers, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-4">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.Remarks, new { @class = "control-label" })
+                                                        @Html.TextAreaFor(model => model.Remarks, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text...", id = "Remarks" })
+                                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-lg-4">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.MeetingDayOfWeekDescription, new { @class = "control-label" })
+                                                        @Html.TextAreaFor(model => model.MeetingDayOfWeekDescription, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text..." })
+                                                        @Html.ValidationMessageFor(model => model.MeetingDayOfWeekDescription, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+
+
+                                                <div class="col-lg-4">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.MeetingPlace, new { @class = "control-label" })
+                                                        @Html.TextAreaFor(model => model.MeetingPlace, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text..." })
+                                                        @Html.ValidationMessageFor(model => model.MeetingPlace, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-4">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.ParentGroup, new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            @Html.EditorFor(model => model.ParentGroup, new { htmlAttributes = new { @class = "form-control required", placeholder = "Enter space to autofill...", id = "ParentGroup", @readonly = "" } })
+                                                            <span class="input-group-addon">
+                                                                <a data-toggle="modal" data-target="#microCreditGroupLookup">
+                                                                    <span class="fa fa-search"></span>
+                                                                </a>
+                                                            </span>
+                                                        </div>
+                                                        @Html.ValidationMessageFor(model => model.ParentGroup, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+
+
+                                            </div>
+
+
+
+
+
+
+
+
+
+
+                                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                                        </div>
+
+                                        <div class="card-body text-dark">
+                                            <h3>Member Details</h3>
+                                            <div class="row">
+                                                <!-- Customer Lookup -->
+                                                <div class="col-lg-4 customer-fields">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.CustomerFullName, new { @class = "control-label" })
+                                                        @Html.HiddenFor(model => model.CustomerId, new { id = "CustomerId" })
+                                                        <div class="input-group">
+                                                            @Html.EditorFor(model => model.CustomerFullName, new { htmlAttributes = new { @class = "form-control required", placeholder = "Enter space to autofill...", id = "CustomerFullName", @readonly = "" } })
+                                                            <span class="input-group-addon">
+                                                                <a data-toggle="modal" data-target="#customerNameLookup">
+                                                                    <span class="fa fa-search"></span>
+                                                                </a>
+                                                            </span>
+                                                        </div>
+                                                        @Html.ValidationMessageFor(model => model.CustomerFullName, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-4">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.Employer, new { @class = "control-label" })
+                                                        @Html.TextBoxFor(model => model.Employer, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text..." })
+                                                        @Html.ValidationMessageFor(model => model.Employer, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-4">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.CustomerStationDescription, new { @class = "control-label" })
+                                                        @Html.TextBoxFor(model => model.CustomerStationDescription, new { @rows = 3, @class = "form-control", @placeholder = "" })
+                                                        @Html.ValidationMessageFor(model => model.CustomerStationDescription, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-lg-4">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.CustomerAccountCustomerReference1, new { @class = "control-label" })
+                                                        @Html.TextBoxFor(model => model.CustomerAccountCustomerReference1, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text..." })
+                                                        @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference1, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-4">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.CustomerAccountCustomerReference2, new { @class = "control-label" })
+                                                        @Html.TextBoxFor(model => model.CustomerAccountCustomerReference2, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text..." })
+                                                        @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference2, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-4">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.CustomerAccountCustomerReference3, new { @class = "control-label" })
+                                                        @Html.TextBoxFor(model => model.CustomerAccountCustomerReference3, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text..." })
+                                                        @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference3, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-lg-4 group-fields">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.GroupMember[0].Principal, new { @class = "control-label" })
+                                                        @Html.TextBoxFor(model => model.GroupMember[0].Principal, new { @class = "form-control", type = "number", id = "LoanCycle", min = "0", value = "1" })
+                                                        @Html.ValidationMessageFor(model => model.GroupMember[0].Principal, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-4 group-fields">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.GroupMember[0].Interest, new { @class = "control-label" })
+                                                        @Html.TextBoxFor(model => model.GroupMember[0].Interest, new { @class = "form-control", type = "number", id = "LoanCycle", min = "0", value = "1" })
+                                                        @Html.ValidationMessageFor(model => model.GroupMember[0].Interest, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-4">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.GroupMember[0].PrimaryDescription, new { @class = "control-label" })
+                                                        @Html.TextAreaFor(model => model.GroupMember[0].PrimaryDescription, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text..." })
+                                                        @Html.ValidationMessageFor(model => model.GroupMember[0].PrimaryDescription, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+
+
+                                            </div>
+
+                                            <!-- Add Button -->
+                                            <button type="button" class="btn btn-primary" onclick="addMember()">Add Member</button>
+                                        </div>
+
+                                        <div class="tab-pane fade show active" id="entries" role="tabpanel" aria-labelledby="entries-tab">
+                                            <table id="groupMembersTable" class="table table-bordered table-striped mt-2">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Full Name</th>
+                                                        <th>Employer</th>
+                                                        <th>Station Description</th>
+                                                        <th>Reference 1</th>
+                                                        <th>Reference 2</th>
+                                                        <th>Reference 3</th>
+                                                        <th>Principal</th>
+                                                        <th>Interest</th>
+                                                        <th>Primary Description</th>
+                                                        <th>Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (ViewBag.GroupMembers != null)
+                                                    {
+                                                        foreach (var member in ViewBag.GroupMembers)
+                                                        {
+                                                            <tr data-customer-id="@member.CustomerId">
+                                                                <td>@member.CustomerFullName</td>
+                                                                <td>@member.Employer</td>
+                                                                <td>@member.CustomerStationDescription</td>
+                                                                <td>@member.CustomerAccountCustomerReference1</td>
+                                                                <td>@member.CustomerAccountCustomerReference2</td>
+                                                                <td>@member.CustomerAccountCustomerReference3</td>
+                                                                <td>@member.Principal</td>
+                                                                <td>@member.Interest</td>
+                                                                <td>@member.PrimaryDescription</td>
+                                                                <td>
+                                                                    <button type="button" class="btn btn-danger btn-sm" onclick="removeMember('@member.CustomerId')">Remove</button>
+                                                                    <input type="hidden" name="CustomerId" value="@member.CustomerId" />
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+
+
+
+
+
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <div class="bottom-button row mt-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
+
+                                <input type="submit" value="Update" class="btn btn-primary btn-update" />
+                            </div>
+
+
+
+                        }
+                    </div>
+                </div>
+
+                <style>
+                    .card {
+                        margin-bottom: 20px;
+                    }
+
+
+
+                    .form-group-lg {
+                        margin-bottom: 1.5rem;
+                    }
+
+                    .form-control {
+                        border-radius: .25rem;
+                    }
+
+
+                    .col-lg-2 {
+                        display: flex;
+                        align-items: center; /* Center the title vertically */
+                        justify-content: center; /* Center the title horizontally if needed */
+                        padding: 0; /* Remove default padding if necessary */
+                        border-radius: 4px; /* Rounded corners */
+                    }
+
+                    .bottom-button {
+                        border: 2px solid gray; /* Border color set to gray */
+                        padding: 10px; /* Padding inside the border */
+                        border-radius: 5px; /* Rounded corners (optional) */
+                        font-size: 16px;
+                        font-weight: bold;
+                        background-color: #e0f0ff;
+                    }
+                </style>
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="modal fade" id="customerLookup" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">
+                    Customer Lookup
+                    <button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button>
+                </h3>
+            </div>
+            <div class="modal-body">
+                <table id="customersGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Customer FullName</th>
+                            <th>Branch</th>
+                            <th>Type</th>
+                            <th>Gender</th>
+                            <th>Nationality</th>
+                            <th>Created Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="dataTables_empty">Loading data from server</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="creditOfficerLookup" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">
+                    Credit Officer Lookup
+                    <button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button>
+                </h3>
+            </div>
+            <div class="modal-body">
+                <table id="creditOfficersGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Customer FullName</th>
+                            <th>Nationality</th>
+                            <th>Card Number</th>
+                            <th>Gender</th>
+                            <th>Marital Status</th>
+                            <th>Created Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="dataTables_empty">Loading data from server</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="microCreditGroupLookup" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">
+                    MicroCredit Group Lookup
+                    <button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button>
+                </h3>
+            </div>
+            <div class="modal-body">
+                <table id="microCreditGroupGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>FullName</th>
+                            <th>Station</th>
+                            <th>Type</th>
+                            <th>Purpose</th>
+                            <th>Activity</th>
+                            <th>Created Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="dataTables_empty">Loading data from server</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="customerNameLookup" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">
+                    Customer Lookup
+                    <button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button>
+                </h3>
+            </div>
+            <div class="modal-body">
+                <table id="customerGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                    <thead>
+                        <tr>
+                            <th>Customer FullName</th>
+                            <th>Branch</th>
+                            <th>Type</th>
+                            <th>Gender</th>
+                            <th>Nationality</th>
+                            <th>Created Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="dataTables_empty">Loading data from server</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+    <script>
+               $(document).ready(function () {
+            $('#customersGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@Url.Action("Index", "Customer", new { Area = "Registry" })",
+                "sServerMethod": "POST",
+                "fnServerData": function (sSource, aoData, fnCallback) {
+                    $.ajax({
+                        dataType: 'json',
+                        type: 'POST',
+                        url: sSource,
+                        data: aoData,
+                        success: function (response) {
+                            fnCallback(response);
+                        },
+                        error: function () {
+                            alert('Error retrieving data from the server.');
+                        }
+                    });
+                },
+                "aoColumns": [
+                    { "mDataProp": "FullName", "sTitle": "Customer FullName", "sWidth": "15%" },
+                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "15%" },
+                    { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "15%" },
+                    { "mDataProp": "IndividualGenderDescription", "sTitle": "Gender", "sWidth": "15%" },
+                    { "mDataProp": "IndividualNationalityDescription", "sTitle": "Nationality", "sWidth": "15%" },
+                    {
+                        "mDataProp": "CreatedDate",
+                        "sTitle": "Created Date",
+                        "sWidth": "15%",
+                        "mRender": function (data) {
+                            var createdDate = new Date(parseInt(data.replace("/Date(", "").replace(")/", ""), 10));
+                            return $.datepicker.formatDate('dd/mm/yy', createdDate);
+                        }
+                    },
+                    {
+                        "mDataProp": null,
+                        "sTitle": "Action",
+                        "sWidth": "15%",
+                        "bSortable": false,
+                        "mRender": function (data, type, row) {
+                            return '<a href="#" class="btn btn-outline-info select-customer" data-id="' + row.Id + '">Select</a>';
+                        }
+                    }
+                ],
+                "aaSorting": [[0, "desc"]]
+            });
+
+                   $('#customersGrid tbody').on('click', '.select-customer', function () {
+                var customerId = $(this).data('id');
+
+                $.ajax({
+                    url: '@Url.Action("GetCustomerDetails", "MicroCreditGroups", new { Area = "MicroCredit" })',
+                    type: 'GET',
+                    data: { customerId: customerId },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#CustomerNonIndividualDescription').val(response.data.CustomerNonIndividualDescription);
+                            $('#CustomerId').val(response.data.CustomerId);
+                            $('#CustomerNonIndividualRegistrationNumber').val(response.data.CustomerNonIndividualRegistrationNumber);
+                            $('#CustomerStationId').val(response.data.CustomerStationId);
+                            $('#CustomerRegistrationDate').val(response.data.CustomerRegistrationDate);
+                            $('#CustomerStationDescription').val(response.data.CustomerStationDescription);
+                            $('#CustomerNonIndividualDateEstablished').val(response.data.CustomerNonIndividualDateEstablished);
+
+
+
+
+
+
+                            $('#customerLookup').modal('hide');
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while fetching the Customer details.');
+                    }
+                });
+            });
+        });
+
+    </script>
+
+
+    <script>
+               $(document).ready(function () {
+            $('#creditOfficersGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@Url.Action("Index", "MicroCreditOfficers", new { Area = "MicroCredit" })",
+                "sServerMethod": "POST",
+                "fnServerData": function (sSource, aoData, fnCallback) {
+                    $.ajax({
+                        dataType: 'json',
+                        type: 'POST',
+                        url: sSource,
+                        data: aoData,
+                        success: function (response) {
+                            fnCallback(response);
+                        },
+                        error: function () {
+                            alert('Error retrieving data from the server.');
+                        }
+                    });
+                },
+                "aoColumns": [
+                    { "mDataProp": "EmployeeCustomerFullName", "sTitle": "Customer FullName", "sWidth": "15%" },
+                    { "mDataProp": "EmployeeCustomerIndividualNationalityDescription", "sTitle": "Nationality", "sWidth": "15%" },
+                    { "mDataProp": "EmployeeCustomerIndividualIdentityCardNumber", "sTitle": "Card Number", "sWidth": "15%" },
+                    { "mDataProp": "EmployeeCustomerIndividualGenderDescription", "sTitle": "Gender", "sWidth": "15%" },
+                    { "mDataProp": "EmployeeCustomerIndividualMaritalStatusDescription", "sTitle": "Marital Status", "sWidth": "15%" },
+                    {
+                        "mDataProp": "CreatedDate",
+                        "sTitle": "Created Date",
+                        "sWidth": "15%",
+                        "mRender": function (data) {
+                            var createdDate = new Date(parseInt(data.replace("/Date(", "").replace(")/", ""), 10));
+                            return $.datepicker.formatDate('dd/mm/yy', createdDate);
+                        }
+                    },
+                    {
+                        "mDataProp": null,
+                        "sTitle": "Action",
+                        "sWidth": "15%",
+                        "bSortable": false,
+                        "mRender": function (data, type, row) {
+                            return '<a href="#" class="btn btn-outline-info select-creditOfficer" data-id="' + row.Id + '">Select</a>';
+                        }
+                    }
+                ],
+                "aaSorting": [[0, "desc"]]
+            });
+
+                   $('#creditOfficersGrid tbody').on('click', '.select-creditOfficer', function () {
+                       var microCreditOfficerId = $(this).data('id');
+
+                $.ajax({
+                    url: '@Url.Action("GetCreditOfficerDetails", "MicroCreditGroups", new { Area = "MicroCredit" })',
+                    type: 'GET',
+                    data: { microCreditOfficerId: microCreditOfficerId },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#MicroCreditOfficerEmployeeCustomerFullName').val(response.data.MicroCreditOfficerEmployeeCustomerFullName);
+                            $('#MicroCreditOfficerId').val(response.data.MicroCreditOfficerId);
+                            $('#MicroCreditOfficerEmployeeCustomerIndividualFirstName').val(response.data.MicroCreditOfficerEmployeeCustomerIndividualFirstName);
+                            $('#MicroCreditOfficerEmployeeCustomerIndividualLastName').val(response.data.MicroCreditOfficerEmployeeCustomerIndividualLastName);
+                            $('#MicroCreditOfficerEmployeeCustomerSalutationDescription').val(response.data.MicroCreditOfficerEmployeeCustomerSalutationDescription);
+
+
+
+
+                            $('#creditOfficerLookup').modal('hide');
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while fetching the Employees details.');
+                    }
+                });
+            });
+        });
+
+    </script>
+
+
+    <script>
+               $(document).ready(function () {
+            $('#microCreditGroupGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@Url.Action("Index", "MicroCreditGroups", new { Area = "MicroCredit" })",
+                "sServerMethod": "POST",
+                "fnServerData": function (sSource, aoData, fnCallback) {
+                    $.ajax({
+                        dataType: 'json',
+                        type: 'POST',
+                        url: sSource,
+                        data: aoData,
+                        success: function (response) {
+                            fnCallback(response);
+                        },
+                        error: function () {
+                            alert('Error retrieving data from the server.');
+                        }
+                    });
+                },
+                "aoColumns": [
+                    { "mDataProp": "CustomerNonIndividualDescription", "sTitle": "Name", "sWidth": "10%" },
+                    { "mDataProp": "CustomerStationDescription", "sTitle": "Station", "sWidth": "15%" },
+                    { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "15%" },
+                    { "mDataProp": "Purpose", "sTitle": "Purpose", "sWidth": "10%" },
+                    { "mDataProp": "Activities", "sTitle": "Activities", "sWidth": "15%" },
+                    {
+                        "mDataProp": "CreatedDate",
+                        "sTitle": "Created Date",
+                        "sWidth": "15%",
+                        "mRender": function (data) {
+                            var createdDate = new Date(parseInt(data.replace("/Date(", "").replace(")/", ""), 10));
+                            return $.datepicker.formatDate('dd/mm/yy', createdDate);
+                        }
+                    },
+                    {
+                        "mDataProp": null,
+                        "sTitle": "Action",
+                        "sWidth": "15%",
+                        "bSortable": false,
+                        "mRender": function (data, type, row) {
+                            return '<a href="#" class="btn btn-outline-info select-microCreditGroup" data-id="' + row.Id + '">Select</a>';
+                        }
+                    }
+                ],
+                "aaSorting": [[0, "desc"]]
+            });
+
+                   $('#microCreditGroupGrid tbody').on('click', '.select-microCreditGroup', function () {
+                       var microCreditGroupId = $(this).data('id');
+
+                $.ajax({
+                    url: '@Url.Action("GetParentGroupDetails", "MicroCreditGroups", new { Area = "MicroCredit" })',
+                    type: 'GET',
+                    data: { microCreditGroupId: microCreditGroupId },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#ParentGroup').val(response.data.ParentGroup);
+                            $('#ParentId').val(response.data.ParentId);
+                            $('#MicroCreditGroupCustomerId').val(response.data.MicroCreditGroupCustomerId);
+
+
+
+
+
+
+                            $('#microCreditGroupLookup').modal('hide');
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while fetching the Employees details.');
+                    }
+                });
+            });
+        });
+
+    </script>
+
+
+    <script>
+               $(document).ready(function () {
+            $('#customerGrid').DataTable({
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@Url.Action("Index", "Customer", new { Area = "Registry" })",
+                "sServerMethod": "POST",
+                "fnServerData": function (sSource, aoData, fnCallback) {
+                    $.ajax({
+                        dataType: 'json',
+                        type: 'POST',
+                        url: sSource,
+                        data: aoData,
+                        success: function (response) {
+                            fnCallback(response);
+                        },
+                        error: function () {
+                            alert('Error retrieving data from the server.');
+                        }
+                    });
+                },
+                "aoColumns": [
+                    { "mDataProp": "FullName", "sTitle": "Customer FullName", "sWidth": "15%" },
+                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "15%" },
+                    { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "15%" },
+                    { "mDataProp": "IndividualGenderDescription", "sTitle": "Gender", "sWidth": "15%" },
+                    { "mDataProp": "IndividualNationalityDescription", "sTitle": "Nationality", "sWidth": "15%" },
+                    {
+                        "mDataProp": "CreatedDate",
+                        "sTitle": "Created Date",
+                        "sWidth": "15%",
+                        "mRender": function (data) {
+                            var createdDate = new Date(parseInt(data.replace("/Date(", "").replace(")/", ""), 10));
+                            return $.datepicker.formatDate('dd/mm/yy', createdDate);
+                        }
+                    },
+                    {
+                        "mDataProp": null,
+                        "sTitle": "Action",
+                        "sWidth": "15%",
+                        "bSortable": false,
+                        "mRender": function (data, type, row) {
+                            return '<a href="#" class="btn btn-outline-info select-customer" data-id="' + row.Id + '">Select</a>';
+                        }
+                    }
+                ],
+                "aaSorting": [[0, "desc"]]
+            });
+
+                   $('#customerGrid tbody').on('click', '.select-customer', function () {
+                var customerId = $(this).data('id');
+
+                $.ajax({
+                    url: '@Url.Action("GetNameDetails", "MicroCreditGroups", new { Area = "MicroCredit" })',
+                    type: 'GET',
+                    data: { customerId: customerId },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#CustomerStationDescription').val(response.data.CustomerStationDescription);
+                            $('#CustomerStationId').val(response.data.CustomerStationId);
+                            $('#CustomerId').val(response.data.CustomerId);
+
+
+                            $('#CustomerFullName').val(response.data.CustomerFullName);
+                            $('#CustomerStationId').val(response.data.CustomerStationId);
+                            $('#CustomerAccountCustomerReference3').val(response.data.CustomerAccountCustomerReference3);
+                            $('#CustomerAccountCustomerReference2').val(response.data.CustomerAccountCustomerReference2);
+                            $('#CustomerAccountCustomerReference1').val(response.data.CustomerAccountCustomerReference1);
+                            $('#Employer').val(response.data.Employer);
+
+
+
+
+
+
+                            $('#customerNameLookup').modal('hide');
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('An error occurred while fetching the Customer details.');
+                    }
+                });
+            });
+        });
+
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        function clearFields() {
+            document.getElementById("CustomerFullName").value = "";
+            document.getElementById("CustomerId").value = "";
+            document.getElementById("Employer").value = "";
+            document.getElementById("CustomerStationDescription").value = "";
+            document.getElementById("CustomerAccountCustomerReference1").value = "";
+            document.getElementById("CustomerAccountCustomerReference2").value = "";
+            document.getElementById("CustomerAccountCustomerReference3").value = "";
+            document.getElementById("Principal").value = "";
+            document.getElementById("Interest").value = "";
+            document.getElementById("PrimaryDescription").value = "";
+        }
+        function addMember() {
+            const table = document.getElementById("groupMembersTable").getElementsByTagName("tbody")[0];
+            const currentRowCount = table.rows.length;
+            const maximumMembers = parseInt(document.getElementById("MaximumMembers").value, 10);
+
+            if (currentRowCount >= maximumMembers) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Limit Reached',
+                    text: `You cannot add more than ${maximumMembers} members to the group.`,
+                });
+                return;
+            }
+
+    const member = {
+        CustomerFullName: document.getElementById("CustomerFullName").value,
+        CustomerId: document.getElementById("CustomerId").value,
+        Employer: document.getElementById("Employer").value,
+        CustomerStationDescription: document.getElementById("CustomerStationDescription").value,
+        CustomerAccountCustomerReference1: document.getElementById("CustomerAccountCustomerReference1").value,
+        CustomerAccountCustomerReference2: document.getElementById("CustomerAccountCustomerReference2").value,
+        CustomerAccountCustomerReference3: document.getElementById("CustomerAccountCustomerReference3").value,
+        Principal: document.getElementById("Principal") ? document.getElementById("Principal").value : "", // Optional field
+        Interest: document.getElementById("Interest").value,
+        PrimaryDescription: document.getElementById("PrimaryDescription").value,
+    };
+
+    const existingRow = Array.from(table.rows).find(row => row.getAttribute("data-customer-id") === member.CustomerId);
+    if (existingRow) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Duplicate Entry',
+            text: 'This member is already in the group.',
+        });
+        return;
+    }
+
+    const row = table.insertRow();
+    row.setAttribute("data-customer-id", member.CustomerId);
+    row.innerHTML = `
+        <td>${member.CustomerFullName}</td>
+        <td>${member.Employer}</td>
+        <td>${member.CustomerStationDescription}</td>
+        <td>${member.CustomerAccountCustomerReference1}</td>
+        <td>${member.CustomerAccountCustomerReference2}</td>
+        <td>${member.CustomerAccountCustomerReference3}</td>
+        <td>${member.Principal}</td>
+        <td>${member.Interest}</td>
+        <td>${member.Remarks}</td>
+        <td>
+            <button type="button" class="btn btn-danger btn-sm" onclick="removeMember('${member.CustomerId}')">Remove</button>
+            <input type="hidden" name="CustomerId" value="${member.CustomerId}" />
+        </td>
+    `;
+
+    $.ajax({
+        url: '@Url.Action("AddMembersToGroup")',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify([member]),
+        success: function () {
+            Swal.fire({
+                icon: 'success',
+                title: 'Member Added',
+                text: 'The member has been successfully added to the group.',
+            });
+            clearFields();
+        },
+        error: function () {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An error occurred while adding the member. Please try again.',
+            });
+        }
+    });
+}
+
+function removeMember(customerId) {
+    if (confirm("Are you sure you want to remove this member?")) {
+        const row = document.querySelector(`[data-customer-id='${customerId}']`);
+        if (row) row.remove();
+
+        $.ajax({
+            url: '@Url.Action("RemoveMemberFromGroup")',
+            type: 'POST',
+            data: { customerId: customerId },
+            success: function () {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Member Removed',
+                    text: 'The member has been successfully removed from the group.',
+                });
+            },
+            error: function () {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred while removing the member. Please try again.',
+                });
+            }
+        });
+    }
+}
+
+    </script>
+
+
+    <style>
+        .highlight {
+            background-color: #f0c14b; /* Light yellow color for highlighting */
+        }
+    </style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <style>
+        .container1 {
+            width: 100%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .summary-table td {
+                padding: 10px;
+                border: 1px solid #ddd;
+            }
+
+            .summary-table label {
+                display: block;
+                font-weight: bold;
+                margin-bottom: 5px;
+            }
+
+            .summary-table input {
+                width: 100%;
+                padding: 8px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                background-color: #f9f9f9;
+            }
+
+        .tab-content {
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .tab-pane {
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 50px;
+        }
+
+        thead {
+            background-color: #f5f5f5;
+        }
+
+            thead th {
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: center;
+                font-style: italic;
+                color: cadetblue;
+            }
+
+        tbody td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .btn-danger {
+            color: #fff;
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+            .btn-danger:hover {
+                background-color: #c82333;
+                border-color: #bd2130;
+            }
+
+
+        .tab-content {
+            border-top: 1px solid #ddd; /* Add a subtle border if needed */
+            padding: 15px; /* Optional: Add padding for spacing */
+        }
+
+        /* Optional: Add spacing between tab navigation and content */
+        .container {
+            margin-top: 20px; /* Adjust top margin as needed */
+        }
+    </style>
+
+
+
+
+
+
+
+
+
+}

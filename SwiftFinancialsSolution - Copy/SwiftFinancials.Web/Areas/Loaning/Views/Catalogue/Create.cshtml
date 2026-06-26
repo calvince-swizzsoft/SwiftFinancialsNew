@@ -1,0 +1,132 @@
+﻿@model  Application.MainBoundedContext.DTO.BackOfficeModule.DataAttachmentEntryDTO
+
+@{
+    /**/
+
+    ViewBag.Title = "Create Data Processing";
+
+    var transactionType = ViewBag.TransactionTypeSelectList as List<SelectListItem>;
+}
+
+<link href="~/Scripts/css/ViewbagTable.css" rel="stylesheet" />
+
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h1>Back Office</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "Charges", new { Area = "Accounts" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h2>Catalogue</h2>
+                    <hr />
+
+                    @Html.ActionLink("Back To List", "Index", "Catalogue", new { Area = "Loaning" }, new { @class = "btn btn-primary" })
+
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-white">
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-md-6 form-group">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.DataAttachmentPeriodDescription, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.DataAttachmentPeriodId)
+                                    @Html.EditorFor(model => model.DataAttachmentPeriodDescription, new { htmlAttributes = new { @class = "form-control required", @readonly = "readonly" } })
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.DataPeriodRemarks, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.DataPeriodRemarks, new { htmlAttributes = new { @class = "form-control required", @readonly = "readonly" } })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-5">
+                            <div class="table-container">
+                                <h3 style="font-size: 1.9rem; text-align: center;">Data Entries</h3>
+                                @if (ViewBag.Entries == null)
+                                {
+                                    <div class="no-data-message mt-2">No data available to be displayed in table</div>
+                                }
+                                <table id="dataTable" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                    <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                        <tr>
+                                            <th>Full Account Number</th>
+                                            <th>Customer Name</th>
+                                            <th>Transaction Type</th>
+                                            <th>Sequence Number</th>
+                                            <th>Current Amount</th>
+                                            <th>Current Balance</th>
+                                            <th>Current Ability</th>
+                                            <th>New Amount</th>
+                                            <th>New Balance</th>
+                                            <th>New Ability</th>
+                                            <th>Remarks</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (ViewBag.Entries != null)
+                                        {
+                                            foreach (var entry in ViewBag.Entries)
+                                            {
+                                                <tr>
+                                                    <td>@entry.FullAccountNumber</td>
+                                                    <td>@entry.SelectCustomerName</td>
+                                                    <td>@entry.TransactionTypeDescription</td>
+                                                    <td>@entry.SequenceNumber</td>
+                                                    <td>@entry.CurrentAmount</td>
+                                                    <td>@entry.CurrentBalance</td>
+                                                    <td>@entry.CurrentAbility</td>
+                                                    <td>@entry.NewAmount</td>
+                                                    <td>@entry.NewBalance</td>
+                                                    <td>@entry.NewAbility</td>
+                                                    <td>@entry.Remarks</td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Styles {
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+}
+
+@section scripts {
+    @Scripts.Render("~/plugins/dataTables")
+
+}

@@ -1,0 +1,43 @@
+﻿@model Application.MainBoundedContext.DTO.HumanResourcesModule.SalaryProcessingDTO
+
+@{
+    ViewBag.Title = "Salary Payroll Details";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Payroll Period: @Model.MonthDescription - @Model.PostingPeriodDescription</h5>
+        <p><strong>Employee Category:</strong> @Model.EmployeeCategoryDescription</p>
+        <p><strong>Tax Relief Amount:</strong> @Model.TaxReliefAmount</p>
+        <p><strong>Maximum Provident Fund Relief Amount:</strong> @Model.MaximumProvidentFundReliefAmount</p>
+        <p><strong>Maximum Insurance Relief Amount:</strong> @Model.MaximumInsuranceReliefAmount</p>
+        <p><strong>Total Net Pay:</strong> @Model.TotalNetPay</p>
+
+        <p><strong>Status:</strong> @Model.StatusDescription</p>
+        <p><strong>Remarks:</strong> @Model.Remarks</p>
+
+        <div class="form-group">
+            <strong>Authorization Details:</strong>
+            <p><strong>Authorized By:</strong> @Model.AuthorizedBy</p>
+            <p><strong>Authorization Remarks:</strong> @Model.AuthorizationRemarks</p>
+            <p><strong>Authorized Date:</strong> @Model.AuthorizedDate?.ToString("yyyy-MM-dd")</p>
+        </div>
+
+        <div class="form-group">
+            <strong>Payout Standing Orders:</strong>
+            <p>@(Model.ExecutePayoutStandingOrders ? "Yes" : "No")</p>
+        </div>
+
+        <div class="form-group">
+            <strong>Posted Entries:</strong>
+            <p>@Model.PostedEntries</p>
+        </div>
+    </div>
+</div>

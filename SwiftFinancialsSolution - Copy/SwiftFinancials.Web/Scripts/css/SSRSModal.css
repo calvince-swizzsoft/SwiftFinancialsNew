@@ -1,0 +1,83 @@
+﻿.modal-dialog {
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    transform: perspective(1000px) translateZ(0);
+    transition: all 0.3s ease-out;
+}
+
+.modal-header {
+    background: linear-gradient(145deg, #007bff, #0056b3);
+    color: white;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.5rem;
+    padding: 20px;
+    border-bottom: none;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.modal-body {
+    background: linear-gradient(145deg, #f3f3f3, #ececec);
+    padding: 40px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1rem;
+    color: #333;
+    box-shadow: inset 0 5px 15px rgba(0, 0, 0, 0.1), inset 0 -5px 15px rgba(255, 255, 255, 0.7);
+    border-radius: 20px;
+}
+
+    .modal-body p {
+        margin-bottom: 20px;
+        animation: glow 1.5s infinite alternate;
+    }
+
+.modal-footer {
+    display: flex;
+    justify-content: space-between;
+    background: #ffffff;
+    padding: 20px;
+    border-top: none;
+}
+
+    .modal-footer button {
+        padding: 10px 20px;
+        border-radius: 30px;
+        background-color: #007bff;
+        color: white;
+        font-size: 1rem;
+        box-shadow: 0 4px 10px rgba(0, 123, 255, 0.4);
+        transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+    }
+
+        .modal-footer button:hover {
+            background-color: #0056b3;
+            transform: translateY(-5px);
+        }
+
+.modal-content {
+    animation: zoomIn 0.6s ease-out;
+    perspective: 1000px;
+    transform-style: preserve-3d;
+    box-shadow: 0px 30px 50px rgba(0, 0, 0, 0.5);
+}
+/*
+@keyframes glow {
+    from {
+        text-shadow: 0 0 10px rgba(0, 123, 255, 0.6), 0 0 20px rgba(0, 123, 255, 0.4);
+    }
+
+    to {
+        text-shadow: 0 0 15px rgba(0, 123, 255, 0.9), 0 0 30px rgba(0, 123, 255, 0.7);
+    }
+}*/
+
+@keyframes zoomIn {
+    from {
+        transform: scale(0.8);
+    }
+
+    to {
+        transform: scale(1);
+    }
+}

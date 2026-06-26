@@ -1,0 +1,271 @@
+﻿@model  Application.MainBoundedContext.DTO.AccountsModule.FixedDepositTypeDTO
+@using System.Linq
+
+@{
+    /**/
+
+    ViewBag.Title = "Create Fixed Deposit Type";
+    var transactionOwnerships = ViewBag.TransactionOwnershipSelectList as List<SelectListItem>;
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h2>Fixed Deposit Type</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "FixedDepositType", new { Area = "Accounts" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger fade in">
+        <button class="close" data-dismiss="alert">
+            ×
+        </button>
+        <i class="fa-fw fa fa-times"></i>
+        <strong>Error!</strong> @TempData["Error"]
+    </div>
+}
+
+@*<style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .tab-header {
+            display: flex;
+            cursor: pointer;
+            background-color: #f1f1f1;
+        }
+
+            .tab-header div {
+                padding: 10px;
+                border: 1px solid #ccc;
+                margin-right: 5px;
+            }
+
+                .tab-header div.active {
+                    background-color: #ddd;
+                }
+
+        .tab-content {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-top: none;
+            height: 350px; /* Adjust the height as needed */
+            overflow-y: auto;
+        }
+
+        .tab {
+            display: none;
+        }
+    </style>*@
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-white">
+                    @using (Html.BeginForm("Create", "FixedDepositType", new { Area = "Accounts" }, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-horizontal">
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                            <div class="row">
+                                <!-- Left Column -->
+                                <div class="col-lg-6 d-flex flex-column justify-content-center">
+                                    <div class="form-group form-group-sm">
+                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <!-- Right Column -->
+                                <div class="col-lg-6 d-flex align-items-center">
+                                    <div class="form-group form-group-lg">
+                                        <div class="form-check">
+                                            @Html.CheckBoxFor(model => model.IsLocked, new { @class = "form-check-input" })
+                                            @Html.LabelFor(model => model.IsLocked, new { @class = "form-check-label", @placeholder = "Is Locked?" })
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+
+
+                            <input type="hidden" name="SelectedRoles" id="SelectedRoles" />
+                            <input type="hidden" name="SelectedBranches" id="SelectedBranches" />
+
+                            <!-- Tabs -->
+                            <ul class="nav nav-tabs" id="roleBranchTabs" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active" id="roles-tab" data-toggle="tab" href="#roles" role="tab">Applicable Levy</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#mandatorySavingsProducts" role="tab">Attached Loan Products</a>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <!-- Roles Tab -->
+                                <div class="tab-pane fade show active" id="roles" role="tabpanel">
+                                    <div class="panel panel-primary">
+                                        <div class="panel-heading">Levies</div>
+                                        <div class="panel-body">
+                                            <table class="table table-bordered table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Select</th>
+                                                        <th>Levy Description</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (ViewBag.ApplicableLevies != null)
+                                                    {
+                                                        foreach (var levy in ViewBag.ApplicableLevies)
+                                                        {
+                                                            <tr>
+                                                                <td>
+                                                                    <input type="checkbox" name="ExcemptedommisionId" value="@levy.Id" />
+                                                                </td>
+                                                                <td>@levy.Description</td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <tr>
+                                                            <td colspan="2">No levies available</td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Branches Tab -->
+                                <div id="mandatorySavingsProducts" class="tab-pane">
+                                    <div class="panel panel-primary">
+                                        <div class="panel-heading">Loanproducts</div>
+                                        <div class="panel-body">
+                                            <table class="table table-bordered table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Select</th>
+                                                        <th>Branch Description</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (ViewBag.AttachedloanProduct != null)
+                                                    {
+                                                        foreach (var product in ViewBag.AttachedloanProduct)
+                                                        {
+                                                            <tr>
+                                                                <td>
+                                                                    <input type="checkbox" name="commisionIds" value="@product.Id" />
+                                                                </td>
+                                                                <td>@product.Description</td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <tr>
+                                                            <td colspan="2">No loan products available</td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="text-align: right; margin-top: 20px;">
+                                <button type="submit" class="btn btn-primary" style="padding: 10px 20px; font-size: 16px; font-weight: bold; background-color: #1ab394; color: white; border: none; border-radius: 5px; cursor: pointer;" onclick="openModal()">Create</button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+    <script src="~/Scripts/js/navlink.js"></script>
+
+}
+
+

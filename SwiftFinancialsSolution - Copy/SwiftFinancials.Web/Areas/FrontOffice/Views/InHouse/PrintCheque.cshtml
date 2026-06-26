@@ -1,0 +1,125 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cheque Details</title>
+
+    <!-- CSS Libraries -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert2.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css">
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            padding: 20px;
+            background-color: #e6e6e6;
+        }
+
+        #chequeDetails {
+            margin-top: 20px;
+            padding: 25px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            background-color: #fff;
+            width: 100%;
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .cheque-header, .cheque-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .cheque-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .signature-section {
+            margin-top: 20px;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+            display: block;
+            margin: 20px auto;
+        }
+
+
+
+        <text>
+        media print {
+            body {
+                background-color: #fff;
+            }
+
+            #chequeDetails {
+                box-shadow: none;
+                border: none;
+            }
+
+            button {
+                display: none;
+            }
+        }
+        </text>
+    </style>
+</head>
+<body>
+    @if (ViewBag.ChequePrintData != null)
+    {
+        var cheque = ViewBag.ChequePrintData;
+        <div id="chequeDetails">
+            <div class="cheque-header">
+                <div><strong>Bank Name:</strong> @cheque.BankName</div>
+                <div><strong>Branch:</strong> @cheque.BranchDescription</div>
+            </div>
+
+            <div class="cheque-info">
+                <div><strong>Payee:</strong> @cheque.Payee</div>
+                <div><strong>Cheque Number:</strong> @cheque.ChequeNumber</div>
+            </div>
+            <div class="cheque-info">
+                <div><strong>Date:</strong> @DateTime.Now.ToShortDateString()</div>
+                <div><strong>Amount:</strong> @cheque.Amount</div>
+            </div>
+            <div class="cheque-info">
+                <div><strong>Reference:</strong> @cheque.Reference</div>
+                <div><strong>Wordified Amount:</strong> @cheque.WordifiedAmount</div>
+            </div>
+
+            <div class="cheque-footer">
+                <div><strong>Account:</strong> @cheque.BankAccount</div>
+                <div><strong>G/L Account:</strong> @cheque.DebitChartOfAccountAccountName</div>
+            </div>
+
+            <div class="signature-section">
+                <span class="signature-label">Authorized Signature:</span>
+                <div class="signature-line"></div>
+            </div>
+        </div>
+    }
+    <button onclick="printCheque()">Print</button>
+
+    <script>
+        function printCheque() {
+            window.print();
+        }
+    </script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

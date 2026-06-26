@@ -1,0 +1,112 @@
+﻿using Application.MainBoundedContext.DTO;
+using Application.MainBoundedContext.DTO.BackOfficeModule;
+using Application.MainBoundedContext.DTO.RegistryModule;
+using SwiftFinancials.Presentation.Infrastructure.Models;
+using SwiftFinancials.Web.Controllers;
+using SwiftFinancials.Web.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web;
+using System.Web.Mvc;
+
+namespace SwiftFinancials.Web.Areas.Registry.Controllers
+{
+    public class MultiDestinationController : MasterController
+    {
+
+         public async Task<ActionResult> Search(Guid id)
+        {
+            //string Remarks = "";
+            await ServeNavigationMenus();
+            ViewBag.recordStatus = GetRecordStatusSelectList(string.Empty);
+            ViewBag.customerFilter = GetCustomerFilterSelectList(string.Empty);
+            ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
+            ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
+            var customers = await _channelService.FindCustomersAsync(GetServiceHeader());
+            ViewBag.customers = customers;
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var designation = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
+
+            var history = await _channelService.FindFileRegisterAndLastDepartmentByCustomerIdAsync(customers.Last().Id, GetServiceHeader());
+            ViewBag.history = history;
+            FileMovementHistoryDTO fileMovementHistoryDTO = new FileMovementHistoryDTO();
+
+
+
+            if (designation != null)
+            {
+
+                fileMovementHistoryDTO.FileRegisterCustomerId = designation.Id;
+                fileMovementHistoryDTO.FileRegisterCustomerIndividualLastName = designation.IndividualLastName;
+
+
+
+            }
+
+            return View("Create", fileMovementHistoryDTO);
+        }
+        public async Task<ActionResult> Create(Guid? id)
+        {
+            await ServeNavigationMenus();
+
+            ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
+
+            FileMovementHistoryDTO fileMovementHistoryDTO = new FileMovementHistoryDTO();
+
+            if (customer != null)
+            {
+
+                fileMovementHistoryDTO.FileRegisterCustomerId = customer.Id;
+                fileMovementHistoryDTO.FileRegisterCustomerIndividualFirstName = customer.FullName;
+                //fileMovementHistoryDTO. = customer.IndividualPayrollNumbers;
+                //fileMovementHistoryDTO. = customer.SerialNumber;
+                //fileMovementHistoryDTO.CustomerIndividualIdentityCardNumber = customer.IndividualIdentityCardNumber;
+                //fileMovementHistoryDTO.CustomerStationDescription = customer.StationDescription;
+                //fileMovementHistoryDTO.CustomerStationZoneDivisionEmployerDescription = customer.StationZoneDivisionEmployerDescription;
+            }
+
+            return View(fileMovementHistoryDTO);
+        }
+        [HttpPost]
+        public async Task<ActionResult> Create(FileMovementHistoryDTO fileMovementHistoryDTO)
+        {
+            fileMovementHistoryDTO.ValidateAll();
+
+            if (!fileMovementHistoryDTO.HasErrors)
+            {
+            var destination=    await _channelService.MultiDestinationDispatchAsync(new System.Collections.ObjectModel.ObservableCollection<FileMovementHistoryDTO> { fileMovementHistoryDTO }, GetServiceHeader());
+
+                ViewBag.IncomeAdjustmentTypeSelectList = GetIncomeAdjustmentTypeSelectList(fileMovementHistoryDTO.Carrier.ToString());
+
+
+                return RedirectToAction("Create");
+            }
+            else
+            {
+                var errorMessages = fileMovementHistoryDTO.ErrorMessages;
+
+                return View("Create");
+            }
+        }
+
+
+    }
+}
+

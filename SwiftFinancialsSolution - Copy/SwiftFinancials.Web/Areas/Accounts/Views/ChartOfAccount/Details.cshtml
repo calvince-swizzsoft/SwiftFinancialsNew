@@ -1,0 +1,145 @@
+﻿@model Application.MainBoundedContext.DTO.AccountsModule.ChartOfAccountDTO
+
+@{
+    ViewBag.Title = "Details";
+}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>ChartOfAccounts</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "ChartOfAccount", new { Area = "Accounts" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>View</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content text-info">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.AccountName)</strong>
+
+                                @Html.TextBoxFor(model => model.AccountName, new { @class = "form-control", @readonly = "readonly" })
+                            </p>
+
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.Parent)</strong>
+
+                                @Html.TextBoxFor(model => model.Parent.AccountName, new { @class = "form-control", @readonly = "readonly" })
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.AccountCode)</strong>
+
+                                @Html.TextBoxFor(model => model.AccountCode, new { @class = "form-control", @readonly = "readonly" })
+                            </p>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p>
+                                        <strong>@Html.DisplayNameFor(model => model.CreatedDate)</strong>
+                                        @Html.TextBoxFor(model => model.CreatedDate, new { @class = "form-control", @readonly = "readonly" })
+                                    </p>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <p>
+                                        <strong>@Html.DisplayNameFor(model => model.CostCenterDescription)</strong>
+                                        @Html.TextBoxFor(model => model.CostCenterDescription, new { @class = "form-control", @readonly = "readonly" })
+                                    </p>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <div class="col-lg-6">
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.AccountCategoryDescription)</strong>
+
+                                @Html.TextBoxFor(model => model.AccountCategoryDescription, new { @class = "form-control", @readonly = "readonly" })
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.AccountTypeDescription)</strong>
+
+                                @Html.TextBoxFor(model => model.AccountTypeDescription, new { @class = "form-control", @readonly = "readonly" })
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.Depth)</strong>
+
+                                @Html.TextBoxFor(model => model.Depth, new { @class = "form-control", @readonly = "readonly" })
+                            </p>
+
+                            <div class="row">
+                                <!-- Column 1 -->
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.IsControlAccount, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                        @Html.LabelFor(model => model.IsControlAccount)
+                                        @Html.ValidationMessageFor(model => model.IsControlAccount, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.IsReconciliationAccount, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                        @Html.LabelFor(model => model.IsReconciliationAccount)
+                                        @Html.ValidationMessageFor(model => model.IsReconciliationAccount, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <!-- Column 2 -->
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.PostAutomaticallyOnly, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                        @Html.LabelFor(model => model.PostAutomaticallyOnly)
+                                        @Html.ValidationMessageFor(model => model.PostAutomaticallyOnly, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                        @Html.LabelFor(model => model.IsLocked)
+                                        @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+
+                        </div>
+
+                    </div>
+                    <div class="button-group" style="display: flex; gap: 10px;">
+                        <div style="width: 100px; height: 40px;">
+                            @Html.ActionLink("Edit", "Edit", "ChartOfAccount", new { id = Model.Id, Area = "Accounts" }, new { @class = "btn btn-success", style = "display: flex; justify-content: center; align-items: center; width: 100%; height: 100%;" })
+                        </div>
+                        <div style="width: 100px; height: 40px;">
+                            @Html.ActionLink("Back to List", "Index", "ChartOfAccount", new { Area = "Accounts" }, new { @class = "btn btn-success", style = "display: flex; justify-content: center; align-items: center; width: 100%; height: 100%;" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        checkbox.disabled = true;
+    });
+</script>
