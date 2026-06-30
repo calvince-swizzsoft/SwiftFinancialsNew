@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.MainBoundedContext.AccountsModule.Aggregates.ImprestSurrenderLine
+namespace Domain.MainBoundedContext.AccountsModule.Aggregates
 {
     public class ImprestSurrenderLine : Entity
     {

@@ -3259,7 +3259,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<JournalDTO> PostImprestAsync(ImprestDTO imprestDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader);
 
-        Task<JournalDTO> PayImprest(PaymentVoucherDTO paymentVoucherDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader = null);
+        Task<JournalDTO> PayImprestAsync(PaymentVoucherDTO paymentVoucherDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader = null);
         #endregion
 
     }

@@ -16,6 +16,9 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
             AddAllAttributeValidators();
         }
 
+        [Display(Name = "TellerId")]
+        public Guid TellerId { get; set; }
+
         [Display(Name = "Id")]
         public Guid Id { get; set; }
 

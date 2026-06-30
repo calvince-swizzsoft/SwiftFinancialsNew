@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Runtime.Serialization;
 
 namespace SwiftFinancials.Presentation.Infrastructure.Models
@@ -24,6 +25,27 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
             Teller = new TellerDTO();
             AddAllAttributeValidators();
         }
+
+        [DataMember]
+        public string Drawer { get; set; }
+
+
+        [DataMember]
+        public Guid CurrentTellerId { get; set; }
+
+        [DataMember]
+        public Guid ChequeType { get; set; }
+
+        [DataMember]
+        public string DrawerBank { get; set; }
+
+        [DataMember]
+
+        public string DrawerBankBranch { get; set; }
+
+
+        [DataMember]
+        public DateTime WriteDate { get; set; }
 
         Guid _branchId;
         [DataMember]
@@ -460,6 +482,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
 
             [DataMember]
             public List<CustomerReceiptBatchRequest> Receipts { get; set; }
+
+          
         }
     }
 }

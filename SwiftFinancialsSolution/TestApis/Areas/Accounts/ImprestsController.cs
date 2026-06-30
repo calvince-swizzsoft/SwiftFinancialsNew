@@ -3,6 +3,7 @@ using Application.MainBoundedContext.DTO.AccountsModule;
 using DistributedServices.MainBoundedContext.Identity;
 using Microsoft.AspNet.Identity;
 using Org.BouncyCastle.Utilities;
+using SwiftFinancials.Presentation.Shared.Application.MainBoundedContext.DTO.AccountsModule;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -20,7 +21,7 @@ namespace TestApis.Controllers
     public class ImprestsController : MasterController
     {
 
-        [HttpGet]
+       [HttpGet]
         [Route("GetImprests")]
         public async Task<IHttpActionResult> GetImprests(bool? posted = null)
         {
@@ -36,7 +37,7 @@ namespace TestApis.Controllers
             return Json(new ApiResponse<object>
             {
                 Success = true,
-                Message = imprests?.Count > 0 ? $"{imprests.Count} invoices found." : "No invoices found.",
+                Message = imprests?.Count > 0 ? $"{imprests.Count} imprests found." : "No imprests found.",
                 Data = imprests
             });
         }
@@ -52,24 +53,20 @@ namespace TestApis.Controllers
 
             if (imprestDTO != null)
             {
-
-                  imprestDTO.Amount = 0;
-                  //imprestDTO.RemainingAmount = purchaseInvoiceDTO.TotalAmount;
-
-
+                  //imprestDTO.AmountRequested = 0;
+     
                 var linesTotal = 0.00m;
-                //purchaseInvoiceDTO.RemainingAmount = purchaseInvoiceDTO.
-
-                foreach (var gl in imprestDTO.imprestLines)
+            
+                foreach (var gl in imprestDTO.ImprestLines)
                 {
 
                     linesTotal = linesTotal + gl.Amount;
 
-                    if (gl.DebitChartOfAccountId != Guid.Empty)
+                    if (gl.ExpenseChartOfAccountId != Guid.Empty)
                     {
 
-                        var debitGl = await _channelService.FindChartOfAccountAsync(gl.DebitChartOfAccountId);
-                        gl.No = debitGl.AccountCode;
+                        var debitGl = await _channelService.FindChartOfAccountAsync(gl.ExpenseChartOfAccountId);
+                        gl.LineNo = debitGl.AccountCode;
 
                     }
                     else
@@ -77,13 +74,13 @@ namespace TestApis.Controllers
                         return Json(new
                         {
                             success = false,
-                            message = "YOU HAVE A LINE WITHOUT PROPERT DEBITCHARTOFAACCOUNTID"
+                            message = "YOU HAVE A LINE WITHOUT PROPERT EXPENSECHARTOFAACCOUNTID"
                         });
                     }
 
                 }
 
-                if (imprestDTO.Amount != linesTotal)
+                if (imprestDTO.AmountRequested != linesTotal)
                 {
 
                     return Json(new
@@ -95,7 +92,6 @@ namespace TestApis.Controllers
 
                 imprestDTO.ValidateAll();
 
-
                 if (imprestDTO.ErrorMessages.Count > 0)
                 {
                     return Json(new
@@ -105,7 +101,7 @@ namespace TestApis.Controllers
                     });
                 }
 
-                var result = await _channelService.AddNewPurchaseInvoiceAsync(imprestDTO, serviceHeader);
+                var result = await _channelService.AddNewImprestAsync(imprestDTO, serviceHeader);
 
 
                 if (result != null)
@@ -231,14 +227,14 @@ namespace TestApis.Controllers
             if (imprestDTO != null)
             {
 
-                var banks = await channelService.FindBankLinkagesAsync(serviceHeader);
+                var banks = await _channelService.FindBankLinkagesAsync(serviceHeader);
 
                 var bank = banks[0];
 
 
 
                 imprestDTO.BranchId = bank.BranchId;
-                imprest.BankId = bank.Id;
+                imprestDTO.BankId = bank.Id;
                 imprestDTO.BankBranchName = bank.BankBranchName;
 
                 imprestDTO.ValidateAll();
@@ -299,70 +295,72 @@ namespace TestApis.Controllers
         }
 
 
-        [HttpPost]
-        [Route("PayImprest")]
-        public async Task<IHttpActionResult> PayImprest(PaymentDTO paymentDTO)
-        {
+        //[HttpPost]
+        //[Route("PayImprest")]
+        //public async Task<IHttpActionResult> PayImprest(PaymentDTO paymentDTO)
+        //{
 
-            var serviceHeader = GetServiceHeader();
+        //    var serviceHeader = GetServiceHeader();
 
-            if (paymentDTO != null && paymentDTO.PaymentLines.Any())
-            {
+        //    if (paymentDTO != null && paymentDTO.PaymentLines.Any())
+        //    {
 
-                decimal totalOfLines = paymentDTO.PaymentLines.Sum(x => x.Amount);
+        //        decimal totalOfLines = paymentDTO.PaymentLines.Sum(x => x.Amount);
 
-                if (paymentDTO.TotalAmount != totalOfLines)
-                {
-                    return Json(new
-                    {
-                        success = false,
-                        message = $"Total mismatch: Header TotalAmount ({paymentDTO.TotalAmount:N2}) " +
-                                  $"does not equal sum of PaymentLines ({totalOfLines:N2})."
-                    });
-                }
+        //        if (paymentDTO.TotalAmount != totalOfLines)
+        //        {
+        //            return Json(new
+        //            {
+        //                success = false,
+        //                message = $"Total mismatch: Header TotalAmount ({paymentDTO.TotalAmount:N2}) " +
+        //                          $"does not equal sum of PaymentLines ({totalOfLines:N2})."
+        //            });
+        //        }
 
-                int moduleNavigationItemCode = 0;
+        //        int moduleNavigationItemCode = 0;
 
-                var tariffs = new ObservableCollection<TariffWrapper>();
+        //        var tariffs = new ObservableCollection<TariffWrapper>();
 
-                var result = await _channelService.PostImprestAsync(paymentDTO, moduleNavigationItemCode, serviceHeader);
+        //        var result = await _channelService.PayImprestAsync(paymentDTO, moduleNavigationItemCode, serviceHeader);
 
-                if (result != null)
-                {
+        //      //  var result = await _c
 
-                    return Json(new
-                    {
-                        success = true,
-                        message = "Succesfully posted Journal",
-                        data = result
-                    });
-                }
+        //        if (result != null)
+        //        {
 
-                else
-                {
+        //            return Json(new
+        //            {
+        //                success = true,
+        //                message = "Succesfully posted Journal",
+        //                data = result
+        //            });
+        //        }
 
-
-                    return Json(new
-                    {
-                        success = false,
-                        message = "Failed to post journal"
-                    });
-                }
+        //        else
+        //        {
 
 
-            }
+        //            return Json(new
+        //            {
+        //                success = false,
+        //                message = "Failed to post journal"
+        //            });
+        //        }
 
-            else
-            {
 
-                return Json(new
-                {
-                    success = false,
-                    message = "Request Object is empty"
-                });
-            }
+        //    }
 
-        }
+        //    else
+        //    {
+
+        //        return Json(new
+        //        {
+        //            success = false,
+        //            message = "Request Object is empty"
+        //        });
+        //    }
+
+        //}
 
       
     }

@@ -133,6 +133,8 @@
     <Compile Include="AccountsModule\Services\CostCenterAppService.cs" />
     <Compile Include="AccountsModule\Services\CreditBatchAppService.cs" />
     <Compile Include="AccountsModule\Services\IARCustomerAppService.cs" />
+    <Compile Include="AccountsModule\Services\IImprestAppService.cs" />
+    <Compile Include="AccountsModule\Services\ImprestAppService.cs" />
     <Compile Include="AccountsModule\Services\IPaymentAppService.cs" />
     <Compile Include="AccountsModule\Services\IReceiptAppService.cs" />
     <Compile Include="AccountsModule\Services\ISalesCreditMemoAppService.cs" />

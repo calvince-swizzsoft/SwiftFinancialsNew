@@ -21,11 +21,7 @@ namespace TestApis.Controllers
             {
                 var designations = await _channelService.FindDesignationsAsync();
 
-                if (designations == null)
-                {
-                    return NotFound();
-                }
-
+          
                 return Ok(designations);
             }
 

@@ -113,9 +113,26 @@ namespace Infrastructure.Data.MainBoundedContext.Seeders
                     Prefix = "JV-",
                     LastUsedNumber = 0,
                     Padding = 5
+                },
+
+                  new NumberSeries
+                {
+                    Code = "IM", // Imprest
+                    Prefix = "IM-",
+                    LastUsedNumber = 0,
+                    Padding = 5
+                },
+
+
+                    new NumberSeries
+                {
+                    Code = "SURR", // Surrender
+                    Prefix = "SURR-",
+                    LastUsedNumber = 0,
+                    Padding = 5
                 }
 
-                     
+
                     };
 
                     foreach (var config in defaultSeries)

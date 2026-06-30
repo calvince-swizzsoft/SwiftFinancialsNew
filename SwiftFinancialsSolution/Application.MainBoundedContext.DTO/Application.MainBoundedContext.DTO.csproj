@@ -131,6 +131,8 @@
     <Compile Include="AccountsModule\GeneralLedgerDTO.cs" />
     <Compile Include="AccountsModule\GeneralLedgerEntryDTO.cs" />
     <Compile Include="AccountsModule\GraduatedScaleDTO.cs" />
+    <Compile Include="AccountsModule\ImprestDTO.cs" />
+    <Compile Include="AccountsModule\ImprestLineDTO.cs" />
     <Compile Include="AccountsModule\InsuranceCompanyDTO.cs" />
     <Compile Include="AccountsModule\InterAccountTransferBatchDTO.cs" />
     <Compile Include="AccountsModule\InterAccountTransferBatchDynamicChargeDTO.cs" />

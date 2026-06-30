@@ -1,4 +1,5 @@
-﻿using Infrastructure.Crosscutting.Framework.Attributes;
+﻿using Application.Seedwork;
+using Infrastructure.Crosscutting.Framework.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -9,8 +10,18 @@ using System.Threading.Tasks;
 
 namespace SwiftFinancials.Presentation.Shared.Application.MainBoundedContext.DTO.AccountsModule
 {
-    public class ImprestDTO
+    public class ImprestDTO : BindingModelBase<ImprestDTO>
     {
+
+        public ImprestDTO()
+        {
+            AddAllAttributeValidators();
+        }
+
+
+        [Display(Name = "BankId")]
+        public Guid BankId { get; set; }
+
         [DataMember]
             [Display(Name = "BranchId")]
             public Guid BranchId { get; set; }

@@ -43587,7 +43587,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         }
 
-        public Task<JournalDTO> PayImprest(PaymentVoucherDTO paymentVoucherDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader)
+        public Task<JournalDTO> PayImprestAsync(PaymentVoucherDTO paymentVoucherDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader)
         {
 
             var tcs = new TaskCompletionSource<JournalDTO>();

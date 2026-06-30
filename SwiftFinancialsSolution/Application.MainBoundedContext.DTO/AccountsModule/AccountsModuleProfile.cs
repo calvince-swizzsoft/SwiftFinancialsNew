@@ -52,6 +52,7 @@ using Domain.MainBoundedContext.AccountsModule.Aggregates.FuneralRiderClaimPayab
 using Domain.MainBoundedContext.AccountsModule.Aggregates.GeneralLedgerAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.GeneralLedgerEntryAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.GraduatedScaleAgg;
+using Domain.MainBoundedContext.AccountsModule.Aggregates.ImprestAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.InsuranceCompanyAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.InterAccountTransferBatchAgg;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.InterAccountTransferBatchDynamicChargeAgg;
@@ -650,6 +651,8 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
             CreateMap<ARCustomer, ARCustomerDTO>();
 
             CreateMap<Receipt, ReceiptDTO>();
+
+            CreateMap<Imprest, ImprestDTO>();
 
         }
 

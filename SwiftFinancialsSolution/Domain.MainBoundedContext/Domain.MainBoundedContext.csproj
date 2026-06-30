@@ -216,9 +216,9 @@
     <Compile Include="AccountsModule\Aggregates\GraduatedScaleAgg\GraduatedScaleSpecifications.cs" />
     <Compile Include="AccountsModule\Aggregates\ImprestAgg\Imprest.cs" />
     <Compile Include="AccountsModule\Aggregates\ImprestAgg\ImprestFactory.cs" />
-    <Compile Include="AccountsModule\Aggregates\ImprestSurrenderLine\ImprestSurrenderLine.cs" />
-    <Compile Include="AccountsModule\Aggregates\ImprestSurrender\ImprestSurrender.cs" />
-    <Compile Include="AccountsModule\Aggregates\ImprestSurrender\ImprestSurrenderFactory.cs" />
+    <Compile Include="AccountsModule\Aggregates\ImprestSurrenderLineAgg\ImprestSurrenderLine.cs" />
+    <Compile Include="AccountsModule\Aggregates\ImprestSurrenderAgg\ImprestSurrender.cs" />
+    <Compile Include="AccountsModule\Aggregates\ImprestSurrenderAgg\ImprestSurrenderFactory.cs" />
     <Compile Include="AccountsModule\Aggregates\InsuranceCompanyAgg\InsuranceComapanyFactory.cs" />
     <Compile Include="AccountsModule\Aggregates\InsuranceCompanyAgg\InsuranceCompany.cs" />
     <Compile Include="AccountsModule\Aggregates\InsuranceCompanyAgg\InsuranceCompanySpecifications.cs" />
